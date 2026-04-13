@@ -1,0 +1,1802 @@
+{
+  "Shohei Ohtani": {
+    "rank": 1,
+    "value": 101.0,
+    "pb": "Batter",
+    "pos": "DH/SP"
+  },
+  "Paul Skenes": {
+    "rank": 3,
+    "value": 77.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Aaron Judge": {
+    "rank": 2,
+    "value": 79.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Garrett Crochet": {
+    "rank": 6,
+    "value": 67.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Tarik Skubal": {
+    "rank": 4,
+    "value": 72.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Jose Ramirez": {
+    "rank": 5,
+    "value": 68.0,
+    "pb": "Batter",
+    "pos": "3B/DH"
+  },
+  "Kyle Tucker": {
+    "rank": 7,
+    "value": 57.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Bobby Witt Jr.": {
+    "rank": 8,
+    "value": 48.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Max Fried": {
+    "rank": 14,
+    "value": 39.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Bryan Woo": {
+    "rank": 11,
+    "value": 43.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Yoshinobu Yamamoto": {
+    "rank": 12,
+    "value": 40.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Cristopher Sanchez": {
+    "rank": 10,
+    "value": 45.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Corbin Carroll": {
+    "rank": 16,
+    "value": 36.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Ronald Acuna Jr.": {
+    "rank": 9,
+    "value": 46.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Yordan Alvarez": {
+    "rank": 23,
+    "value": 33.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Vladimir Guerrero Jr.": {
+    "rank": 17,
+    "value": 36.0,
+    "pb": "Batter",
+    "pos": "1B/DH"
+  },
+  "Kevin Gausman": {
+    "rank": 30,
+    "value": 29.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Gunnar Henderson": {
+    "rank": 34,
+    "value": 27.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Chris Sale": {
+    "rank": 20,
+    "value": 35.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Juan Soto": {
+    "rank": 13,
+    "value": 39.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Matt Olson": {
+    "rank": 36,
+    "value": 26.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Ketel Marte": {
+    "rank": 15,
+    "value": 38.0,
+    "pb": "Batter",
+    "pos": "2B/DH"
+  },
+  "Nico Hoerner": {
+    "rank": 45,
+    "value": 21.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Junior Caminero": {
+    "rank": 21,
+    "value": 34.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Ben Rice": {
+    "rank": 46,
+    "value": 21.0,
+    "pb": "Batter",
+    "pos": "1B/C/DH"
+  },
+  "Fernando Tatis Jr.": {
+    "rank": 19,
+    "value": 35.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "George Kirby": {
+    "rank": 28,
+    "value": 30.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Dylan Cease": {
+    "rank": 26,
+    "value": 31.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Cody Bellinger": {
+    "rank": 39,
+    "value": 24.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Mason Miller": {
+    "rank": 54,
+    "value": 17.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Logan Webb": {
+    "rank": 22,
+    "value": 33.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Jesus Luzardo": {
+    "rank": 25,
+    "value": 32.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "William Contreras": {
+    "rank": 41,
+    "value": 23.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Freddy Peralta": {
+    "rank": 27,
+    "value": 30.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kyle Schwarber": {
+    "rank": 29,
+    "value": 29.0,
+    "pb": "Batter",
+    "pos": "DH"
+  },
+  "Logan Gilbert": {
+    "rank": 18,
+    "value": 36.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Jacob deGrom": {
+    "rank": 24,
+    "value": 32.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Manny Machado": {
+    "rank": 38,
+    "value": 24.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Drake Baldwin": {
+    "rank": 61,
+    "value": 14.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Elly De La Cruz": {
+    "rank": 51,
+    "value": 18.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Maikel Garcia": {
+    "rank": 49,
+    "value": 19.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Freddie Freeman": {
+    "rank": 59,
+    "value": 15.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Jose Altuve": {
+    "rank": 62,
+    "value": 14.0,
+    "pb": "Batter",
+    "pos": "2B/OF/DH"
+  },
+  "Cade Smith": {
+    "rank": 64,
+    "value": 13.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Alex Bregman": {
+    "rank": 33,
+    "value": 27.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Shea Langeliers": {
+    "rank": 52,
+    "value": 18.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Cole Ragans": {
+    "rank": 31,
+    "value": 28.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Francisco Lindor": {
+    "rank": 43,
+    "value": 22.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Joe Ryan": {
+    "rank": 35,
+    "value": 26.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Sandy Alcantara": {
+    "rank": 95,
+    "value": 8.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Taylor Ward": {
+    "rank": 72,
+    "value": 12.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Luis Arraez": {
+    "rank": 73,
+    "value": 12.0,
+    "pb": "Batter",
+    "pos": "1B/DH/2B"
+  },
+  "Jackson Merrill": {
+    "rank": 63,
+    "value": 14.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Steven Kwan": {
+    "rank": 58,
+    "value": 15.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Edwin Diaz": {
+    "rank": 92,
+    "value": 8.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Brent Rooker": {
+    "rank": 40,
+    "value": 24.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Brice Turang": {
+    "rank": 97,
+    "value": 7.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Yandy Diaz": {
+    "rank": 105,
+    "value": 6.0,
+    "pb": "Batter",
+    "pos": "1B/DH"
+  },
+  "Will Smith": {
+    "rank": 56,
+    "value": 16.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Geraldo Perdomo": {
+    "rank": 65,
+    "value": 13.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Alec Burleson": {
+    "rank": 90,
+    "value": 8.0,
+    "pb": "Batter",
+    "pos": "OF/1B/DH"
+  },
+  "Jhoan Duran": {
+    "rank": 101,
+    "value": 6.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Corey Seager": {
+    "rank": 76,
+    "value": 11.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Bryce Harper": {
+    "rank": 82,
+    "value": 10.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "James Wood": {
+    "rank": 104,
+    "value": 6.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Christian Yelich": {
+    "rank": 91,
+    "value": 8.0,
+    "pb": "Batter",
+    "pos": "DH"
+  },
+  "Andy Pages": {
+    "rank": 108,
+    "value": 5.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "George Springer": {
+    "rank": 53,
+    "value": 18.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Cam Schlittler": {
+    "rank": 146,
+    "value": 5.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Randy Arozarena": {
+    "rank": 98,
+    "value": 7.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Julio Rodriguez": {
+    "rank": 32,
+    "value": 28.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Framber Valdez": {
+    "rank": 42,
+    "value": 22.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Trea Turner": {
+    "rank": 57,
+    "value": 16.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Cal Raleigh": {
+    "rank": 37,
+    "value": 25.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Sal Stewart": {
+    "rank": 181,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "1B/3B"
+  },
+  "CJ Abrams": {
+    "rank": 148,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Oneil Cruz": {
+    "rank": 114,
+    "value": 5.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Jose Soriano": {
+    "rank": 149,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Roman Anthony": {
+    "rank": 44,
+    "value": 21.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Brandon Nimmo": {
+    "rank": 94,
+    "value": 8.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "MacKenzie Gore": {
+    "rank": 131,
+    "value": 3.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Jordan Walker": {
+    "rank": 203,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Gavin Williams": {
+    "rank": 106,
+    "value": 6.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Nolan McLean": {
+    "rank": 83,
+    "value": 9.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Ozzie Albies": {
+    "rank": 87,
+    "value": 9.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Jacob Misiorowski": {
+    "rank": 93,
+    "value": 8.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Christian Walker": {
+    "rank": 175,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Ian Happ": {
+    "rank": 75,
+    "value": 11.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Nick Pivetta": {
+    "rank": 47,
+    "value": 20.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Xavier Edwards": {
+    "rank": 189,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "2B/SS"
+  },
+  "Dennis Santana": {
+    "rank": 264,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Zach Neto": {
+    "rank": 141,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Devin Williams": {
+    "rank": 115,
+    "value": 5.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Ryan O'Hearn": {
+    "rank": 158,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "1B/OF/DH"
+  },
+  "Andres Munoz": {
+    "rank": 79,
+    "value": 10.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Chase DeLauter": {
+    "rank": 167,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Sonny Gray": {
+    "rank": 48,
+    "value": 19.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Jeffrey Springs": {
+    "rank": 250,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kevin McGonigle": {
+    "rank": 134,
+    "value": 3.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Trevor Rogers": {
+    "rank": 178,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kris Bubic": {
+    "rank": 195,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Tyler Glasnow": {
+    "rank": 129,
+    "value": 3.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Wilyer Abreu": {
+    "rank": 166,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Emilio Pagan": {
+    "rank": 193,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Jeff Hoffman": {
+    "rank": 172,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Matt Chapman": {
+    "rank": 113,
+    "value": 5.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Mitch Keller": {
+    "rank": 218,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "David Bednar": {
+    "rank": 142,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Lucas Erceg": {
+    "rank": 278,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Luis Robert Jr.": {
+    "rank": 198,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Josh Bell": {
+    "rank": 257,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B/DH"
+  },
+  "Alex Vesia": {
+    "rank": 293,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Jonathan Aranda": {
+    "rank": 247,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Raisel Iglesias": {
+    "rank": 157,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Brendan Donovan": {
+    "rank": 120,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "2B/3B"
+  },
+  "Pete Alonso": {
+    "rank": 50,
+    "value": 19.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Gleyber Torres": {
+    "rank": 103,
+    "value": 6.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Robbie Ray": {
+    "rank": 143,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Zack Wheeler": {
+    "rank": 55,
+    "value": 17.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Willy Adames": {
+    "rank": 117,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Chandler Simpson": {
+    "rank": 228,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Carlos Correa": {
+    "rank": 230,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS/3B"
+  },
+  "Andres Gimenez": {
+    "rank": 295,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B/SS"
+  },
+  "Bryan Reynolds": {
+    "rank": 130,
+    "value": 3.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Eury Perez": {
+    "rank": 71,
+    "value": 12.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Pete Crow-Armstrong": {
+    "rank": 80,
+    "value": 10.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "JJ Wetherholt": {
+    "rank": 183,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "SS/2B"
+  },
+  "Miguel Vargas": {
+    "rank": 202,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "3B/1B"
+  },
+  "Aroldis Chapman": {
+    "rank": 128,
+    "value": 3.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Otto Lopez": {
+    "rank": 201,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS/2B"
+  },
+  "Salvador Perez": {
+    "rank": 81,
+    "value": 10.0,
+    "pb": "Batter",
+    "pos": "C/1B/DH"
+  },
+  "Xander Bogaerts": {
+    "rank": 192,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Mike Trout": {
+    "rank": 163,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Jazz Chisholm Jr.": {
+    "rank": 67,
+    "value": 13.0,
+    "pb": "Batter",
+    "pos": "2B/3B"
+  },
+  "Abner Uribe": {
+    "rank": 290,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Matt Strahm": {
+    "rank": 296,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Daylen Lile": {
+    "rank": 147,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Agustin Ramirez": {
+    "rank": 124,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Royce Lewis": {
+    "rank": 262,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Max Muncy": {
+    "rank": 255,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Luis Garcia Jr.": {
+    "rank": 222,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B/1B"
+  },
+  "Jeremiah Estrada": {
+    "rank": 274,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Luke Keaschall": {
+    "rank": 153,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Clay Holmes": {
+    "rank": 223,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Chase Burns": {
+    "rank": 118,
+    "value": 5.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Nathan Eovaldi": {
+    "rank": 60,
+    "value": 15.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Adley Rutschman": {
+    "rank": 66,
+    "value": 13.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Jackson Chourio": {
+    "rank": 69,
+    "value": 13.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Luis Castillo": {
+    "rank": 68,
+    "value": 13.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Seth Lugo": {
+    "rank": 242,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Vinnie Pasquantino": {
+    "rank": 70,
+    "value": 13.0,
+    "pb": "Batter",
+    "pos": "1B/DH"
+  },
+  "Austin Riley": {
+    "rank": 102,
+    "value": 6.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Jarren Duran": {
+    "rank": 77,
+    "value": 10.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Ivan Herrera": {
+    "rank": 177,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "DH"
+  },
+  "Ernie Clement": {
+    "rank": 159,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "3B/2B/SS"
+  },
+  "Shota Imanaga": {
+    "rank": 140,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Ryan Helsley": {
+    "rank": 270,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Willson Contreras": {
+    "rank": 216,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Ramon Laureano": {
+    "rank": 194,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Dillon Dingler": {
+    "rank": 232,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Jakob Marsee": {
+    "rank": 152,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Teoscar Hernandez": {
+    "rank": 136,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Michael Harris II": {
+    "rank": 144,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Aaron Nola": {
+    "rank": 176,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Munetaka Murakami": {
+    "rank": 234,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "3B/1B"
+  },
+  "Wyatt Langford": {
+    "rank": 85,
+    "value": 9.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Gabriel Moreno": {
+    "rank": 126,
+    "value": 3.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Hunter Goodman": {
+    "rank": 125,
+    "value": 3.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Francisco Alvarez": {
+    "rank": 225,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Colt Keith": {
+    "rank": 287,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B/3B/DH"
+  },
+  "Gavin Sheets": {
+    "rank": 265,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Michael King": {
+    "rank": 133,
+    "value": 3.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Tanner Bibee": {
+    "rank": 74,
+    "value": 11.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Bo Bichette": {
+    "rank": 88,
+    "value": 9.0,
+    "pb": "Batter",
+    "pos": "SS/3B"
+  },
+  "Riley Greene": {
+    "rank": 109,
+    "value": 5.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Luke Weaver": {
+    "rank": 283,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Yainer Diaz": {
+    "rank": 99,
+    "value": 7.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Trent Grisham": {
+    "rank": 168,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Daulton Varsho": {
+    "rank": 171,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Brandon Lowe": {
+    "rank": 212,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Giancarlo Stanton": {
+    "rank": 236,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Joey Cantillo": {
+    "rank": 282,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP/SP"
+  },
+  "Tyler Soderstrom": {
+    "rank": 119,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "OF/1B"
+  },
+  "Zac Gallen": {
+    "rank": 78,
+    "value": 10.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Jonathan India": {
+    "rank": 210,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B/3B/OF/DH"
+  },
+  "Ryan Walker": {
+    "rank": 271,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Rafael Devers": {
+    "rank": 116,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "1B/DH"
+  },
+  "Eugenio Suarez": {
+    "rank": 122,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "3B/DH"
+  },
+  "Mookie Betts": {
+    "rank": 84,
+    "value": 9.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Brandon Woodruff": {
+    "rank": 86,
+    "value": 9.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Hunter Brown": {
+    "rank": 89,
+    "value": 9.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Nolan Schanuel": {
+    "rank": 224,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Garrett Whitlock": {
+    "rank": 289,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Jo Adell": {
+    "rank": 169,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Sal Frelick": {
+    "rank": 151,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Marcus Semien": {
+    "rank": 111,
+    "value": 5.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Nick Kurtz": {
+    "rank": 96,
+    "value": 7.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Jung Hoo Lee": {
+    "rank": 160,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Alec Bohm": {
+    "rank": 155,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Matt McLain": {
+    "rank": 249,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Drew Rasmussen": {
+    "rank": 100,
+    "value": 7.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Ezequiel Tovar": {
+    "rank": 256,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Kyle Bradish": {
+    "rank": 112,
+    "value": 5.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Adolis Garcia": {
+    "rank": 174,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Byron Buxton": {
+    "rank": 123,
+    "value": 4.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Ryne Nelson": {
+    "rank": 238,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP/RP"
+  },
+  "Seiya Suzuki": {
+    "rank": 107,
+    "value": 6.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Chase Meidroth": {
+    "rank": 284,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS/2B"
+  },
+  "Masyn Winn": {
+    "rank": 268,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Andrew Abbott": {
+    "rank": 145,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Colson Montgomery": {
+    "rank": 280,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Jake Cronenworth": {
+    "rank": 237,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Willi Castro": {
+    "rank": 246,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/2B/3B"
+  },
+  "Lawrence Butler": {
+    "rank": 199,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Dansby Swanson": {
+    "rank": 173,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Josh Naylor": {
+    "rank": 110,
+    "value": 5.0,
+    "pb": "Batter",
+    "pos": "1B/DH"
+  },
+  "Jacob Wilson": {
+    "rank": 154,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Logan O'Hoppe": {
+    "rank": 260,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Gerrit Cole": {
+    "rank": 121,
+    "value": 4.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Shane Baz": {
+    "rank": 180,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Bryson Stott": {
+    "rank": 162,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Michael Busch": {
+    "rank": 196,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Jorge Polanco": {
+    "rank": 259,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B/DH"
+  },
+  "Spencer Torkelson": {
+    "rank": 220,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B"
+  },
+  "Cedric Mullins": {
+    "rank": 292,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "J.T. Realmuto": {
+    "rank": 132,
+    "value": 3.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Ryan Pepiot": {
+    "rank": 127,
+    "value": 3.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Trevor Megill": {
+    "rank": 226,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Kazuma Okamoto": {
+    "rank": 156,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Will Vest": {
+    "rank": 300,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Jack Flaherty": {
+    "rank": 186,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Slade Cecconi": {
+    "rank": 294,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "TJ Friedl": {
+    "rank": 165,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Jeremy Pena": {
+    "rank": 138,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Samuel Basallo": {
+    "rank": 150,
+    "value": 2.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Blake Snell": {
+    "rank": 135,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Emmet Sheehan": {
+    "rank": 137,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Ranger Suarez": {
+    "rank": 139,
+    "value": 2.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kerry Carpenter": {
+    "rank": 221,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Brenton Doyle": {
+    "rank": 215,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Jac Caglianone": {
+    "rank": 161,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Caleb Durbin": {
+    "rank": 190,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Spencer Steer": {
+    "rank": 207,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "1B/OF"
+  },
+  "Griffin Jax": {
+    "rank": 263,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Heliot Ramos": {
+    "rank": 188,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Konnor Griffin": {
+    "rank": 164,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Carter Jensen": {
+    "rank": 170,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Jeff McNeil": {
+    "rank": 184,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "2B/OF"
+  },
+  "Ryan Jeffers": {
+    "rank": 185,
+    "value": 1.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Nick Lodolo": {
+    "rank": 179,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Tatsuya Imai": {
+    "rank": 182,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Matthew Boyd": {
+    "rank": 187,
+    "value": 1.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Trevor Story": {
+    "rank": 279,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "SS"
+  },
+  "Yusei Kikuchi": {
+    "rank": 214,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Nolan Arenado": {
+    "rank": 217,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "David Peterson": {
+    "rank": 248,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Harrison Bader": {
+    "rank": 269,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Michael Wacha": {
+    "rank": 233,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Braxton Ashcraft": {
+    "rank": 285,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP/SP"
+  },
+  "Bailey Ober": {
+    "rank": 299,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Ceddanne Rafaela": {
+    "rank": 191,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/2B"
+  },
+  "Alejandro Kirk": {
+    "rank": 197,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Carlos Rodon": {
+    "rank": 200,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kyle Stowers": {
+    "rank": 204,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Edward Cabrera": {
+    "rank": 205,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Austin Wells": {
+    "rank": 206,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Isaac Paredes": {
+    "rank": 208,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "3B"
+  },
+  "Merrill Kelly": {
+    "rank": 209,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Daniel Palencia": {
+    "rank": 211,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Bubba Chandler": {
+    "rank": 213,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kyle Teel": {
+    "rank": 219,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Jack Leiter": {
+    "rank": 227,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Spencer Strider": {
+    "rank": 229,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Marcell Ozuna": {
+    "rank": 231,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "DH"
+  },
+  "Parker Messick": {
+    "rank": 235,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Tyler Stephenson": {
+    "rank": 239,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Bryan Abreu": {
+    "rank": 240,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Brady Singer": {
+    "rank": 241,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Shane McClanahan": {
+    "rank": 243,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Kodai Senga": {
+    "rank": 244,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Bo Naylor": {
+    "rank": 245,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Noelvi Marte": {
+    "rank": 251,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/3B"
+  },
+  "Carson Kelly": {
+    "rank": 252,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Josh Hader": {
+    "rank": 253,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  },
+  "Chris Bassitt": {
+    "rank": 254,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Andrew Benintendi": {
+    "rank": 258,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Chad Patrick": {
+    "rank": 261,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Casey Mize": {
+    "rank": 266,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Freddy Fermin": {
+    "rank": 267,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Jackson Holliday": {
+    "rank": 272,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "2B"
+  },
+  "Jameson Taillon": {
+    "rank": 273,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Mickey Moniak": {
+    "rank": 275,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF"
+  },
+  "Keibert Ruiz": {
+    "rank": 276,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Brayan Bello": {
+    "rank": 277,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Trevor Larnach": {
+    "rank": 281,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "OF/DH"
+  },
+  "Grant Taylor": {
+    "rank": 286,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP/SP"
+  },
+  "Edgar Quero": {
+    "rank": 288,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C/DH"
+  },
+  "Trey Yesavage": {
+    "rank": 291,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "SP"
+  },
+  "Carlos Narvaez": {
+    "rank": 297,
+    "value": 0.0,
+    "pb": "Batter",
+    "pos": "C"
+  },
+  "Steven Matz": {
+    "rank": 298,
+    "value": 0.0,
+    "pb": "Pitcher",
+    "pos": "RP"
+  }
+}
