@@ -220,20 +220,45 @@ def build_json(rows, daily_prev, weekly_prev):
                         "notEligible":r.get("not_elig",False)})
     return players, overall
 
+def replace_js_const(html, const_name, new_value):
+    """
+    Replace 'const NAME = [...];' reliably without regex.
+    Finds the opening bracket and counts brackets to find the true end.
+    Works even when the data contains ]]; or complex nested structures.
+    """
+    marker = f"const {const_name} = ["
+    start  = html.find(marker)
+    if start < 0:
+        return html
+    bracket_start = start + len(marker) - 1  # position of [
+    depth, i = 0, bracket_start
+    in_str, escape = False, False
+    while i < len(html):
+        ch = html[i]
+        if escape:
+            escape = False
+        elif ch == '\\' and in_str:
+            escape = True
+        elif ch == '"' and not escape:
+            in_str = not in_str
+        elif not in_str:
+            if ch == '[': depth += 1
+            elif ch == ']':
+                depth -= 1
+                if depth == 0:
+                    # Find the semicolon after ]
+                    end = html.index(';', i) + 1
+                    return html[:start] + f"const {const_name} = {new_value};" + html[end:]
+        i += 1
+    return html  # not found, return unchanged
+
+
 def inject(html, players, overall):
     today = datetime.now().strftime("%B %d, %Y")
     html  = re.sub(r'const LAST_UPDATED = "[^"]*";',
                    lambda m: f'const LAST_UPDATED = "{today}";', html)
-    # Strip old data arrays first (handles both empty [] and large injected arrays)
-    html  = re.sub(r'const PLAYERS = \[.*?\];',
-                   'const PLAYERS = [];', html, flags=re.DOTALL, count=1)
-    html  = re.sub(r'const OVERALL = \[.*?\];',
-                   'const OVERALL = [];', html, flags=re.DOTALL, count=1)
-    # Now inject fresh data
-    html  = html.replace('const PLAYERS = [];',
-                         f'const PLAYERS = {json.dumps(players)};', 1)
-    html  = html.replace('const OVERALL = [];',
-                         f'const OVERALL = {json.dumps(overall)};', 1)
+    html  = replace_js_const(html, "PLAYERS", json.dumps(players))
+    html  = replace_js_const(html, "OVERALL", json.dumps(overall))
     return html
 
 def main():
