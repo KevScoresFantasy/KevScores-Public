@@ -1,42 +1,68 @@
 """
-KevScores Public Updater v3.0
-Runs daily via GitHub Actions â€” no spreadsheet needed.
+KevScores Public Site Updater v3.1
+=====================================
+Runs daily via GitHub Actions — no spreadsheet, no laptop needed.
+Fetches MLB stats, computes Kev Scores, pushes fresh HTML to GitHub.
+Vercel auto-deploys on every push.
+
+Changelog:
+  v3.1 — Fixed inject() to use bracket-counting instead of regex for
+          large JS arrays. Regex with .*? was stopping at the first ];
+          found inside array data, causing silent replace failures.
+  v2.1 — Original working version.
 """
-import sys, os, json, base64, re, unicodedata, urllib.request, urllib.error
+
+import sys, os, json, base64, re, unicodedata, urllib.request, urllib.error, urllib.parse
 from datetime import datetime
 
-# â”€â”€ CONFIG â”€â”€
-GITHUB_TOKEN        = os.environ.get("KEVSCORES_TOKEN", "")
-GITHUB_USER         = "KevScoresFantasy"
-GITHUB_REPO         = "KevScores-Public"
-GITHUB_FILE         = "index.html"
-ESPN_BASELINE_FILE  = "espn_baseline.json"
-DAILY_SNAPSHOT_FILE = "daily_snapshot.json"
-WEEKLY_SCORES_FILE  = "weekly_scores.json"
-SEASON              = 2026
+# ── CONFIGURATION ──
+GITHUB_TOKEN  = os.environ.get("KEVSCORES_TOKEN", "")
+GITHUB_USER   = "KevScoresFantasy"
+GITHUB_REPO   = "KevScores-Public"
+GITHUB_FILE   = "index.html"
+SEASON        = 2026
 
-BATTING_MAP  = {"gamesPlayed":"G","atBats":"AB","plateAppearances":"PA","hits":"H",
-                "singles":"1B","doubles":"2B","triples":"3B","homeRuns":"HR","runs":"R",
-                "rbi":"RBI","baseOnBalls":"BB","strikeOuts":"SO","hitByPitch":"HBP",
-                "stolenBases":"SB","caughtStealing":"CS"}
-PITCHING_MAP = {"wins":"W","losses":"L","gamesPlayed":"G","gamesStarted":"GS",
-                "saves":"SV","holds":"HLD","inningsPitched":"IP","hits":"H",
-                "earnedRuns":"ER","baseOnBalls":"BB","strikeOuts":"SO",
-                "hitByPitch":"HBP","qualityStarts":"QS"}
+# Paths to data files (stored in repo alongside the script)
+ESPN_BASELINE_FILE  = "espn_baseline.json"   # hardcoded Week 1 ESPN values
+DAILY_SNAPSHOT_FILE = "daily_snapshot.json"  # previous day's scores
+WEEKLY_SCORES_FILE  = "weekly_scores.json"   # Monday baseline for weekly FP
 
-MIN_PA = 25
-MIN_IP = 5.0
+HEADERS_JSON = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Accept":     "application/json",
+}
+
+BATTING_MAP = {
+    "gamesPlayed":"G", "atBats":"AB", "plateAppearances":"PA",
+    "hits":"H", "singles":"1B", "doubles":"2B", "triples":"3B", "homeRuns":"HR",
+    "runs":"R", "rbi":"RBI", "baseOnBalls":"BB", "intentionalWalks":"IBB",
+    "strikeOuts":"SO", "hitByPitch":"HBP", "sacFlies":"SF", "sacBunts":"SH",
+    "groundIntoDoublePlay":"GDP", "stolenBases":"SB", "caughtStealing":"CS", "avg":"AVG",
+}
+PITCHING_MAP = {
+    "wins":"W", "losses":"L", "era":"ERA", "gamesPlayed":"G", "gamesStarted":"GS",
+    "qualityStarts":"QS", "completeGames":"CG", "shutouts":"ShO", "saves":"SV",
+    "holds":"HLD", "blownSaves":"BS", "inningsPitched":"IP", "battersFaced":"TBF",
+    "hits":"H", "runs":"R", "earnedRuns":"ER", "homeRuns":"HR", "baseOnBalls":"BB",
+    "intentionalWalks":"IBB", "hitByPitch":"HBP", "wildPitches":"WP", "balks":"BK",
+    "strikeOuts":"SO",
+}
+
+MIN_PA = 25    # minimum plate appearances to get a rank score (batters)
+MIN_IP = 5.0   # minimum innings pitched to get a rank score (pitchers)
+
+
+# ── UTILITIES ──
 
 def normalize(name):
     s = str(name).lower().strip()
-    s = unicodedata.normalize("NFD", s).encode("ascii","ignore").decode()
-    s = s.replace(".","").replace(",","").replace("'","").replace("-"," ")
-    s = s.replace(" jr","").replace(" sr","").replace(" ii","").replace(" iii","")
+    s = unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode()
+    s = s.replace(".", "").replace(",", "").replace("'", "").replace("-", " ")
+    s = s.replace(" jr", "").replace(" sr", "").replace(" ii", "").replace(" iii", "")
     return " ".join(s.split())
 
 def mlb_fetch(url):
-    req = urllib.request.Request(url, headers={
-        "User-Agent":"Mozilla/5.0","Accept":"application/json"})
+    req = urllib.request.Request(url, headers=HEADERS_JSON)
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.loads(r.read())
 
@@ -47,32 +73,35 @@ def github_request(method, endpoint, payload=None):
         "Authorization": f"token {GITHUB_TOKEN}",
         "Accept":        "application/vnd.github.v3+json",
         "Content-Type":  "application/json",
-        "User-Agent":    "KevScores-Updater",
+        "User-Agent":    "KevScores-Public-Updater",
     })
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            return json.loads(r.read())
-    except urllib.error.HTTPError as e:
-        body = e.read().decode()[:300]
-        raise Exception(f"GitHub {method} {endpoint} failed {e.code}: {body}")
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read())
 
 def github_get_file(path):
+    """Get file content and SHA from repo. Returns (content_str, sha) or (None, None)."""
     try:
-        # Add timestamp to bypass any API caching
-        import time as _time
-        ts      = int(_time.time())
-        info    = github_request("GET", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{path}?t={ts}")
+        info    = github_request("GET", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{path}")
         content = base64.b64decode(info["content"]).decode("utf-8")
         return content, info["sha"]
-    except Exception:
+    except Exception as e:
+        print(f"  WARNING: Could not fetch {path}: {e}")
         return None, None
 
 def github_put_file(path, content, sha, message):
+    """Create or update a file in the repo."""
     encoded = base64.b64encode(content.encode()).decode()
     payload = {"message": message, "content": encoded}
     if sha:
         payload["sha"] = sha
-    return github_request("PUT", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{path}", payload)
+    try:
+        return github_request("PUT", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{path}", payload)
+    except urllib.error.HTTPError as e:
+        body = e.read().decode() if hasattr(e, "read") else ""
+        raise Exception(f"GitHub PUT {path} failed {e.code}: {body[:200]}") from e
+
+
+# ── FETCH MLB STATS ──
 
 def fetch_all(group, label):
     print(f"  {label}...", end=" ", flush=True)
@@ -80,321 +109,452 @@ def fetch_all(group, label):
     col_map = BATTING_MAP if group == "hitting" else PITCHING_MAP
     while True:
         try:
-            data   = mlb_fetch(f"https://statsapi.mlb.com/api/v1/stats?stats=season&group={group}&season={SEASON}&limit={limit}&offset={offset}&sportId=1&playerPool=ALL")
-            splits = data.get("stats",[{}])[0].get("splits",[])
-            if not splits: break
+            data   = mlb_fetch(
+                f"https://statsapi.mlb.com/api/v1/stats"
+                f"?stats=season&group={group}&season={SEASON}"
+                f"&limit={limit}&offset={offset}&sportId=1&playerPool=ALL"
+            )
+            splits = data.get("stats", [{}])[0].get("splits", [])
+            if not splits:
+                break
             all_splits.extend(splits)
-            if len(splits) < limit: break
+            if len(splits) < limit:
+                break
             offset += limit
         except Exception as e:
-            print(f"FAILED â€” {e}"); return {}
+            print(f"FAILED — {e}")
+            return {}
     rows = {}
     for s in all_splits:
-        stat, player, team = s.get("stat",{}), s.get("player",{}), s.get("team",{})
-        name = player.get("fullName","")
+        stat, player, team = s.get("stat", {}), s.get("player", {}), s.get("team", {})
+        name = player.get("fullName", "")
         norm = normalize(name)
-        row  = {"Name": name, "Team": team.get("abbreviation",""), "mlbId": str(player.get("id",""))}
+        row  = {
+            "Name":  name,
+            "Team":  team.get("abbreviation", ""),
+            "mlbId": str(player.get("id", "")),
+        }
         for k, v in col_map.items():
             row[v] = stat.get(k, 0)
         rows[norm] = row
     print(f"{len(rows)} players")
     return rows
 
-def compute_fp(rows, sheet_type):
-    fp_total, fp_pg, eligible = {}, {}, {}
-    for norm, r in rows.items():
-        def g(c): return float(r.get(c, 0) or 0)
-        if sheet_type == "batting":
-            fp    = g("1B")+g("2B")*2+g("3B")*3+g("HR")*4+g("R")+g("RBI")+g("BB")+g("HBP")+g("SB")*2-g("CS")-g("SO")
-            games = max(g("G"), 1)
-            elig  = g("PA") >= MIN_PA
-        else:
-            fp    = g("W")*5-g("L")*5+g("SV")*5+g("HLD")*4+g("IP")*3+g("SO")-g("ER")*2-g("H")-g("BB")-g("HBP")
-            games = max(g("G"), 1)
-            elig  = g("IP") >= MIN_IP
-        fp_total[norm] = round(fp, 1)
-        fp_pg[norm]    = round(fp/games, 3) if elig else None
-        eligible[norm] = elig
-    return fp_total, fp_pg, eligible
 
-def rank_scores(fp_pg):
-    items = sorted([(n,v) for n,v in fp_pg.items() if v is not None], key=lambda x: -x[1])
-    n = len(items)
-    return {norm: round(100*(1-i/(n-1)), 4) if n>1 else 100.0 for i,(norm,_) in enumerate(items)}
+# ── COMPUTE FANTASY POINTS ──
+
+def compute_fp(rows, sheet_type):
+    """
+    Returns (fp_total, fp_per_game, eligible) dicts.
+    Per-game FP normalizes for injuries / missed time.
+    """
+    fp_total    = {}
+    fp_per_game = {}
+    eligible    = {}
+
+    for norm, r in rows.items():
+        def g(col): return float(r.get(col, 0) or 0)
+        if sheet_type == "batting":
+            fp    = (g("1B") + g("2B")*2 + g("3B")*3 + g("HR")*4
+                     + g("R") + g("RBI") + g("BB") + g("HBP")
+                     + g("SB")*2 - g("CS") - g("SO"))
+            pa    = g("PA")
+            games = g("G") if g("G") > 0 else 1
+            elig  = pa >= MIN_PA
+            fpg   = round(fp / games, 3) if elig else None
+        else:
+            fp    = (g("W")*5 - g("L")*5 + g("SV")*5 + g("HLD")*4
+                     + g("IP")*3 + g("SO") - g("ER")*2
+                     - g("H") - g("BB") - g("HBP"))
+            ip    = g("IP")
+            games = g("G") if g("G") > 0 else 1
+            elig  = ip >= MIN_IP
+            fpg   = round(fp / games, 3) if elig else None
+
+        fp_total[norm]    = round(fp, 1)
+        fp_per_game[norm] = fpg
+        eligible[norm]    = elig
+
+    return fp_total, fp_per_game, eligible
+
+
+def rank_scores(fp_per_game_dict):
+    """
+    Rank eligible players by per-game FP.
+    Ineligible players get rank_score=None (shown as Not Eligible Yet).
+    """
+    eligible_items = [(n, v) for n, v in fp_per_game_dict.items() if v is not None]
+    eligible_items.sort(key=lambda x: -x[1])
+    n  = len(eligible_items)
+    rs = {}
+    for i, (norm, _) in enumerate(eligible_items):
+        rs[norm] = round(100 * (1 - i / (n - 1)), 4) if n > 1 else 100.0
+    return rs  # only eligible players have keys
+
+
+# ── ESPN VALUE ──
 
 def get_week_number():
-    weeks = max(0, (datetime.now() - datetime(SEASON,4,1)).days // 7)
-    return min(weeks+1, 26)
+    """Current MLB week (1-26). Season starts ~April 1."""
+    season_start  = datetime(SEASON, 4, 1)
+    weeks_elapsed = max(0, (datetime.now() - season_start).days // 7)
+    return min(weeks_elapsed + 1, 26)
 
 def adjusted_espn_value(espn_value, rank_score):
+    """
+    Shifts 1% per week from ESPN toward stat-based rank score.
+    Week 1:  80% ESPN + 20% rank  →  Week 26: 54% ESPN + 46% rank
+    """
     week        = get_week_number()
-    stat_weight = min(0.20 + (week-1)*0.01, 0.46)
-    return round((1-stat_weight)*espn_value + stat_weight*rank_score, 4)
+    stat_weight = min(0.20 + (week - 1) * 0.01, 0.46)
+    espn_weight = 1 - stat_weight
+    return round(espn_weight * espn_value + stat_weight * rank_score, 4)
 
-def build_players(bat_rows, pit_rows, bat_total, bat_pg, bat_rs,
-                  pit_total, pit_pg, pit_rs, espn_baseline,
-                  team_lookup=None):
+
+# ── BUILD PLAYERS LIST ──
+
+def build_players(batting_rows, pitching_rows,
+                  bat_fp_total, bat_fp_pg, bat_rs,
+                  pit_fp_total, pit_fp_pg, pit_rs,
+                  espn_baseline):
     rows = []
-    for norm in set(bat_rows)|set(pit_rows):
-        is_pit = norm in pit_rows and norm not in bat_rows
-        # Use the correct source row for each type to get accurate team/ID
-        raw       = pit_rows.get(norm) if is_pit else bat_rows.get(norm)
-        if raw is None:
-            raw   = pit_rows.get(norm) or bat_rows.get(norm)
-        name      = raw["Name"]
-        mlb_team  = raw.get("Team", "")
-        mlb_id    = raw.get("mlbId", "")
-        # Fallback: try other source, then team_lookup
-        if not mlb_team:
-            other = bat_rows.get(norm) if is_pit else pit_rows.get(norm)
-            if other:
-                mlb_team = other.get("Team", "")
-        if not mlb_team and team_lookup:
-            mlb_team = team_lookup.get(norm, "")
+    all_norms = set(batting_rows.keys()) | set(pitching_rows.keys())
 
-        if is_pit:
-            rs, fp, fpg, pb = pit_rs.get(norm), pit_total.get(norm,0), pit_pg.get(norm), "Pitcher"
+    for norm in all_norms:
+        is_pitcher = norm in pitching_rows and norm not in batting_rows
+        raw        = pitching_rows.get(norm) or batting_rows.get(norm)
+        name       = raw["Name"]
+        mlb_team   = raw["Team"]
+        mlb_id     = raw["mlbId"]
+
+        if is_pitcher:
+            rs    = pit_rs.get(norm)
+            fp    = pit_fp_total.get(norm, 0)
+            fp_pg = pit_fp_pg.get(norm)
+            pb    = "Pitcher"
         else:
-            rs, fp, fpg, pb = bat_rs.get(norm), bat_total.get(norm,0), bat_pg.get(norm), "Batter"
+            rs    = bat_rs.get(norm)
+            fp    = bat_fp_total.get(norm, 0)
+            fp_pg = bat_fp_pg.get(norm)
+            pb    = "Batter"
 
-        not_elig   = rs is None
-        espn_data  = espn_baseline.get(name) or espn_baseline.get(
-            next((k for k in espn_baseline if normalize(k)==norm), None) or "") or {}
+        not_eligible = rs is None
+
+        # ESPN baseline lookup (try exact name, then normalized match)
+        espn_data = espn_baseline.get(name) or espn_baseline.get(
+            next((k for k in espn_baseline if normalize(k) == norm), None) or ""
+        ) or {}
+
         espn_rank  = espn_data.get("rank",  999)
         espn_value = espn_data.get("value", 0)
-        pos        = espn_data.get("pos", "SP" if is_pit else "OF")
+        pos        = espn_data.get("pos",   "SP" if is_pitcher else "OF")
 
-        rs_val    = rs if not not_elig else 0
-        kev_score = round(adjusted_espn_value(espn_value, rs_val), 4)
+        rs_for_calc = rs if not not_eligible else 0
+        adj_value   = adjusted_espn_value(espn_value, rs_for_calc)
+        kev_score   = round(adj_value, 4)
+
+        # Skip completely unknown players (no ESPN rank, no stats worth showing)
         if kev_score < 0.5 and espn_rank >= 900:
             continue
 
-        rows.append({"name":name,"kev":kev_score,"espn_rk":espn_rank,"espn_val":espn_value,
-                     "pb":pb,"pos":pos,"mlb_team":mlb_team,"mlb_id":mlb_id,
-                     "fp":fp,"fp_pg":fpg,"rs":rs_val,"not_elig":not_elig})
+        rows.append({
+            "name":         name,
+            "kev":          kev_score,
+            "espn_rk":      espn_rank,
+            "espn_val":     espn_value,
+            "adj_val":      adj_value,
+            "pb":           pb,
+            "pos":          pos,
+            "mlb_team":     mlb_team,
+            "mlb_id":       mlb_id,
+            "fp":           fp,
+            "fp_pg":        fp_pg,
+            "rs":           rs if rs is not None else 0,
+            "not_eligible": not_eligible,
+        })
+
     rows.sort(key=lambda x: -x["kev"])
     return rows
 
+
 def assign_ratings(rows):
-    pos_cnt = {}
+    """Assign positional ratings (SP1, OF3 etc) by Kev Score rank within position."""
+    pos_counters = {}
     for r in rows:
-        pos, pb = str(r.get("pos","")).upper(), r.get("pb","")
-        if   "SP" in pos and pb=="Pitcher": prefix="SP"
-        elif "RP" in pos and pb=="Pitcher": prefix="RP"
-        elif pb=="Pitcher":                  prefix="RP"
-        elif "SS" in pos: prefix="SS"
-        elif "3B" in pos: prefix="3B"
-        elif "2B" in pos: prefix="2B"
-        elif "1B" in pos: prefix="1B"
-        elif "C"  in pos and len(pos.split("/")[0])<=2: prefix="C"
-        elif "OF" in pos: prefix="OF"
-        elif "DH" in pos: prefix="DH"
-        else:              prefix="OF"
-        pos_cnt[prefix] = pos_cnt.get(prefix,0)+1
-        r["rating"] = f"{prefix}{pos_cnt[prefix]}"
+        pos_raw = str(r.get("pos", "")).upper()
+        pb      = r.get("pb", "")
+        if   "SP" in pos_raw and pb == "Pitcher": prefix = "SP"
+        elif "RP" in pos_raw and pb == "Pitcher": prefix = "RP"
+        elif pb == "Pitcher":                      prefix = "RP"
+        elif "SS" in pos_raw:                      prefix = "SS"
+        elif "3B" in pos_raw:                      prefix = "3B"
+        elif "2B" in pos_raw:                      prefix = "2B"
+        elif "1B" in pos_raw:                      prefix = "1B"
+        elif "C"  in pos_raw and len(pos_raw.split("/")[0]) <= 2: prefix = "C"
+        elif "OF" in pos_raw:                      prefix = "OF"
+        elif "DH" in pos_raw:                      prefix = "DH"
+        else:                                      prefix = "OF"
+        pos_counters[prefix] = pos_counters.get(prefix, 0) + 1
+        r["rating"] = f"{prefix}{pos_counters[prefix]}"
     return rows
+
 
 def build_json(rows, daily_prev, weekly_prev):
     players, overall = [], []
     for i, r in enumerate(rows):
-        kev_rank  = i+1
+        kev_rank  = i + 1
         kev       = round(r["kev"], 2)
         espn_rk   = r["espn_rk"]
-        weighted  = round(kev*(200-espn_rk)/100, 2) if espn_rk<900 else round(kev*0.2, 2)
-        rank_diff = (espn_rk-kev_rank) if espn_rk<900 else None
-        rating    = r.get("rating","")
-        if espn_rk>=900 and rating.startswith("RP"):
-            kev = round(kev*0.75, 2)
+        weighted  = round(kev * (200 - espn_rk) / 100, 2) if espn_rk < 900 else round(kev * 0.2, 2)
+        rank_diff = (espn_rk - kev_rank) if espn_rk < 900 else None
+        rating    = r.get("rating", "")
 
-        prev       = daily_prev.get(r["name"])
-        kev_change = round(kev-prev, 2) if prev is not None else None
-        wp         = weekly_prev.get(r["name"], {})
-        fp_weekly  = round(r["fp"]-(wp.get("fp",r["fp"]) if isinstance(wp,dict) else r["fp"]), 1)
+        # Discount unranked RPs slightly
+        is_unr_rp = espn_rk >= 900 and rating.startswith("RP")
+        kev       = round(kev * 0.75, 2) if is_unr_rp else kev
 
-        players.append({"name":r["name"],"kevScore":kev,"kevRank":kev_rank,
-                        "espnRank":espn_rk,"rating":rating,"type":r["pb"],
-                        "team":r["mlb_team"],"weighted":weighted,"mlbId":r["mlb_id"],
-                        "fpScore":r["fp"]})
-        overall.append({"kevRank":kev_rank,"kevRating":rating,"kevScore":kev,
-                        "name":r["name"],"mlbTeam":r["mlb_team"],"pos":r["pos"],
-                        "espnRank":espn_rk,"rankDiff":rank_diff,"type":r["pb"],
-                        "fantasyTeam":"","mlbId":r["mlb_id"],"kevChange":kev_change,
-                        "fpScore":r["fp"],"fpWeekly":fp_weekly,"fpPG":r.get("fp_pg"),
-                        "notEligible":r.get("not_elig",False)})
+        prev_kev   = daily_prev.get(r["name"])
+        kev_change = round(kev - prev_kev, 2) if prev_kev is not None else None
+
+        wp        = weekly_prev.get(r["name"], {})
+        fp_weekly = round(r["fp"] - (wp.get("fp", r["fp"]) if isinstance(wp, dict) else r["fp"]), 1)
+
+        players.append({
+            "name":     r["name"],
+            "kevScore": kev,
+            "kevRank":  kev_rank,
+            "espnRank": espn_rk,
+            "rating":   rating,
+            "type":     r["pb"],
+            "team":     r["mlb_team"],
+            "weighted": weighted,
+            "mlbId":    r["mlb_id"],
+            "fpScore":  r["fp"],
+        })
+        overall.append({
+            "kevRank":    kev_rank,
+            "kevRating":  rating,
+            "kevScore":   kev,
+            "name":       r["name"],
+            "mlbTeam":    r["mlb_team"],
+            "pos":        r["pos"],
+            "espnRank":   espn_rk,
+            "rankDiff":   rank_diff,
+            "type":       r["pb"],
+            "fantasyTeam": "",
+            "mlbId":      r["mlb_id"],
+            "kevChange":  kev_change,
+            "fpScore":    r["fp"],
+            "fpWeekly":   fp_weekly,
+            "fpPG":       r.get("fp_pg"),
+            "notEligible": r.get("not_eligible", False),
+        })
     return players, overall
 
+
+# ── INJECT INTO HTML ──
+
+def _find_js_const_bounds(html, const_name):
+    """
+    Find the start and end positions of `const NAME = [...];` in html.
+    Uses bracket counting so it handles arbitrarily large arrays and
+    never stops early at a ] inside a string value.
+
+    Returns (start, end) indices where html[start:end] is the full
+    `const NAME = [...];` declaration, or (None, None) if not found.
+    """
+    marker = f"const {const_name} = ["
+    start  = html.find(marker)
+    if start == -1:
+        return None, None
+
+    # Walk forward from the opening [ counting brackets.
+    # We intentionally ignore brackets inside strings — this is safe because
+    # JSON string values never contain bare unescaped [ or ] characters.
+    bracket_pos = start + len(marker) - 1   # index of the opening [
+    depth = 0
+    i     = bracket_pos
+    while i < len(html):
+        ch = html[i]
+        if ch == "[":
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+
+    # i is now the index of the matching ]
+    end = i + 1
+    if end < len(html) and html[end] == ";":
+        end += 1   # include the semicolon
+
+    return start, end
+
+
 def inject(html, players, overall):
-    """Inject player data into HTML, replacing old arrays correctly."""
     today = datetime.now().strftime("%B %d, %Y")
 
-    # Replace LAST_UPDATED
-    html = re.sub(r'const LAST_UPDATED = "[^"]*";',
-                  f'const LAST_UPDATED = "{today}";', html)
+    # ── 1. Update LAST_UPDATED (simple regex, safe for short strings) ──
+    new_html = re.sub(
+        r'const LAST_UPDATED = "[^"]*";',
+        f'const LAST_UPDATED = "{today}";',
+        html,
+    )
+    if new_html == html:
+        print("  WARNING: LAST_UPDATED not found in template!")
+    html = new_html
 
-    # Replace const NAME = [...]; using bracket counting (regex fails on large JSON)
-    for const_name, new_data in [("PLAYERS", json.dumps(players)),
-                                  ("OVERALL", json.dumps(overall))]:
-        marker = f"const {const_name} = ["
-        start  = html.find(marker)
-        if start < 0:
-            print(f"  WARNING: {const_name} marker not found in template!")
+    # ── 2. Replace PLAYERS and OVERALL using bracket counting ──
+    for const_name, data in [("PLAYERS", players), ("OVERALL", overall)]:
+        start, end = _find_js_const_bounds(html, const_name)
+        if start is None:
+            print(f"  WARNING: const {const_name} not found in template!")
             continue
-        bracket_start = start + len(marker) - 1
-        depth, i, in_str, escape = 0, bracket_start, False, False
-        found = False
-        while i < len(html):
-            ch = html[i]
-            if escape:
-                escape = False
-            elif ch == '\\' and in_str:
-                escape = True
-            elif ch == '"':
-                in_str = not in_str
-            elif not in_str:
-                if   ch == '[': depth += 1
-                elif ch == ']':
-                    depth -= 1
-                    if depth == 0:
-                        end  = html.index(';', i) + 1
-                        html = html[:start] + f"const {const_name} = {new_data};" + html[end:]
-                        found = True
-                        break
-            i += 1
-        if not found:
-            print(f"  WARNING: Could not find end of {const_name} array!")
+        new_block = f"const {const_name} = {json.dumps(data)};"
+        html      = html[:start] + new_block + html[end:]
+        print(f"  Injected {const_name}: {len(data)} entries ✓  "
+              f"(replaced {end - start} chars → {len(new_block)} chars)")
 
     return html
 
 
+# ── MAIN ──
+
 def main():
     print()
-    print("="*55)
-    print(f"  KevScores Public Updater v3.0 â€” {datetime.now().strftime('%B %d, %Y')}")
-    print("="*55)
-    print(f"  Script file: {__file__}")
+    print("=" * 55)
+    print(f"  KevScores Public Updater v3.1 — {datetime.now().strftime('%B %d, %Y')}")
+    print("=" * 55)
 
     if not GITHUB_TOKEN:
-        print("ERROR: KEVSCORES_TOKEN not set"); sys.exit(1)
+        print("ERROR: KEVSCORES_TOKEN secret not set in GitHub Actions")
+        sys.exit(1)
 
-    # â”€â”€ Fetch stats â”€â”€
+    # ── Fetch stats ──
     print("\nDownloading MLB stats...")
     batting  = fetch_all("hitting",  "Batting")
     pitching = fetch_all("pitching", "Pitching")
 
-    # â”€â”€ Build comprehensive team lookup from all rows â”€â”€
-    # Some players appear in both batting/pitching with inconsistent team data
-    # Build a name->team map using any non-empty team value found
-    team_lookup = {}
-    for rows_dict in [batting, pitching]:
-        for norm, row in rows_dict.items():
-            t = row.get("Team", "")
-            if t:
-                team_lookup[norm] = t
+    if not batting and not pitching:
+        print("ERROR: No stats returned from MLB API — aborting.")
+        sys.exit(1)
 
-    # â”€â”€ Compute FP + rank scores â”€â”€
-    bat_total, bat_pg, bat_elig = compute_fp(batting,  "batting")
-    pit_total, pit_pg, pit_elig = compute_fp(pitching, "pitching")
-    bat_rs = rank_scores(bat_pg)
-    pit_rs = rank_scores(pit_pg)
+    # ── Compute FP and rank scores ──
+    bat_fp_total, bat_fp_pg, bat_elig = compute_fp(batting,  "batting")
+    pit_fp_total, pit_fp_pg, pit_elig = compute_fp(pitching, "pitching")
+    bat_rs = rank_scores(bat_fp_pg)
+    pit_rs = rank_scores(pit_fp_pg)
     week   = get_week_number()
-    print(f"  Week {week}: stat weight {min(20+(week-1),46)}%")
-    print(f"  Eligible: {sum(bat_elig.values())}B / {sum(pit_elig.values())}P")
+    print(f"  Current week: {week} (stat weight: {min(20 + (week - 1), 46)}%)")
+    print(f"  Eligible batters:  {sum(bat_elig.values())} / {len(bat_elig)}")
+    print(f"  Eligible pitchers: {sum(pit_elig.values())} / {len(pit_elig)}")
 
-    # â”€â”€ Load ESPN baseline â”€â”€
+    # ── Load ESPN baseline from repo ──
     print("\nLoading ESPN baseline...")
     espn_raw, _ = github_get_file(ESPN_BASELINE_FILE)
-    espn_baseline = json.loads(espn_raw) if espn_raw else {}
-    print(f"  {len(espn_baseline)} players")
+    if espn_raw:
+        espn_baseline = json.loads(espn_raw)
+        print(f"  {len(espn_baseline)} players in baseline")
+    else:
+        print("  WARNING: espn_baseline.json not found — ESPN values will be 0")
+        espn_baseline = {}
 
-    # â”€â”€ Load snapshots â”€â”€
+    # ── Load daily/weekly snapshots ──
     daily_raw,  daily_sha  = github_get_file(DAILY_SNAPSHOT_FILE)
     weekly_raw, weekly_sha = github_get_file(WEEKLY_SCORES_FILE)
     daily_prev  = json.loads(daily_raw)  if daily_raw  else {}
     weekly_prev = json.loads(weekly_raw) if weekly_raw else {}
 
-    # â”€â”€ Build players â”€â”€
+    # ── Build players ──
     print("\nComputing Kev Scores...")
-    rows = build_players(batting, pitching,
-                         bat_total, bat_pg, bat_rs,
-                         pit_total, pit_pg, pit_rs, espn_baseline,
-                         team_lookup)
-    rows = assign_ratings(rows)
+    rows    = build_players(batting, pitching,
+                            bat_fp_total, bat_fp_pg, bat_rs,
+                            pit_fp_total, pit_fp_pg, pit_rs,
+                            espn_baseline)
+    rows    = assign_ratings(rows)
     players, overall = build_json(rows, daily_prev, weekly_prev)
     print(f"  {len(players)} players computed")
 
-    # â”€â”€ Daily changes â”€â”€
+    # ── Update daily snapshot ──
     today_str = datetime.now().strftime("%Y-%m-%d")
-    saved_on  = daily_prev.get("_saved_on","")
+    saved_on  = daily_prev.get("_saved_on", "")
+    new_daily = {p["name"]: p["kevScore"] for p in players}
+    new_daily["_saved_on"] = today_str
+
     if daily_prev:
-        changers = sum(1 for p in players if p.get("kevChange") and p["kevChange"]!=0)
+        for p in players:
+            prev = daily_prev.get(p["name"])
+            p["kevChange"] = round(p["kevScore"] - prev, 2) if prev is not None else None
+        for o in overall:
+            prev = daily_prev.get(o["name"])
+            o["kevChange"] = round(o["kevScore"] - prev, 2) if prev is not None else None
+        changers = sum(1 for p in players if p.get("kevChange") and p["kevChange"] != 0)
         print(f"  Daily changes: {changers} players moved")
     else:
-        print("  First baseline â€” risers populate tomorrow")
+        print("  Daily snapshot: creating first baseline")
+        for p in players: p["kevChange"] = None
+        for o in overall: o["kevChange"] = None
 
-    # Save daily snapshot once per day
+    # Save new baseline once per day
     if saved_on != today_str:
-        new_daily = {p["name"]: p["kevScore"] for p in players}
-        new_daily["_saved_on"] = today_str
         try:
-            github_put_file(DAILY_SNAPSHOT_FILE, json.dumps(new_daily,indent=2),
-                            daily_sha, f"Daily snapshot {today_str}")
-            print(f"  Snapshot saved")
+            github_put_file(
+                DAILY_SNAPSHOT_FILE,
+                json.dumps(new_daily, indent=2),
+                daily_sha,
+                f"Daily snapshot {today_str}",
+            )
+            print(f"  Baseline saved for {today_str}")
         except Exception as e:
-            print(f"  Snapshot warning: {e}")
+            print(f"  WARNING: Could not save snapshot: {e}")
 
-    # Save weekly baseline on Mondays
+    # ── Update weekly snapshot on Mondays ──
     if datetime.now().weekday() == 0:
-        new_weekly = {p["name"]:{"kev":p["kevScore"],"fp":p.get("fpScore",0)} for p in players}
+        new_weekly = {
+            p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)}
+            for p in players
+        }
         new_weekly["_saved_on"] = today_str
         try:
-            github_put_file(WEEKLY_SCORES_FILE, json.dumps(new_weekly,indent=2),
-                            weekly_sha, f"Weekly baseline {today_str}")
+            github_put_file(
+                WEEKLY_SCORES_FILE,
+                json.dumps(new_weekly, indent=2),
+                weekly_sha,
+                f"Weekly baseline {today_str}",
+            )
             print("  Weekly baseline saved (Monday)")
         except Exception as e:
-            print(f"  Weekly warning: {e}")
+            print(f"  WARNING: Could not save weekly snapshot: {e}")
 
-    # â”€â”€ Read template, inject, push â”€â”€
+    # ── Inject into HTML and push ──
     print("\nBuilding website...")
     html_raw, html_sha = github_get_file(GITHUB_FILE)
     if not html_raw:
-        print("ERROR: index.html not found"); sys.exit(1)
+        print("ERROR: index.html not found in repo")
+        sys.exit(1)
 
-    # â”€â”€ DIAGNOSTICS â”€â”€
-    print(f"  Template: {len(html_raw):,} chars, SHA={html_sha[:8] if html_sha else 'none'}")
-    print(f"  Has MLB_TEAM_COLORS : {'MLB_TEAM_COLORS' in html_raw}")
-    print(f"  Has 2026 Season     : {'2026 Season' in html_raw}")
-    print(f"  Has ESPN hyperlink  : {'support.espn.com' in html_raw}")
-    has_overall = bool(re.search(r'const OVERALL = \[', html_raw))
-    has_players = bool(re.search(r'const PLAYERS = \[', html_raw))
-    print(f"  Has OVERALL pattern : {has_overall}")
-    print(f"  Has PLAYERS pattern : {has_players}")
-
+    print(f"  Template size: {len(html_raw):,} chars")
     new_html = inject(html_raw, players, overall)
+    print(f"  Final size:    {len(new_html):,} chars")
 
-    # Verify inject worked
-    m = re.search(r'const OVERALL = (\[.*?\]);', new_html, re.DOTALL)
-    if m:
-        sample = json.loads(m.group(1))
-        first  = sample[0] if sample else {}
-        print(f"  Injected {len(sample)} players, first mlbTeam={repr(first.get('mlbTeam','?'))}")
-    # Show team_lookup sample to debug
-    if team_lookup:
-        sample_teams = list(team_lookup.items())[:5]
-        print(f"  team_lookup sample: {sample_teams}")
-        ohtani_norm = 'shohei ohtani'
-        print(f"  Ohtani in team_lookup: {team_lookup.get(ohtani_norm, 'NOT FOUND')}")
-        print(f"  Ohtani in batting: {batting.get(ohtani_norm, {}).get('Team', 'NOT FOUND')}")
-        print(f"  Ohtani in pitching: {pitching.get(ohtani_norm, {}).get('Team', 'NOT FOUND')}")
-    else:
-        print("  WARNING: OVERALL not found after inject!")
+    if len(new_html) <= len(html_raw) * 0.5:
+        print("ERROR: Output HTML is suspiciously small — aborting push to avoid data loss.")
+        sys.exit(1)
 
-    result  = github_put_file(GITHUB_FILE, new_html, html_sha,
-                              f"Daily stats update {datetime.now().strftime('%b %d, %Y')}")
+    result  = github_put_file(
+        GITHUB_FILE,
+        new_html,
+        html_sha,
+        f"Daily stats update {datetime.now().strftime('%b %d, %Y')}",
+    )
     new_sha = result["content"]["sha"]
-    print(f"  Pushed âœ“ â€” SHA: {new_sha[:12]}")
+    print(f"  Pushed ✓ — SHA: {new_sha[:12]}")
     print(f"  Live at: https://kev-scores-public.vercel.app")
-    print("\nAll done!")
-    print("="*55)
+    print()
+    print("All done!")
+    print("=" * 55)
+
 
 if __name__ == "__main__":
     main()
