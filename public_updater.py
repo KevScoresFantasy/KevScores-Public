@@ -334,7 +334,9 @@ def build_json(rows, weekly_prev):
         kev = round(kev * 0.75, 2) if is_unr_rp else kev
 
         wp = weekly_prev.get(r["name"], {})
-        fp_weekly = round(r["fp"] - (wp.get("fp", r["fp"]) if isinstance(wp, dict) else r["fp"]), 1)
+        current_fp = r["fp"]
+        baseline_fp = wp.get("fp", current_fp) if isinstance(wp, dict) else current_fp
+        fp_weekly = round(current_fp - baseline_fp, 1)
 
         players.append({
             "name": r["name"],
