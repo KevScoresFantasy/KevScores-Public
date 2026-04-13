@@ -133,8 +133,18 @@ def build_players(bat_rows, pit_rows, bat_total, bat_pg, bat_rs,
     rows = []
     for norm in set(bat_rows)|set(pit_rows):
         is_pit = norm in pit_rows and norm not in bat_rows
-        raw    = pit_rows.get(norm) or bat_rows.get(norm)
-        name, mlb_team, mlb_id = raw["Name"], raw["Team"], raw["mlbId"]
+        # Use the correct source row for each type to get accurate team/ID
+        raw       = pit_rows.get(norm) if is_pit else bat_rows.get(norm)
+        if raw is None:
+            raw   = pit_rows.get(norm) or bat_rows.get(norm)
+        name      = raw["Name"]
+        mlb_team  = raw.get("Team", "")
+        mlb_id    = raw.get("mlbId", "")
+        # Fallback: if team is empty, try the other source
+        if not mlb_team:
+            other = bat_rows.get(norm) if is_pit else pit_rows.get(norm)
+            if other:
+                mlb_team = other.get("Team", "")
 
         if is_pit:
             rs, fp, fpg, pb = pit_rs.get(norm), pit_total.get(norm,0), pit_pg.get(norm), "Pitcher"
