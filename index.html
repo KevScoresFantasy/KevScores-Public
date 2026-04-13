@@ -410,6 +410,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
         <thead><tr>
           <th style="text-align:left">Player</th>
           <th class="num" id="fp-col-header-bat">FP This Week</th>
+          <th class="num" style="color:var(--text-dim);font-size:11px;">Prev Week</th>
           <th class="num" style="color:var(--text-muted);font-size:11px;">FP/G</th>
           <th class="num">Kev Score</th>
 
@@ -423,6 +424,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
         <thead><tr>
           <th style="text-align:left">Player</th>
           <th class="num" id="fp-col-header-pit">FP This Week</th>
+          <th class="num" style="color:var(--text-dim);font-size:11px;">Prev Week</th>
           <th class="num" style="color:var(--text-muted);font-size:11px;">FP/G</th>
           <th class="num">Kev Score</th>
 
@@ -1044,6 +1046,10 @@ function renderWeekly() {
     const fpColor = useWeekly
       ? (hasFP && (p.fpWeekly||0) > 0 ? '#4ade80' : 'var(--text)')
       : 'var(--text)';
+    // Prev Week: show fpPrevWeek when in weekly mode, otherwise season comparison isn't meaningful
+    const prevWeekVal = (p.fpPrevWeek !== undefined && p.fpPrevWeek !== null)
+      ? p.fpPrevWeek.toFixed(1)
+      : '—';
     const owner = '';
     return `<tr>
       <td style="display:flex;align-items:center;gap:8px;padding:6px 8px;">
@@ -1054,6 +1060,7 @@ function renderWeekly() {
         </div>
       </td>
       <td class="num" style="font-family:var(--font-display);font-weight:700;color:${fpColor}">${fp}</td>
+      <td class="num" style="font-size:11px;color:var(--text-dim)">${prevWeekVal}</td>
       <td class="num" style="font-size:11px;color:var(--text-muted)">${p.fpPG !== undefined && p.fpPG !== null ? p.fpPG.toFixed(1) : '—'}</td>
       <td class="num" style="font-family:var(--font-display);font-size:13px;font-weight:700">${p.kevScore.toFixed(1)}</td>
 
@@ -1061,8 +1068,8 @@ function renderWeekly() {
   }
 
   const noDataMsg = useWeekly && !hasFP
-    ? `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">Weekly FP available from Tuesday</td></tr>`
-    : `<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted)">No data</td></tr>`;
+    ? `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">Weekly FP available from Tuesday</td></tr>`
+    : `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">No data</td></tr>`;
   batTbody.innerHTML  = batters.length  ? batters.map(row).join('')  : noDataMsg;
   pitTbody.innerHTML  = pitchers.length ? pitchers.map(row).join('') : noDataMsg;
 }
