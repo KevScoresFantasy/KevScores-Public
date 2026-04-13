@@ -352,10 +352,16 @@ def build_json(rows, weekly_prev):
         is_unr_rp = espn_rk >= 900 and rating.startswith("RP")
         kev = round(kev * 0.75, 2) if is_unr_rp else kev
 
-        wp = weekly_prev.get(r["name"], {})
+        wp = weekly_prev.get(r["name"], {}) if isinstance(weekly_prev, dict) else {}
+
         current_fp = int(round(r["fp"]))
         baseline_fp = int(round(wp.get("fp", current_fp))) if isinstance(wp, dict) else current_fp
         fp_weekly = current_fp - baseline_fp
+
+        baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
+        kev_change = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
+        if kev_change == 0:
+            kev_change = 0.0
 
         players.append({
             "name": r["name"],
@@ -368,7 +374,7 @@ def build_json(rows, weekly_prev):
             "weighted": weighted,
             "mlbId": r["mlb_id"],
             "fpScore": r["fp"],
-            "kevChange": None,
+            "kevChange": kev_change,
         })
 
         overall.append({
@@ -383,7 +389,7 @@ def build_json(rows, weekly_prev):
             "type": r["pb"],
             "fantasyTeam": "",
             "mlbId": r["mlb_id"],
-            "kevChange": None,
+            "kevChange": kev_change,
             "fpScore": r["fp"],
             "fpWeekly": fp_weekly,
             "fpPG": r.get("fp_pg"),
@@ -564,9 +570,6 @@ def main():
         print(f"  Sample: {p0['name']} → team='{p0.get('team', '')}', mlbId={p0.get('mlbId', '')}")
 
     today_str = datetime.now().strftime("%Y-%m-%d")
-
-    # First apply stable daily changes using the most recent PRIOR day
-    players, overall = apply_daily_changes(players, overall, daily_history, today_str)
 
     # Then save today's baseline once, without affecting same-day reruns
     daily_history, history_changed = update_daily_history(daily_history, players, today_str)
