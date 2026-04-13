@@ -2623,33 +2623,13 @@
     "kev": 0.47,
     "fp": -3.0
   },
-  "Dustin May": {
-    "kev": 0.46,
-    "fp": -8.7
-  },
-  "Matt Svanson": {
-    "kev": 0.41,
-    "fp": -24.4
-  },
-  "Brandon Sproat": {
-    "kev": 0.35,
-    "fp": -12.7
-  },
   "Edgar Quero": {
     "kev": 0.34,
     "fp": -4.0
   },
-  "Luinder Avila": {
-    "kev": 0.29,
-    "fp": -11.0
-  },
   "Bo Naylor": {
     "kev": 0.27,
     "fp": -4.0
-  },
-  "Shane Smith": {
-    "kev": 0.23,
-    "fp": -16.7
   },
   "Marcell Ozuna": {
     "kev": 0.2,
@@ -2659,41 +2639,25 @@
     "kev": 0.17,
     "fp": -23.0
   },
-  "Carlos Santana": {
-    "kev": 0.13,
-    "fp": -3.0
-  },
-  "Cristian Javier": {
-    "kev": 0.12,
-    "fp": -23.7
-  },
   "Noelvi Marte": {
     "kev": 0.07,
     "fp": -5.0
-  },
-  "Miles Mikolas": {
-    "kev": 0.06,
-    "fp": -30.7
-  },
-  "Trevor Megill": {
-    "kev": 0.0,
-    "fp": 0.0
   },
   "Andrew Benintendi": {
     "kev": 0.0,
     "fp": -7.0
   },
-  "Alejandro Kirk": {
-    "kev": 0.0,
-    "fp": 10.0
-  },
   "Luke Weaver": {
     "kev": 0.0,
     "fp": 0.0
   },
-  "Luis Morales": {
+  "Alejandro Kirk": {
     "kev": 0.0,
-    "fp": -25.7
+    "fp": 10.0
+  },
+  "Trevor Megill": {
+    "kev": 0.0,
+    "fp": 0.0
   },
   "_saved_on": "2026-04-13"
 }
