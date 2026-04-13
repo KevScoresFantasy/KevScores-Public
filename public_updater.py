@@ -124,14 +124,29 @@ def fetch_all(group, label):
         except Exception as e:
             print(f"FAILED — {e}")
             return {}
+    # MLB API uses some abbreviations that differ from ESPN's logo CDN keys.
+    # Normalize them here so team colors and logos work correctly in the HTML.
+    TEAM_ABB_MAP = {
+        "AZ":  "ARI",   # Diamondbacks
+        "CWS": "CWS",   # White Sox (fine as-is)
+        "KCR": "KC",    # Royals (API sometimes returns KCR)
+        "SDP": "SD",    # Padres
+        "SFG": "SF",    # Giants
+        "TBR": "TB",    # Rays
+        "WSN": "WSH",   # Nationals
+        "ATH": "ATH",   # Athletics (Oakland/Sacramento)
+    }
+
     rows = {}
     for s in all_splits:
         stat, player, team = s.get("stat", {}), s.get("player", {}), s.get("team", {})
         name = player.get("fullName", "")
         norm = normalize(name)
+        raw_abb = team.get("abbreviation", "")
+        abb = TEAM_ABB_MAP.get(raw_abb, raw_abb)
         row  = {
             "Name":  name,
-            "Team":  team.get("abbreviation", ""),
+            "Team":  abb,
             "mlbId": str(player.get("id", "")),
         }
         for k, v in col_map.items():
@@ -322,7 +337,9 @@ def build_json(rows, daily_prev, weekly_prev):
             kev_change = None
 
         wp        = weekly_prev.get(r["name"], {})
-        # Weekly kev change: compare vs Monday baseline, or ESPN value Week 1
+        # Weekly kev change: compare vs weekly_scores.json baseline.
+        # That file is seeded with ESPN values on first run, then updated
+        # every Monday with real kev scores — so this always shows a meaningful delta.
         wkev_prev = wp.get("kev") if isinstance(wp, dict) else None
         if wkev_prev is not None:
             kev_weekly_change = round(kev - wkev_prev, 2)
@@ -516,11 +533,25 @@ def main():
 
     # ── Update weekly snapshot on Mondays ──
     if datetime.now().weekday() == 0:
-        new_weekly = {
-            p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)}
-            for p in players
-        }
-        new_weekly["_saved_on"] = today_str
+        weekly_saved_on = weekly_prev.get("_saved_on", "") if weekly_prev else ""
+        if not weekly_prev or weekly_saved_on == today_str:
+            # No prior baseline, or it was just created today (first Monday run) —
+            # seed with ESPN values so Risers/Fallers shows kev-vs-ESPN all week.
+            espn_kev_seed = {}
+            for r in rows:
+                espn_kev_seed[r["name"]] = {
+                    "kev": r["espn_val"] if r["espn_val"] > 0 else r["adj_val"],
+                    "fp":  r["fp"],
+                }
+            espn_kev_seed["_saved_on"] = today_str
+            new_weekly = espn_kev_seed
+            print("  Weekly baseline seeded from ESPN values (Week 1)")
+        else:
+            new_weekly = {
+                p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)}
+                for p in players
+            }
+            new_weekly["_saved_on"] = today_str
         try:
             github_put_file(
                 WEEKLY_SCORES_FILE,
