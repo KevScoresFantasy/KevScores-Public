@@ -489,6 +489,7 @@ def main():
         espn_baseline = {}
 
     # ── Load daily/weekly snapshots ──
+    today_str   = datetime.now().strftime("%Y-%m-%d")
     daily_raw,  daily_sha  = github_get_file(DAILY_SNAPSHOT_FILE)
     weekly_raw, weekly_sha = github_get_file(WEEKLY_SCORES_FILE)
     daily_prev  = json.loads(daily_raw)  if daily_raw  else {}
@@ -501,24 +502,33 @@ def main():
                             pit_fp_total, pit_fp_pg, pit_rs,
                             espn_baseline)
     rows    = assign_ratings(rows)
+
+    # ── Seed weekly baseline with ESPN values if needed (before build_json) ──
+    # This ensures kev_weekly_change in build_json compares vs ESPN, not today's kev.
+    # Conditions: no prior baseline exists, OR it was saved today (already overwritten
+    # this morning with kev scores before we could seed it properly).
+    weekly_saved_on  = weekly_prev.get("_saved_on", "") if weekly_prev else ""
+    need_espn_seed   = (not weekly_prev) or (weekly_saved_on == today_str)
+    if need_espn_seed:
+        espn_seed = {}
+        for r in rows:
+            espn_seed[r["name"]] = {
+                "kev": r["espn_val"] if r["espn_val"] > 0 else r["adj_val"],
+                "fp":  r["fp"],
+            }
+        espn_seed["_saved_on"] = today_str
+        weekly_prev = espn_seed   # use ESPN seed for build_json this run
+        print("  Weekly baseline: using ESPN values as Week 1 seed")
+
     players, overall = build_json(rows, daily_prev, weekly_prev)
     print(f"  {len(players)} players computed")
+    changers = sum(1 for o in overall if o.get("kevChange") and o["kevChange"] != 0)
+    print(f"  Weekly changes: {changers} players moved vs baseline")
 
-    # ── Update daily snapshot ──
-    today_str = datetime.now().strftime("%Y-%m-%d")
+    # ── Save daily snapshot once per day ──
     saved_on  = daily_prev.get("_saved_on", "")
     new_daily = {p["name"]: p["kevScore"] for p in players}
     new_daily["_saved_on"] = today_str
-
-    # kevChange in OVERALL is already set by build_json using the weekly baseline.
-    # Just log how many players have a non-zero change this run.
-    if daily_prev:
-        changers = sum(1 for o in overall if o.get("kevChange") and o["kevChange"] != 0)
-        print(f"  Weekly changes: {changers} players moved vs Monday baseline")
-    else:
-        print("  Daily snapshot: creating first baseline")
-
-    # Save new baseline once per day
     if saved_on != today_str:
         try:
             github_put_file(
@@ -527,26 +537,17 @@ def main():
                 daily_sha,
                 f"Daily snapshot {today_str}",
             )
-            print(f"  Baseline saved for {today_str}")
+            print(f"  Daily snapshot saved for {today_str}")
         except Exception as e:
             print(f"  WARNING: Could not save snapshot: {e}")
 
     # ── Update weekly snapshot on Mondays ──
     if datetime.now().weekday() == 0:
-        weekly_saved_on = weekly_prev.get("_saved_on", "") if weekly_prev else ""
-        if not weekly_prev or weekly_saved_on == today_str:
-            # No prior baseline, or it was just created today (first Monday run) —
-            # seed with ESPN values so Risers/Fallers shows kev-vs-ESPN all week.
-            espn_kev_seed = {}
-            for r in rows:
-                espn_kev_seed[r["name"]] = {
-                    "kev": r["espn_val"] if r["espn_val"] > 0 else r["adj_val"],
-                    "fp":  r["fp"],
-                }
-            espn_kev_seed["_saved_on"] = today_str
-            new_weekly = espn_kev_seed
-            print("  Weekly baseline seeded from ESPN values (Week 1)")
+        if need_espn_seed:
+            # Save the ESPN seed to the repo so Tue-Sun comparisons use it
+            new_weekly = weekly_prev   # already built above
         else:
+            # Normal Monday: save current kev scores as next week's baseline
             new_weekly = {
                 p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)}
                 for p in players
@@ -559,7 +560,8 @@ def main():
                 weekly_sha,
                 f"Weekly baseline {today_str}",
             )
-            print("  Weekly baseline saved (Monday)")
+            label = "ESPN seed" if need_espn_seed else "kev scores"
+            print(f"  Weekly baseline saved ({label})")
         except Exception as e:
             print(f"  WARNING: Could not save weekly snapshot: {e}")
 
