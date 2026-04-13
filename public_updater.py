@@ -389,7 +389,7 @@ def build_json(rows, weekly_prev):
             "type": r["pb"],
             "fantasyTeam": "",
             "mlbId": r["mlb_id"],
-            "kevChange": kev_change,
+            "kevChange": None,
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
             "kevWeekly": kev_weekly,
