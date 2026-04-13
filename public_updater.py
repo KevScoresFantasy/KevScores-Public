@@ -297,8 +297,6 @@ def build_json(rows, daily_prev, weekly_prev):
 
         wp = weekly_prev.get(r["name"], {})
         fp_weekly = round(r["fp"] - (wp.get("fp", r["fp"]) if isinstance(wp, dict) else r["fp"]), 1)
-        # Previous week's total FP — stored as fp_prev_week on Monday rollover
-        fp_prev_week = wp.get("fp_prev_week") if isinstance(wp, dict) else None
 
         players.append({
             "name": r["name"], "kevScore": kev, "kevRank": kev_rank,
@@ -312,20 +310,75 @@ def build_json(rows, daily_prev, weekly_prev):
             "espnRank": espn_rk, "rankDiff": rank_diff, "type": r["pb"],
             "fantasyTeam": "", "mlbId": r["mlb_id"],
             "kevChange": kev_change, "fpScore": r["fp"], "fpWeekly": fp_weekly,
-            "fpPrevWeek": fp_prev_week,
             "fpPG": r.get("fp_pg"),
             "notEligible": r.get("not_eligible", False),
         })
     return players, overall
 
+def _find_js_const_bounds(html, const_name):
+    """Find the start/end of a JS const array like: const NAME = [...];
+    Uses bracket counting so it handles ] inside string values correctly."""
+    prefix = f"const {const_name} = ["
+    start = html.find(prefix)
+    if start == -1:
+        return None, None
+    bracket_start = start + len(prefix) - 1  # points at the [
+    depth = 0
+    i = bracket_start
+    in_str = False
+    str_char = None
+    while i < len(html):
+        ch = html[i]
+        if in_str:
+            if ch == '\\' :
+                i += 2
+                continue
+            if ch == str_char:
+                in_str = False
+        else:
+            if ch in ('"', "'"):
+                in_str = True
+                str_char = ch
+            elif ch == '[':
+                depth += 1
+            elif ch == ']':
+                depth -= 1
+                if depth == 0:
+                    # find the trailing semicolon
+                    end = html.find(';', i)
+                    return start, end + 1
+        i += 1
+    return None, None
+
+
 def inject(html, players, overall):
     today = datetime.now().strftime("%B %d, %Y")
-    html  = re.sub(r'const LAST_UPDATED = "[^"]*";',
-                   lambda m: f'const LAST_UPDATED = "{today}";', html)
-    html  = re.sub(r'const PLAYERS = \[.*?\];',
-                   lambda m: f'const PLAYERS = {json.dumps(players)};', html, flags=re.DOTALL, count=1)
-    html  = re.sub(r'const OVERALL = \[.*?\];',
-                   lambda m: f'const OVERALL = {json.dumps(overall)};', html, flags=re.DOTALL, count=1)
+
+    # LAST_UPDATED — simple regex is fine (no nested brackets)
+    if re.search(r'const LAST_UPDATED = "[^"]*";', html):
+        html = re.sub(r'const LAST_UPDATED = "[^"]*";',
+                      f'const LAST_UPDATED = "{today}";', html)
+    else:
+        print("  WARNING: LAST_UPDATED pattern not found in HTML")
+
+    # PLAYERS array — use bracket-counting to avoid stopping at ] inside strings
+    p_start, p_end = _find_js_const_bounds(html, "PLAYERS")
+    if p_start is not None:
+        new_block = f"const PLAYERS = {json.dumps(players)};"
+        html = html[:p_start] + new_block + html[p_end:]
+        print(f"  Injected PLAYERS: {len(players)} entries ✓ (replaced {p_end-p_start} chars → {len(new_block)} chars)")
+    else:
+        print("  ERROR: Could not find PLAYERS array bounds — HTML may be malformed")
+
+    # OVERALL array — same bracket-counting approach
+    o_start, o_end = _find_js_const_bounds(html, "OVERALL")
+    if o_start is not None:
+        new_block = f"const OVERALL = {json.dumps(overall)};"
+        html = html[:o_start] + new_block + html[o_end:]
+        print(f"  Injected OVERALL: {len(overall)} entries ✓ (replaced {o_end-o_start} chars → {len(new_block)} chars)")
+    else:
+        print("  ERROR: Could not find OVERALL array bounds — HTML may be malformed")
+
     return html
 
 def main():
@@ -412,18 +465,7 @@ def main():
 
     # ── Update weekly snapshot on Mondays ──
     if datetime.now().weekday() == 0:
-        # On Monday: the current weekly_prev still holds last week's end-of-week data.
-        # Carry it forward as fp_prev_week so the HTML can display it all week.
-        new_weekly = {}
-        for p in players:
-            old_entry = weekly_prev.get(p["name"], {})
-            # Last week's final FP = what was stored as "fp" before this overwrite
-            old_fp = old_entry.get("fp") if isinstance(old_entry, dict) else None
-            new_weekly[p["name"]] = {
-                "kev": p["kevScore"],
-                "fp":  p.get("fpScore", 0),       # new Monday baseline
-                "fp_prev_week": old_fp,             # last week's total (may be None on first run)
-            }
+        new_weekly = {p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)} for p in players}
         new_weekly["_saved_on"] = today_str
         try:
             github_put_file(WEEKLY_SCORES_FILE,
@@ -442,6 +484,14 @@ def main():
         sys.exit(1)
 
     new_html = inject(html_raw, players, overall)
+
+    # Safety check: injected HTML should be at least 50% the size of the template
+    if len(new_html) < len(html_raw) * 0.5:
+        print(f"  ABORT: Output HTML ({len(new_html):,} chars) is less than 50% of template ({len(html_raw):,} chars)")
+        print("  This indicates a failed injection — not pushing to avoid corrupting the site")
+        sys.exit(1)
+    print(f"  Final size: {len(new_html):,} chars ✓")
+
     result   = github_put_file(GITHUB_FILE, new_html, html_sha,
                                 f"Daily stats update {datetime.now().strftime('%b %d, %Y')}")
     new_sha  = result["content"]["sha"]
