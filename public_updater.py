@@ -129,7 +129,8 @@ def adjusted_espn_value(espn_value, rank_score):
     return round((1-stat_weight)*espn_value + stat_weight*rank_score, 4)
 
 def build_players(bat_rows, pit_rows, bat_total, bat_pg, bat_rs,
-                  pit_total, pit_pg, pit_rs, espn_baseline):
+                  pit_total, pit_pg, pit_rs, espn_baseline,
+                  team_lookup=None):
     rows = []
     for norm in set(bat_rows)|set(pit_rows):
         is_pit = norm in pit_rows and norm not in bat_rows
@@ -140,11 +141,13 @@ def build_players(bat_rows, pit_rows, bat_total, bat_pg, bat_rs,
         name      = raw["Name"]
         mlb_team  = raw.get("Team", "")
         mlb_id    = raw.get("mlbId", "")
-        # Fallback: if team is empty, try the other source
+        # Fallback: try other source, then team_lookup
         if not mlb_team:
             other = bat_rows.get(norm) if is_pit else pit_rows.get(norm)
             if other:
                 mlb_team = other.get("Team", "")
+        if not mlb_team and team_lookup:
+            mlb_team = team_lookup.get(norm, "")
 
         if is_pit:
             rs, fp, fpg, pb = pit_rs.get(norm), pit_total.get(norm,0), pit_pg.get(norm), "Pitcher"
@@ -221,12 +224,16 @@ def inject(html, players, overall):
     today = datetime.now().strftime("%B %d, %Y")
     html  = re.sub(r'const LAST_UPDATED = "[^"]*";',
                    lambda m: f'const LAST_UPDATED = "{today}";', html)
+    # Strip old data arrays first (handles both empty [] and large injected arrays)
     html  = re.sub(r'const PLAYERS = \[.*?\];',
-                   lambda m: f'const PLAYERS = {json.dumps(players)};',
-                   html, flags=re.DOTALL, count=1)
+                   'const PLAYERS = [];', html, flags=re.DOTALL, count=1)
     html  = re.sub(r'const OVERALL = \[.*?\];',
-                   lambda m: f'const OVERALL = {json.dumps(overall)};',
-                   html, flags=re.DOTALL, count=1)
+                   'const OVERALL = [];', html, flags=re.DOTALL, count=1)
+    # Now inject fresh data
+    html  = html.replace('const PLAYERS = [];',
+                         f'const PLAYERS = {json.dumps(players)};', 1)
+    html  = html.replace('const OVERALL = [];',
+                         f'const OVERALL = {json.dumps(overall)};', 1)
     return html
 
 def main():
@@ -242,6 +249,16 @@ def main():
     print("\nDownloading MLB stats...")
     batting  = fetch_all("hitting",  "Batting")
     pitching = fetch_all("pitching", "Pitching")
+
+    # ── Build comprehensive team lookup from all rows ──
+    # Some players appear in both batting/pitching with inconsistent team data
+    # Build a name->team map using any non-empty team value found
+    team_lookup = {}
+    for rows_dict in [batting, pitching]:
+        for norm, row in rows_dict.items():
+            t = row.get("Team", "")
+            if t:
+                team_lookup[norm] = t
 
     # ── Compute FP + rank scores ──
     bat_total, bat_pg, bat_elig = compute_fp(batting,  "batting")
@@ -268,7 +285,8 @@ def main():
     print("\nComputing Kev Scores...")
     rows = build_players(batting, pitching,
                          bat_total, bat_pg, bat_rs,
-                         pit_total, pit_pg, pit_rs, espn_baseline)
+                         pit_total, pit_pg, pit_rs, espn_baseline,
+                         team_lookup)
     rows = assign_ratings(rows)
     players, overall = build_json(rows, daily_prev, weekly_prev)
     print(f"  {len(players)} players computed")
