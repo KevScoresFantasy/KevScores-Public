@@ -346,6 +346,14 @@ def main():
         sample = json.loads(m.group(1))
         first  = sample[0] if sample else {}
         print(f"  Injected {len(sample)} players, first mlbTeam={repr(first.get('mlbTeam','?'))}")
+    # Show team_lookup sample to debug
+    if team_lookup:
+        sample_teams = list(team_lookup.items())[:5]
+        print(f"  team_lookup sample: {sample_teams}")
+        ohtani_norm = 'shohei ohtani'
+        print(f"  Ohtani in team_lookup: {team_lookup.get(ohtani_norm, 'NOT FOUND')}")
+        print(f"  Ohtani in batting: {batting.get(ohtani_norm, {}).get('Team', 'NOT FOUND')}")
+        print(f"  Ohtani in pitching: {pitching.get(ohtani_norm, {}).get('Team', 'NOT FOUND')}")
     else:
         print("  WARNING: OVERALL not found after inject!")
 
