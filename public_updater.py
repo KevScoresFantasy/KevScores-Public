@@ -95,9 +95,14 @@ def fetch_all(group, label):
     print(f"  {label}...", end=" ", flush=True)
     all_splits, offset, limit = [], 0, 2000
     col_map = BATTING_MAP if group == "hitting" else PITCHING_MAP
+
     while True:
         try:
-            data   = mlb_fetch(f"https://statsapi.mlb.com/api/v1/stats?stats=season&group={group}&season={SEASON}&limit={limit}&offset={offset}&sportId=1&playerPool=ALL")
+            data = mlb_fetch(
+                f"https://statsapi.mlb.com/api/v1/stats"
+                f"?stats=season&group={group}&season={SEASON}"
+                f"&limit={limit}&offset={offset}&sportId=1&playerPool=ALL&hydrate=team"
+            )
             splits = data.get("stats", [{}])[0].get("splits", [])
             if not splits:
                 break
@@ -108,22 +113,38 @@ def fetch_all(group, label):
         except Exception as e:
             print(f"FAILED — {e}")
             return {}
+
     rows = {}
+    missing_team_count = 0
+
     for s in all_splits:
-        stat, player, team = s.get("stat", {}), s.get("player", {}), s.get("team", {})
+        stat = s.get("stat", {})
+        player = s.get("player", {})
+        team = s.get("team", {}) or {}
+
         name = player.get("fullName", "")
         norm = normalize(name)
-        row  = {
+        mlb_id = str(player.get("id", ""))
+
+        team_abbr = team.get("abbreviation", "") if isinstance(team, dict) else ""
+        if not team_abbr:
+            missing_team_count += 1
+
+        row = {
             "Name": name,
-            "Team": team.get("abbreviation", ""),
-            "mlbId": str(player.get("id", ""))
+            "Team": team_abbr,
+            "mlbId": mlb_id,
         }
+
         for k, v in col_map.items():
             row[v] = stat.get(k, 0)
-        rows[norm] = row
-    print(f"{len(rows)} players")
-    return rows
 
+        rows[norm] = row
+
+    print(f"{len(rows)} players")
+    print(f"    Missing teams from stats response: {missing_team_count}")
+    return rows
+    
 # ── COMPUTE FANTASY POINTS ──
 MIN_PA = 25
 MIN_IP = 5.0
