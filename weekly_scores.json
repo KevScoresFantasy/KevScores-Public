@@ -2643,10 +2643,6 @@
     "kev": 0.0671,
     "fp": -5.0
   },
-  "Trevor Megill": {
-    "kev": 0.0,
-    "fp": 0.0
-  },
   "Luke Weaver": {
     "kev": 0.0,
     "fp": 0.0
@@ -2658,6 +2654,10 @@
   "Andrew Benintendi": {
     "kev": 0.0,
     "fp": -7.0
+  },
+  "Trevor Megill": {
+    "kev": 0.0,
+    "fp": 0.0
   },
   "_saved_on": "2026-04-13"
 }
