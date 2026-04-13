@@ -493,19 +493,13 @@ def main():
     new_daily = {p["name"]: p["kevScore"] for p in players}
     new_daily["_saved_on"] = today_str
 
+    # kevChange in OVERALL is already set by build_json using the weekly baseline.
+    # Just log how many players have a non-zero change this run.
     if daily_prev:
-        for p in players:
-            prev = daily_prev.get(p["name"])
-            p["kevChange"] = round(p["kevScore"] - prev, 2) if prev is not None else None
-        for o in overall:
-            prev = daily_prev.get(o["name"])
-            o["kevChange"] = round(o["kevScore"] - prev, 2) if prev is not None else None
-        changers = sum(1 for p in players if p.get("kevChange") and p["kevChange"] != 0)
-        print(f"  Daily changes: {changers} players moved")
+        changers = sum(1 for o in overall if o.get("kevChange") and o["kevChange"] != 0)
+        print(f"  Weekly changes: {changers} players moved vs Monday baseline")
     else:
         print("  Daily snapshot: creating first baseline")
-        for p in players: p["kevChange"] = None
-        for o in overall: o["kevChange"] = None
 
     # Save new baseline once per day
     if saved_on != today_str:
