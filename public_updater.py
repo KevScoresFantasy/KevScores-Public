@@ -396,14 +396,12 @@ def inject(html, players, overall):
     today = datetime.now().strftime("%B %d, %Y")
 
     # ── 1. Update LAST_UPDATED (simple regex, safe for short strings) ──
-    new_html = re.sub(
-        r'const LAST_UPDATED = "[^"]*";',
-        f'const LAST_UPDATED = "{today}";',
-        html,
-    )
-    if new_html == html:
+    pattern = r'const LAST_UPDATED = "[^"]*";'
+    if not re.search(pattern, html):
         print("  WARNING: LAST_UPDATED not found in template!")
-    html = new_html
+    else:
+        html = re.sub(pattern, f'const LAST_UPDATED = "{today}";', html)
+        print(f"  LAST_UPDATED set to {today} ✓")
 
     # ── 2. Replace PLAYERS and OVERALL using bracket counting ──
     for const_name, data in [("PLAYERS", players), ("OVERALL", overall)]:
