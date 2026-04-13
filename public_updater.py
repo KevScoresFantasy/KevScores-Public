@@ -206,7 +206,7 @@ def compute_fp(rows, sheet_type):
             elig = ip >= MIN_IP
             fpg  = round(fp / games, 3) if elig else None
 
-        fp_total[norm] = round(fp, 1)
+        fp_total[norm] = int(round(fp))
         fp_per_game[norm] = fpg
         eligible[norm] = elig
 
@@ -353,9 +353,9 @@ def build_json(rows, weekly_prev):
         kev = round(kev * 0.75, 2) if is_unr_rp else kev
 
         wp = weekly_prev.get(r["name"], {})
-        current_fp = r["fp"]
-        baseline_fp = wp.get("fp", current_fp) if isinstance(wp, dict) else current_fp
-        fp_weekly = round(current_fp - baseline_fp, 1)
+        current_fp = int(round(r["fp"]))
+        baseline_fp = int(round(wp.get("fp", current_fp))) if isinstance(wp, dict) else current_fp
+        fp_weekly = current_fp - baseline_fp
 
         players.append({
             "name": r["name"],
@@ -583,7 +583,13 @@ def main():
             print(f"  WARNING: Could not save daily history: {e}")
 
     if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
-        new_weekly = {p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)} for p in players}
+        new_weekly = {
+            p["name"]: {
+                "kev": p["kevScore"],
+                "fp": int(round(p.get("fpScore", 0)))
+            }
+            for p in players
+        }
         new_weekly["_saved_on"] = today_str
         try:
             github_put_file(
