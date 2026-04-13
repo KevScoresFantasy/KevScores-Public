@@ -127,8 +127,13 @@ def fetch_all(group, label):
         mlb_id = str(player.get("id", ""))
 
         team_abbr = team.get("abbreviation", "") if isinstance(team, dict) else ""
-        if not team_abbr:
-            missing_team_count += 1
+
+# Fix Arizona abbreviation for logos/colors
+if team_abbr == "AZ":
+    team_abbr = "ARI"
+
+if not team_abbr:
+    missing_team_count += 1
 
         row = {
             "Name": name,
