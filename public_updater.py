@@ -191,9 +191,11 @@ def compute_fp(rows, sheet_type):
             return float(r.get(col, 0) or 0)
 
         if sheet_type == "batting":
-            fp = (
-                g("1B") + g("2B")*2 + g("3B")*3 + g("HR")*4 + g("R") + g("RBI")
-                + g("BB") + g("HBP") + g("SB")*2 - g("CS") - g("SO")
+            fp = (g("1B") + g("2B")*2 + g("3B")*3 + g("HR")*4
+                + g("R") + g("RBI")
+                + g("BB")
+                + g("SB")
+                - g("SO")
             )
             pa = g("PA")
             games = g("G") if g("G") > 0 else 1
@@ -201,7 +203,10 @@ def compute_fp(rows, sheet_type):
             fpg = round(fp / games, 3) if elig else None
         else:
             ip   = convert_ip(r.get("IP", 0))
-            fp   = g("W")*5 - g("L")*5 + g("SV")*5 + g("HLD")*4 + ip*3 + g("SO") - g("ER")*2 - g("H") - g("BB") - g("HBP")
+            fp = (g("W")*2 - g("L")*2 + g("SV")*5 + g("HLD")*2
+                + ip*3 + g("SO")
+                - g("ER")*2 - g("H") - g("BB")
+            )
             games = g("G") if g("G") > 0 else 1
             elig = ip >= MIN_IP
             fpg  = round(fp / games, 3) if elig else None
