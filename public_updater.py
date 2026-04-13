@@ -584,7 +584,8 @@ def main():
             print("  Daily history pushed ✓")
         except Exception as e:
             print(f"  WARNING: Could not save daily history: {e}")
-
+            
+if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
     new_weekly = {
         p["name"]: {
             "kev": round(p["kevScore"], 2),
