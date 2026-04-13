@@ -111,7 +111,7 @@ def fetch_all(group, label):
         try:
             data   = mlb_fetch(
                 f"https://statsapi.mlb.com/api/v1/stats"
-                f"?stats=season&group={group}&season={SEASON}"
+                f"?stats=season&group={group}&season={SEASON}&hydrate=team"
                 f"&limit={limit}&offset={offset}&sportId=1&playerPool=ALL"
             )
             splits = data.get("stats", [{}])[0].get("splits", [])
@@ -313,10 +313,23 @@ def build_json(rows, daily_prev, weekly_prev):
         is_unr_rp = espn_rk >= 900 and rating.startswith("RP")
         kev       = round(kev * 0.75, 2) if is_unr_rp else kev
 
-        prev_kev   = daily_prev.get(r["name"])
-        kev_change = round(kev - prev_kev, 2) if prev_kev is not None else None
+        prev_kev = daily_prev.get(r["name"])
+        if prev_kev is not None:
+            kev_change = round(kev - prev_kev, 2)
+        elif r["espn_val"] > 0:
+            kev_change = round(kev - r["espn_val"], 2)
+        else:
+            kev_change = None
 
         wp        = weekly_prev.get(r["name"], {})
+        # Weekly kev change: compare vs Monday baseline, or ESPN value Week 1
+        wkev_prev = wp.get("kev") if isinstance(wp, dict) else None
+        if wkev_prev is not None:
+            kev_weekly_change = round(kev - wkev_prev, 2)
+        elif r["espn_val"] > 0:
+            kev_weekly_change = round(kev - r["espn_val"], 2)
+        else:
+            kev_weekly_change = None
         fp_weekly = round(r["fp"] - (wp.get("fp", r["fp"]) if isinstance(wp, dict) else r["fp"]), 1)
 
         players.append({
@@ -343,7 +356,7 @@ def build_json(rows, daily_prev, weekly_prev):
             "type":       r["pb"],
             "fantasyTeam": "",
             "mlbId":      r["mlb_id"],
-            "kevChange":  kev_change,
+            "kevChange":  kev_weekly_change,
             "fpScore":    r["fp"],
             "fpWeekly":   fp_weekly,
             "fpPG":       r.get("fp_pg"),
