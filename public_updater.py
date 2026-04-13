@@ -582,7 +582,7 @@ def main():
         except Exception as e:
             print(f"  WARNING: Could not save daily history: {e}")
 
-    #if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
+    if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
         new_weekly = {p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)} for p in players}
         new_weekly["_saved_on"] = today_str
         try:
