@@ -154,6 +154,28 @@ def fetch_all(group, label):
 MIN_PA = 25
 MIN_IP = 5.0
 
+def convert_ip(ip):
+    """
+    Convert MLB innings pitched format to true decimal innings.
+    MLB uses:
+      5.0 = 5 innings
+      5.1 = 5 and 1/3
+      5.2 = 5 and 2/3
+    """
+    try:
+        ip = float(ip or 0)
+    except (TypeError, ValueError):
+        return 0.0
+
+    whole = int(ip)
+    frac = round(ip - whole, 1)
+
+    if frac == 0.1:
+        return whole + (1 / 3)
+    if frac == 0.2:
+        return whole + (2 / 3)
+    return ip
+
 def compute_fp(rows, sheet_type):
     """
     Returns (fp_total, fp_per_game, eligible) dicts.
@@ -178,14 +200,11 @@ def compute_fp(rows, sheet_type):
             elig = pa >= MIN_PA
             fpg = round(fp / games, 3) if elig else None
         else:
-            fp = (
-                g("W")*5 - g("L")*5 + g("SV")*5 + g("HLD")*4 + g("IP")*3 + g("SO")
-                - g("ER")*2 - g("H") - g("BB") - g("HBP")
-            )
-            ip = g("IP")
+            ip   = convert_ip(r.get("IP", 0))
+            fp   = g("W")*5 - g("L")*5 + g("SV")*5 + g("HLD")*4 + ip*3 + g("SO") - g("ER")*2 - g("H") - g("BB") - g("HBP")
             games = g("G") if g("G") > 0 else 1
             elig = ip >= MIN_IP
-            fpg = round(fp / games, 3) if elig else None
+            fpg  = round(fp / games, 3) if elig else None
 
         fp_total[norm] = round(fp, 1)
         fp_per_game[norm] = fpg
@@ -563,7 +582,7 @@ def main():
         except Exception as e:
             print(f"  WARNING: Could not save daily history: {e}")
 
-    if datetime.now().weekday() == 0:
+    if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
         new_weekly = {p["name"]: {"kev": p["kevScore"], "fp": p.get("fpScore", 0)} for p in players}
         new_weekly["_saved_on"] = today_str
         try:
