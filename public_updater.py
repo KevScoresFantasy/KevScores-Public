@@ -361,7 +361,7 @@ def build_json(rows, weekly_prev):
         baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
         kev_change = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
         if kev_change == 0:
-            kev_change = 0.0
+            kev_change = None
 
         players.append({
             "name": r["name"],
