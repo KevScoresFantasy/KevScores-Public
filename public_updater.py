@@ -585,25 +585,25 @@ def main():
         except Exception as e:
             print(f"  WARNING: Could not save daily history: {e}")
 
-    #if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
-        new_weekly = {
-            p["name"]: {
-                "kev": p["kevScore"],
-                "fp": int(round(p.get("fpScore", 0)))
-            }
-            for p in players
+    new_weekly = {
+        p["name"]: {
+            "kev": round(p["kevScore"], 2),
+            "fp": int(round(p.get("fpScore", 0)))
         }
-        new_weekly["_saved_on"] = today_str
-        try:
-            github_put_file(
-                WEEKLY_SCORES_FILE,
-                json.dumps(new_weekly, indent=2),
-                weekly_sha,
-                f"Weekly baseline {today_str}"
-            )
-            print("  Weekly baseline saved (Monday)")
-        except Exception as e:
-            print(f"  WARNING: Could not save weekly snapshot: {e}")
+        for p in players
+    }
+    new_weekly["_saved_on"] = today_str
+    
+    try:
+        github_put_file(
+            WEEKLY_SCORES_FILE,
+            json.dumps(new_weekly, indent=2),
+            weekly_sha,
+            f"Weekly baseline hard reset {today_str}"
+        )
+        print("  Weekly baseline hard reset to current values")
+    except Exception as e:
+        print(f"  WARNING: Could not save weekly snapshot: {e}")
 
     print("\nBuilding website...")
     html_raw, html_sha = github_get_file(GITHUB_FILE)
