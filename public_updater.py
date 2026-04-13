@@ -392,7 +392,7 @@ def build_json(rows, weekly_prev):
             "kevChange": kev_change,
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
-            "kevWeekly": kev_weekly
+            "kevWeekly": kev_weekly,
             "fpWeekly": fp_weekly,
             "fpPG": r.get("fp_pg"),
             "notEligible": r.get("not_eligible", False),
