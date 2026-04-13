@@ -1,11 +1,11 @@
 """
 KevScores Public Updater v3.0
-Runs daily via GitHub Actions — no spreadsheet needed.
+Runs daily via GitHub Actions â€” no spreadsheet needed.
 """
 import sys, os, json, base64, re, unicodedata, urllib.request, urllib.error
 from datetime import datetime
 
-# ── CONFIG ──
+# â”€â”€ CONFIG â”€â”€
 GITHUB_TOKEN        = os.environ.get("KEVSCORES_TOKEN", "")
 GITHUB_USER         = "KevScoresFantasy"
 GITHUB_REPO         = "KevScores-Public"
@@ -87,7 +87,7 @@ def fetch_all(group, label):
             if len(splits) < limit: break
             offset += limit
         except Exception as e:
-            print(f"FAILED — {e}"); return {}
+            print(f"FAILED â€” {e}"); return {}
     rows = {}
     for s in all_splits:
         stat, player, team = s.get("stat",{}), s.get("player",{}), s.get("team",{})
@@ -267,7 +267,7 @@ def inject(html, players, overall):
 def main():
     print()
     print("="*55)
-    print(f"  KevScores Public Updater v3.0 — {datetime.now().strftime('%B %d, %Y')}")
+    print(f"  KevScores Public Updater v3.0 â€” {datetime.now().strftime('%B %d, %Y')}")
     print("="*55)
     # Self-verify correct version is running
     import inspect as _inspect
@@ -278,12 +278,12 @@ def main():
     if not GITHUB_TOKEN:
         print("ERROR: KEVSCORES_TOKEN not set"); sys.exit(1)
 
-    # ── Fetch stats ──
+    # â”€â”€ Fetch stats â”€â”€
     print("\nDownloading MLB stats...")
     batting  = fetch_all("hitting",  "Batting")
     pitching = fetch_all("pitching", "Pitching")
 
-    # ── Build comprehensive team lookup from all rows ──
+    # â”€â”€ Build comprehensive team lookup from all rows â”€â”€
     # Some players appear in both batting/pitching with inconsistent team data
     # Build a name->team map using any non-empty team value found
     team_lookup = {}
@@ -293,7 +293,7 @@ def main():
             if t:
                 team_lookup[norm] = t
 
-    # ── Compute FP + rank scores ──
+    # â”€â”€ Compute FP + rank scores â”€â”€
     bat_total, bat_pg, bat_elig = compute_fp(batting,  "batting")
     pit_total, pit_pg, pit_elig = compute_fp(pitching, "pitching")
     bat_rs = rank_scores(bat_pg)
@@ -302,19 +302,19 @@ def main():
     print(f"  Week {week}: stat weight {min(20+(week-1),46)}%")
     print(f"  Eligible: {sum(bat_elig.values())}B / {sum(pit_elig.values())}P")
 
-    # ── Load ESPN baseline ──
+    # â”€â”€ Load ESPN baseline â”€â”€
     print("\nLoading ESPN baseline...")
     espn_raw, _ = github_get_file(ESPN_BASELINE_FILE)
     espn_baseline = json.loads(espn_raw) if espn_raw else {}
     print(f"  {len(espn_baseline)} players")
 
-    # ── Load snapshots ──
+    # â”€â”€ Load snapshots â”€â”€
     daily_raw,  daily_sha  = github_get_file(DAILY_SNAPSHOT_FILE)
     weekly_raw, weekly_sha = github_get_file(WEEKLY_SCORES_FILE)
     daily_prev  = json.loads(daily_raw)  if daily_raw  else {}
     weekly_prev = json.loads(weekly_raw) if weekly_raw else {}
 
-    # ── Build players ──
+    # â”€â”€ Build players â”€â”€
     print("\nComputing Kev Scores...")
     rows = build_players(batting, pitching,
                          bat_total, bat_pg, bat_rs,
@@ -324,14 +324,14 @@ def main():
     players, overall = build_json(rows, daily_prev, weekly_prev)
     print(f"  {len(players)} players computed")
 
-    # ── Daily changes ──
+    # â”€â”€ Daily changes â”€â”€
     today_str = datetime.now().strftime("%Y-%m-%d")
     saved_on  = daily_prev.get("_saved_on","")
     if daily_prev:
         changers = sum(1 for p in players if p.get("kevChange") and p["kevChange"]!=0)
         print(f"  Daily changes: {changers} players moved")
     else:
-        print("  First baseline — risers populate tomorrow")
+        print("  First baseline â€” risers populate tomorrow")
 
     # Save daily snapshot once per day
     if saved_on != today_str:
@@ -355,14 +355,14 @@ def main():
         except Exception as e:
             print(f"  Weekly warning: {e}")
 
-    # ── Read template, inject, push ──
+    # â”€â”€ Read template, inject, push â”€â”€
     print("\nBuilding website...")
     print(f"  Script SHA check: replace_js_const={'replace_js_const' in dir()}")
     html_raw, html_sha = github_get_file(GITHUB_FILE)
     if not html_raw:
         print("ERROR: index.html not found"); sys.exit(1)
 
-    # ── DIAGNOSTICS ──
+    # â”€â”€ DIAGNOSTICS â”€â”€
     print(f"  Template: {len(html_raw):,} chars, SHA={html_sha[:8] if html_sha else 'none'}")
     print(f"  Has MLB_TEAM_COLORS : {'MLB_TEAM_COLORS' in html_raw}")
     print(f"  Has 2026 Season     : {'2026 Season' in html_raw}")
@@ -394,7 +394,7 @@ def main():
     result  = github_put_file(GITHUB_FILE, new_html, html_sha,
                               f"Daily stats update {datetime.now().strftime('%b %d, %Y')}")
     new_sha = result["content"]["sha"]
-    print(f"  Pushed ✓ — SHA: {new_sha[:12]}")
+    print(f"  Pushed âœ“ â€” SHA: {new_sha[:12]}")
     print(f"  Live at: https://kev-scores-public.vercel.app")
     print("\nAll done!")
     print("="*55)
