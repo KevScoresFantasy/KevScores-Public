@@ -367,7 +367,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <table class="overall-table" style="width:100%">
         <thead><tr>
           <th style="text-align:left">Player</th>
-          <th class="num">Score</th>
+          <th class="num">Kev Score</th>
           <th class="num">Change</th>
 
         </tr></thead>
@@ -864,79 +864,6 @@ function toggleOverallExpand() {
   renderOverall();
 }
 
-// ══════════════════════════════════════
-// POWER RANKINGS
-// ══════════════════════════════════════
-const RANKINGS = [
-  {rank:1,owner:"T1",teamName:"Team 1",record:"1-0",totalKev:578.3,weeklyChange:9.3,avgPlayer:25.1,batAvg:24.5,pitAvg:26.4},
-  {rank:2,owner:"T2",teamName:"Team 2",record:"1-0",totalKev:506.6,weeklyChange:-13.4,avgPlayer:19.5,batAvg:23.4,pitAvg:16.1},
-  {rank:3,owner:"T3",teamName:"Team 3",record:"1-0",totalKev:506.1,weeklyChange:-6.9,avgPlayer:21.1,batAvg:22.4,pitAvg:19.8},
-  {rank:4,owner:"T5",teamName:"Team 5",record:"0-1",totalKev:491.8,weeklyChange:7.8,avgPlayer:20.5,batAvg:25.0,pitAvg:16.7},
-  {rank:5,owner:"T4",teamName:"Team 4",record:"0-1",totalKev:490.1,weeklyChange:4.1,avgPlayer:20.4,batAvg:20.3,pitAvg:20.6},
-  {rank:6,owner:"T6",teamName:"Team 6",record:"0-1",totalKev:478.8,weeklyChange:2.8,avgPlayer:22.8,batAvg:26.0,pitAvg:19.3},
-  {rank:7,owner:"T7",teamName:"Team 7",record:"0-1",totalKev:434.3,weeklyChange:2.3,avgPlayer:17.4,batAvg:22.4,pitAvg:11.9},
-  {rank:8,owner:"T8",teamName:"Team 8",record:"1-0",totalKev:407.2,weeklyChange:-6.8,avgPlayer:21.4,batAvg:28.2,pitAvg:13.9},
-];
-
-const POS_STRENGTH = [
-  {pos:"Relief Pitchers",data:[{t:"T6",s:23.8},{t:"T4",s:23.7},{t:"T5",s:18.3},{t:"T1",s:17.3},{t:"T2",s:14.0},{t:"T3",s:14.8},{t:"T8",s:16.6},{t:"T7",s:9.1}]},
-  {pos:"Starting Pitchers",data:[{t:"T8",s:30.7},{t:"T1",s:27.7},{t:"T4",s:26.1},{t:"T3",s:21.4},{t:"T2",s:18.3},{t:"T6",s:18.2},{t:"T5",s:16.0},{t:"T7",s:12.4}]},
-  {pos:"Outfield",data:[{t:"T8",s:40.0},{t:"T7",s:31.4},{t:"T6",s:26.6},{t:"T3",s:26.0},{t:"T4",s:25.0},{t:"T2",s:21.8},{t:"T1",s:18.8},{t:"T5",s:16.3}]},
-  {pos:"First Base",data:[{t:"T6",s:36.0},{t:"T7",s:32.3},{t:"T4",s:26.9},{t:"T2",s:20.2},{t:"T8",s:20.1},{t:"T3",s:23.6},{t:"T1",s:19.3},{t:"T5",s:8.4}]},
-  {pos:"Second Base",data:[{t:"T3",s:36.4},{t:"T5",s:28.6},{t:"T4",s:24.3},{t:"T6",s:21.5},{t:"T7",s:20.1},{t:"T2",s:17.1},{t:"T1",s:17.2},{t:"T8",s:12.2}]},
-  {pos:"Third Base",data:[{t:"T5",s:65.6},{t:"T4",s:36.1},{t:"T6",s:31.8},{t:"T2",s:30.8},{t:"T1",s:29.1},{t:"T8",s:15.6},{t:"T3",s:14.9},{t:"T7",s:12.8}]},
-  {pos:"Shortstop",data:[{t:"T8",s:34.5},{t:"T5",s:30.9},{t:"T2",s:23.9},{t:"T6",s:23.1},{t:"T3",s:20.1},{t:"T1",s:19.9},{t:"T7",s:6.8},{t:"T4",s:9.4}]},
-  {pos:"Catcher",data:[{t:"T8",s:33.0},{t:"T5",s:31.1},{t:"T4",s:24.0},{t:"T6",s:22.4},{t:"T2",s:29.0},{t:"T3",s:14.9},{t:"T1",s:13.0},{t:"T7",s:0}]},
-];
-
-// Build owner -> full team name lookup — available globally
-const ownerToTeamName = {};
-RANKINGS.forEach(r => { ownerToTeamName[r.owner] = r.teamName; });
-
-function renderRankings() {
-  document.getElementById('rankings-tbody').innerHTML = RANKINGS.map(r => {
-    const rankClass = r.rank <= 3 ? `rank-${r.rank}` : '';
-    const recClass  = r.record.startsWith('1') ? 'record-w' : 'record-l';
-    const chg = r.weeklyChange;
-    const chgHtml = Math.abs(chg) < 0.1
-      ? `<span class="change-flat">—</span>`
-      : chg > 0
-      ? `<span class="change-up">▲ +${chg.toFixed(1)}</span>`
-      : `<span class="change-down">▼ ${chg.toFixed(1)}</span>`;
-    return `<tr>
-      <td><span class="rank-num ${rankClass}">${r.rank}</span></td>
-      <td><div class="team-name-main">${r.owner}</div><div class="team-name-sub">${r.teamName}</div></td>
-      <td><span class="record-badge ${recClass}">${r.record}</span></td>
-      <td class="num">${r.totalKev.toFixed(1)}</td>
-      <td class="num">${chgHtml}</td>
-      <td class="num">${r.avgPlayer.toFixed(1)}</td>
-      <td class="num">${r.batAvg.toFixed(1)}</td>
-      <td class="num">${r.pitAvg.toFixed(1)}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderPositions() {
-  document.getElementById('pos-grid').innerHTML = POS_STRENGTH.map(pos => {
-    const sorted = [...pos.data].sort((a,b) => b.s - a.s);
-    const max = sorted[0].s;
-    const bars = sorted.slice(0,5).map(d => {
-      const pct = max > 0 ? (d.s / max * 100).toFixed(0) : 0;
-      return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-        <div style="font-size:10px;color:var(--text-muted);width:36px">${d.t}</div>
-        <div class="pos-bar-track" style="flex:1"><div class="pos-bar-fill" style="width:${pct}%"></div></div>
-        <div style="font-family:var(--font-display);font-size:12px;font-weight:600;color:var(--text);min-width:32px;text-align:right">${d.s.toFixed(1)}</div>
-      </div>`;
-    }).join('');
-    return `<div class="pos-card">
-      <div class="pos-card-header"><div class="pos-card-title">${pos.pos}</div><div style="font-size:10px;color:var(--text-muted)">top 5</div></div>
-      ${bars}
-    </div>`;
-  }).join('');
-}
-
-if(document.getElementById("rankings-tbody")) renderRankings();
-if(document.getElementById("pos-grid")) renderPositions();
 renderOverall();
 if(document.getElementById("risers-tbody")) renderRisers();
 if(document.getElementById("weekly-bat-tbody")) renderWeekly();
@@ -950,18 +877,18 @@ function renderRisers() {
   const fallersTbody = document.getElementById('fallers-tbody');
   if (!risersTbody || !fallersTbody) return;
 
-  const withChange = OVERALL.filter(p => p.kevChange !== null && p.kevChange !== undefined && p.kevChange !== 0);
+const withChange = OVERALL.filter(p => p.kevWeekly !== null && p.kevWeekly !== undefined && p.kevWeekly !== 0);
   if (!withChange.length) {
-    const msg = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">No score changes yet — check back after tomorrow\'s update</td></tr>';
+    const msg = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">No weekly score changes yet — check back after more games</td></tr>';
     risersTbody.innerHTML = msg; fallersTbody.innerHTML = msg; return;
   }
 
-  const sorted  = [...withChange].sort((a,b) => b.kevChange - a.kevChange);
-  const risers  = sorted.filter(p => p.kevChange > 0).slice(0, 20);
-  const fallers = sorted.filter(p => p.kevChange < 0).reverse().slice(0, 20);
+const sorted  = [...withChange].sort((a,b) => b.kevWeekly - a.kevWeekly);
+  const risers  = sorted.filter(p => p.kevWeekly > 0).slice(0, 20);
+  const fallers = sorted.filter(p => p.kevWeekly < 0).reverse().slice(0, 20);
 
   function row(p, cls) {
-    const sign     = p.kevChange > 0 ? '+' : '';
+    const sign = p.kevWeekly > 0 ? '+' : '';
     const owner    = p.fantasyTeam && p.fantasyTeam !== '' ? p.fantasyTeam : 'FA';
     const initials = p.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
     const aColor   = avatarColor(p.name, p.mlbTeam);
@@ -980,7 +907,7 @@ function renderRisers() {
           <div style="font-size:10px;color:var(--text-muted)">${p.kevRating || ''}</div></div>
       </td>
       <td class="num" style="font-family:var(--font-display);font-weight:700">${p.kevScore.toFixed(1)}</td>
-      <td class="num ${cls}" style="font-weight:700">${sign}${p.kevChange.toFixed(2)}</td>
+      <td class="num ${cls}" style="font-weight:700">${sign}${p.kevWeekly.toFixed(2)}</td>
 
     </tr>`;
   }
@@ -1041,14 +968,14 @@ function renderWeekly() {
 
   function row(p) {
     const fp    = isWeeklyMode
-      ? (p.fpWeekly || 0).toFixed(1)   // show 0.0 on Monday morning, real value mid-week
-      : (p.fpScore || 0).toFixed(1);
+      ? Math.round(p.fpWeekly || 0)
+      : Math.round(p.fpScore || 0);
     const fpColor = isWeeklyMode
       ? ((p.fpWeekly||0) > 0 ? '#4ade80' : 'var(--text)')
       : 'var(--text)';
     // Prev Week: only meaningful in weekly mode
     const prevWeekVal = isWeeklyMode
-      ? ((p.fpPrevWeek !== undefined && p.fpPrevWeek !== null) ? p.fpPrevWeek.toFixed(1) : '—')
+      ? ((p.fpPrevWeek !== undefined && p.fpPrevWeek !== null) ? Math.round(p.fpPrevWeek) : '—')
       : '—';
     const owner = '';
     return `<tr>
