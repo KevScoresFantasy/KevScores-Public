@@ -294,6 +294,7 @@ def build_json(rows, daily_prev, weekly_prev):
 
         prev_kev  = daily_prev.get(r["name"])
         kev_change = round(kev - prev_kev, 2) if prev_kev is not None else None
+        if kev_change == 0: kev_change = 0.0  # normalize -0.0
 
         wp = weekly_prev.get(r["name"], {})
         fp_weekly = round(r["fp"] - (wp.get("fp", r["fp"]) if isinstance(wp, dict) else r["fp"]), 1)
@@ -384,7 +385,7 @@ def inject(html, players, overall):
 def main():
     print()
     print("=" * 55)
-    print(f"  KevScores Public Updater v2.1 — {datetime.now().strftime('%B %d, %Y')}")
+    print(f"  KevScores Public Updater v3.0 — {datetime.now().strftime('%B %d, %Y')}")
     print("=" * 55)
 
     if not GITHUB_TOKEN:
@@ -431,6 +432,14 @@ def main():
     players, overall = build_json(rows, daily_prev, weekly_prev)
     print(f"  {len(players)} players computed")
 
+    # Diagnostic: check team data is populated
+    teams_filled = sum(1 for p in players if p.get("team"))
+    teams_empty  = sum(1 for p in players if not p.get("team"))
+    print(f"  Teams populated: {teams_filled} / {len(players)} (empty: {teams_empty})")
+    if players:
+        p0 = players[0]
+        print(f"  Sample: {p0['name']} → team='{p0.get('team','')}', mlbId={p0.get('mlbId','')}")
+
     # ── Update daily snapshot ──
     today_str  = datetime.now().strftime("%Y-%m-%d")
     saved_on   = daily_prev.get("_saved_on", "")
@@ -438,13 +447,31 @@ def main():
     new_daily["_saved_on"] = today_str
 
     # Always compare if we have previous data (even same day = intra-day changes)
-    if daily_prev:
+    def clean_zero(v):
+        """Turn -0.0 into 0.0 to avoid JS display quirks."""
+        return 0.0 if v == 0 else v
+
+    if daily_prev and daily_prev.get("_saved_on") != today_str:
+        # We have REAL previous-day data — compute actual daily change
         for p in players:
             prev = daily_prev.get(p["name"])
-            p["kevChange"] = round(p["kevScore"] - prev, 2) if prev is not None else None
+            p["kevChange"] = clean_zero(round(p["kevScore"] - prev, 2)) if prev is not None else None
         for o in overall:
             prev = daily_prev.get(o["name"])
-            o["kevChange"] = round(o["kevScore"] - prev, 2) if prev is not None else None
+            o["kevChange"] = clean_zero(round(o["kevScore"] - prev, 2)) if prev is not None else None
+        changers = sum(1 for p in players if p.get("kevChange") and p["kevChange"] != 0)
+        print(f"  Daily changes: {changers} players moved")
+    elif daily_prev:
+        # Same-day rerun — snapshot is from today, so changes are 0
+        # Fall back to showing kev_score vs raw ESPN value (how far they've moved from preseason)
+        print("  Same-day rerun — using kev vs ESPN value as change indicator")
+        espn_lookup = {o["name"]: o.get("espnRank", 999) for o in overall}
+        for p in players:
+            prev = daily_prev.get(p["name"])
+            p["kevChange"] = clean_zero(round(p["kevScore"] - prev, 2)) if prev is not None else None
+        for o in overall:
+            prev = daily_prev.get(o["name"])
+            o["kevChange"] = clean_zero(round(o["kevScore"] - prev, 2)) if prev is not None else None
         changers = sum(1 for p in players if p.get("kevChange") and p["kevChange"] != 0)
         print(f"  Daily changes: {changers} players moved")
     else:
@@ -477,6 +504,8 @@ def main():
             print(f"  WARNING: Could not save weekly snapshot: {e}")
 
     # ── Inject into HTML and push ──
+    # NOTE: We fetch HTML *after* snapshot pushes to get the latest SHA.
+    # If we fetched it earlier, the SHA would be stale after snapshot commits.
     print("\nBuilding website...")
     html_raw, html_sha = github_get_file(GITHUB_FILE)
     if not html_raw:
@@ -484,6 +513,13 @@ def main():
         sys.exit(1)
 
     new_html = inject(html_raw, players, overall)
+
+    # Verify team data survived injection
+    import re as _re
+    first_team_match = _re.search(r'"team"\s*:\s*"([^"]*)"', new_html)
+    first_mlbTeam_match = _re.search(r'"mlbTeam"\s*:\s*"([^"]*)"', new_html)
+    print(f"  Post-inject check: PLAYERS first team='{first_team_match.group(1) if first_team_match else 'NOT FOUND'}'")
+    print(f"  Post-inject check: OVERALL first mlbTeam='{first_mlbTeam_match.group(1) if first_mlbTeam_match else 'NOT FOUND'}'")
 
     # Safety check: injected HTML should be at least 50% the size of the template
     if len(new_html) < len(html_raw) * 0.5:
