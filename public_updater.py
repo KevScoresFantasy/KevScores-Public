@@ -129,11 +129,11 @@ def fetch_all(group, label):
         team_abbr = team.get("abbreviation", "") if isinstance(team, dict) else ""
 
 # Fix Arizona abbreviation for logos/colors
-if team_abbr == "AZ":
-    team_abbr = "ARI"
+        if team_abbr == "AZ":
+            team_abbr = "ARI"
 
-if not team_abbr:
-    missing_team_count += 1
+        if not team_abbr:
+            missing_team_count += 1
 
         row = {
             "Name": name,
