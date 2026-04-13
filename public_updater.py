@@ -223,56 +223,54 @@ def build_json(rows, daily_prev, weekly_prev):
                         "notEligible":r.get("not_elig",False)})
     return players, overall
 
-def replace_js_const(html, const_name, new_value):
-    """
-    Replace 'const NAME = [...];' reliably without regex.
-    Finds the opening bracket and counts brackets to find the true end.
-    Works even when the data contains ]]; or complex nested structures.
-    """
-    marker = f"const {const_name} = ["
-    start  = html.find(marker)
-    if start < 0:
-        return html
-    bracket_start = start + len(marker) - 1  # position of [
-    depth, i = 0, bracket_start
-    in_str, escape = False, False
-    while i < len(html):
-        ch = html[i]
-        if escape:
-            escape = False
-        elif ch == '\\' and in_str:
-            escape = True
-        elif ch == '"' and not escape:
-            in_str = not in_str
-        elif not in_str:
-            if ch == '[': depth += 1
-            elif ch == ']':
-                depth -= 1
-                if depth == 0:
-                    # Find the semicolon after ]
-                    end = html.index(';', i) + 1
-                    return html[:start] + f"const {const_name} = {new_value};" + html[end:]
-        i += 1
-    return html  # not found, return unchanged
-
-
 def inject(html, players, overall):
+    """Inject player data into HTML, replacing old arrays correctly."""
     today = datetime.now().strftime("%B %d, %Y")
-    html  = re.sub(r'const LAST_UPDATED = "[^"]*";',
-                   lambda m: f'const LAST_UPDATED = "{today}";', html)
-    html  = replace_js_const(html, "PLAYERS", json.dumps(players))
-    html  = replace_js_const(html, "OVERALL", json.dumps(overall))
+
+    # Replace LAST_UPDATED
+    html = re.sub(r'const LAST_UPDATED = "[^"]*";',
+                  f'const LAST_UPDATED = "{today}";', html)
+
+    # Replace const NAME = [...]; using bracket counting (regex fails on large JSON)
+    for const_name, new_data in [("PLAYERS", json.dumps(players)),
+                                  ("OVERALL", json.dumps(overall))]:
+        marker = f"const {const_name} = ["
+        start  = html.find(marker)
+        if start < 0:
+            print(f"  WARNING: {const_name} marker not found in template!")
+            continue
+        bracket_start = start + len(marker) - 1
+        depth, i, in_str, escape = 0, bracket_start, False, False
+        found = False
+        while i < len(html):
+            ch = html[i]
+            if escape:
+                escape = False
+            elif ch == '\\' and in_str:
+                escape = True
+            elif ch == '"':
+                in_str = not in_str
+            elif not in_str:
+                if   ch == '[': depth += 1
+                elif ch == ']':
+                    depth -= 1
+                    if depth == 0:
+                        end  = html.index(';', i) + 1
+                        html = html[:start] + f"const {const_name} = {new_data};" + html[end:]
+                        found = True
+                        break
+            i += 1
+        if not found:
+            print(f"  WARNING: Could not find end of {const_name} array!")
+
     return html
+
 
 def main():
     print()
     print("="*55)
     print(f"  KevScores Public Updater v3.0 â€” {datetime.now().strftime('%B %d, %Y')}")
     print("="*55)
-    # Self-verify correct version is running
-    import inspect as _inspect
-    src = _inspect.getsource(inject)
-    print(f"  inject uses bracket_counter: {'replace_js_const' in src}")
     print(f"  Script file: {__file__}")
 
     if not GITHUB_TOKEN:
@@ -357,7 +355,6 @@ def main():
 
     # â”€â”€ Read template, inject, push â”€â”€
     print("\nBuilding website...")
-    print(f"  Script SHA check: replace_js_const={'replace_js_const' in dir()}")
     html_raw, html_sha = github_get_file(GITHUB_FILE)
     if not html_raw:
         print("ERROR: index.html not found"); sys.exit(1)
