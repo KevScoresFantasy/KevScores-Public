@@ -1,0 +1,27 @@
+name: Daily Stats Update
+
+on:
+  schedule:
+    - cron: '0 14 * * *'  # 9am EST (UTC-5) = 14:00 UTC
+  workflow_dispatch:        # allows manual trigger from GitHub Actions tab
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run updater
+        env:
+          KEVSCORES_TOKEN: ${{ secrets.KEVSCORES_TOKEN }}
+        run: python public_updater.py
