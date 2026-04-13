@@ -374,7 +374,7 @@ def build_json(rows, weekly_prev):
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
             "kevWeekly": kev_weekly,
-            "kevChange": kev_change,
+            "kevChange": None,
         })
 
         overall.append({
