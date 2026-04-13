@@ -359,9 +359,7 @@ def build_json(rows, weekly_prev):
         fp_weekly = current_fp - baseline_fp
 
         baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
-        kev_change = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
-        if kev_change == 0:
-            kev_change = None
+        kev_weekly = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
 
         players.append({
             "name": r["name"],
@@ -373,7 +371,9 @@ def build_json(rows, weekly_prev):
             "team": r["mlb_team"],
             "weighted": weighted,
             "mlbId": r["mlb_id"],
-            "fpScore": r["fp"],
+            "fpScore": current_fp,
+            "fpWeekly": fp_weekly,
+            "kevWeekly": kev_weekly,
             "kevChange": kev_change,
         })
 
@@ -390,7 +390,9 @@ def build_json(rows, weekly_prev):
             "fantasyTeam": "",
             "mlbId": r["mlb_id"],
             "kevChange": kev_change,
-            "fpScore": r["fp"],
+            "fpScore": current_fp,
+            "fpWeekly": fp_weekly,
+            "kevWeekly": kev_weekly
             "fpWeekly": fp_weekly,
             "fpPG": r.get("fp_pg"),
             "notEligible": r.get("not_eligible", False),
