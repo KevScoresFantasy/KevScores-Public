@@ -366,6 +366,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <div style="font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4ade80;margin-bottom:12px;">▲ Top Risers</div>
       <table class="overall-table" style="width:100%">
         <thead><tr>
+          <th class="num">#</th>
           <th style="text-align:left">Player</th>
           <th class="num">Kev Score</th>
           <th class="num">Change</th>
@@ -378,6 +379,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <div style="font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#f87171;margin-bottom:12px;">▼ Top Fallers</div>
       <table class="overall-table" style="width:100%">
         <thead><tr>
+          <th class="num">#</th>
           <th style="text-align:left">Player</th>
           <th class="num">Kev Score</th>
           <th class="num">Change</th>
@@ -409,6 +411,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4ade80;margin-bottom:10px;">⚾ Top Batters</div>
       <table class="overall-table" style="width:100%">
         <thead><tr>
+          <th class="num">#</th>
           <th style="text-align:left">Player</th>
           <th class="num" id="fp-col-header-bat">FP This Week</th>
           <th class="num" style="color:var(--text-dim);font-size:11px;">Prev Week</th>
@@ -423,6 +426,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <div style="font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">⚾ Top Pitchers</div>
       <table class="overall-table" style="width:100%">
         <thead><tr>
+          <th class="num">#</th>
           <th style="text-align:left">Player</th>
           <th class="num" id="fp-col-header-pit">FP This Week</th>
           <th class="num" style="color:var(--text-dim);font-size:11px;">Prev Week</th>
@@ -895,19 +899,20 @@ function renderRisers() {
   const fallersTbody = document.getElementById('fallers-tbody');
   if (!risersTbody || !fallersTbody) return;
 
-const withChange = OVERALL.filter(p => p.kevWeekly !== null && p.kevWeekly !== undefined && p.kevWeekly !== 0);
+  const withChange = OVERALL.filter(p => p.kevWeekly !== null && p.kevWeekly !== undefined && p.kevWeekly !== 0);
   if (!withChange.length) {
-    const msg = '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">No weekly score changes yet — check back after more games</td></tr>';
-    risersTbody.innerHTML = msg; fallersTbody.innerHTML = msg; return;
+    const msg = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">No weekly score changes yet — check back after more games</td></tr>';
+    risersTbody.innerHTML = msg;
+    fallersTbody.innerHTML = msg;
+    return;
   }
 
-const sorted  = [...withChange].sort((a,b) => b.kevWeekly - a.kevWeekly);
-  const risers  = sorted.filter(p => p.kevWeekly > 0).slice(0, 20);
-  const fallers = sorted.filter(p => p.kevWeekly < 0).reverse().slice(0, 20);
+  const sorted  = [...withChange].sort((a,b) => b.kevWeekly - a.kevWeekly);
+  const risers  = sorted.filter(p => p.kevWeekly > 0).slice(0, 50);
+  const fallers = sorted.filter(p => p.kevWeekly < 0).reverse().slice(0, 50);
 
-  function row(p, cls) {
+  function row(p, cls, idx) {
     const sign = p.kevWeekly > 0 ? '+' : '';
-    const owner    = p.fantasyTeam && p.fantasyTeam !== '' ? p.fantasyTeam : 'FA';
     const initials = p.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
     const aColor   = avatarColor(p.name, p.mlbTeam);
     const avatar   = p.mlbId
@@ -918,22 +923,29 @@ const sorted  = [...withChange].sort((a,b) => b.kevWeekly - a.kevWeekly);
            <div style="display:none;width:48px;height:36px;border-radius:4px;background:${aColor};align-items:center;justify-content:center;font-family:var(--font-display);font-size:11px;font-weight:800;color:#fff;">${initials}</div>
          </div>`
       : `<div style="width:48px;height:36px;border-radius:4px;background:${aColor};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:11px;font-weight:800;color:#fff;flex-shrink:0;">${initials}</div>`;
+
     return `<tr>
+      <td class="num" style="font-family:var(--font-display);font-weight:700;color:var(--text-dim);width:36px;">${idx + 1}</td>
       <td style="display:flex;align-items:center;gap:8px;padding:6px 8px;">
         ${avatar}
-        <div><div style="font-size:13px;font-weight:500">${p.name}</div>
-          <div style="font-size:10px;color:var(--text-muted)">${p.kevRating || ''}</div></div>
+        <div>
+          <div style="font-size:13px;font-weight:500">${p.name}</div>
+          <div style="font-size:10px;color:var(--text-muted)">${p.kevRating || ''}</div>
+        </div>
       </td>
       <td class="num" style="font-family:var(--font-display);font-weight:700">${p.kevScore.toFixed(1)}</td>
       <td class="num ${cls}" style="font-weight:700">${sign}${p.kevWeekly.toFixed(2)}</td>
-
     </tr>`;
   }
 
-  risersTbody.innerHTML  = risers.length  ? risers.map(p => row(p,'val-pos')).join('') : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-muted)">No risers yet</td></tr>';
-  fallersTbody.innerHTML = fallers.length ? fallers.map(p => row(p,'val-neg')).join('') : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-muted)">No fallers yet</td></tr>';
-}
+  risersTbody.innerHTML  = risers.length
+    ? risers.map((p, i) => row(p, 'val-pos', i)).join('')
+    : '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted)">No risers yet</td></tr>';
 
+  fallersTbody.innerHTML = fallers.length
+    ? fallers.map((p, i) => row(p, 'val-neg', i)).join('')
+    : '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted)">No fallers yet</td></tr>';
+}
 
 // ── WEEKLY TOP SCORERS ──
 const WEEKLY_SNAP_KEY = 'kevscores_weekly_baseline';
@@ -972,8 +984,8 @@ function renderWeekly() {
       ? (b.sorareScore||0) - (a.sorareScore||0)
       : (b.fpScore||0)  - (a.fpScore||0);
 
-  const batters  = OVERALL.filter(p => p.type === 'Batter'  && p.kevScore > 0).sort(sortFn).slice(0, 20);
-  const pitchers = OVERALL.filter(p => p.type === 'Pitcher' && p.kevScore > 0).sort(sortFn).slice(0, 20);
+  const batters  = OVERALL.filter(p => p.type === 'Batter'  && p.kevScore > 0).sort(sortFn).slice(0, 50);
+  const pitchers = OVERALL.filter(p => p.type === 'Pitcher' && p.kevScore > 0).sort(sortFn).slice(0, 50);
 
   function playerAvatar(p) {
     const initials = p.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
@@ -987,21 +999,23 @@ function renderWeekly() {
     </div>`;
   }
 
-  function row(p) {
-    const fp    = isWeeklyMode
+  function row(p, idx) {
+    const fp = isWeeklyMode
       ? Math.round(p.fpWeekly || 0)
       : isSorareMode
         ? ((p.sorareScore !== undefined && p.sorareScore !== null) ? Math.round(p.sorareScore) : '—')
         : Math.round(p.fpScore || 0);
+
     const fpColor = isWeeklyMode
       ? ((p.fpWeekly||0) > 0 ? '#4ade80' : 'var(--text)')
       : 'var(--text)';
-    // Prev Week: only meaningful in weekly mode
+
     const prevWeekVal = isWeeklyMode
       ? ((p.fpPrevWeek !== undefined && p.fpPrevWeek !== null) ? Math.round(p.fpPrevWeek) : '—')
       : '—';
-    const owner = '';
+
     return `<tr>
+      <td class="num" style="font-family:var(--font-display);font-weight:700;color:var(--text-dim);width:36px;">${idx + 1}</td>
       <td style="display:flex;align-items:center;gap:8px;padding:6px 8px;">
         ${playerAvatar(p)}
         <div>
@@ -1013,17 +1027,22 @@ function renderWeekly() {
       <td class="num" style="font-size:11px;color:var(--text-dim)">${prevWeekVal}</td>
       <td class="num" style="font-size:11px;color:var(--text-muted)">${isSorareMode ? (p.sorarePG !== undefined && p.sorarePG !== null ? p.sorarePG.toFixed(1) : '—') : (p.fpPG !== undefined && p.fpPG !== null ? p.fpPG.toFixed(1) : '—')}</td>
       <td class="num" style="font-family:var(--font-display);font-size:13px;font-weight:700">${p.kevScore.toFixed(1)}</td>
-
     </tr>`;
   }
 
   const noDataMsg = useWeekly && !hasFP
-    ? `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">Weekly FP available from Tuesday</td></tr>`
+    ? `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);font-style:italic;">Weekly FP available from Tuesday</td></tr>`
     : isSorareMode
-      ? `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">No Sorare data</td></tr>`
-      : `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted)">No data</td></tr>`;
-  batTbody.innerHTML  = batters.length  ? batters.map(row).join('')  : noDataMsg;
-  pitTbody.innerHTML  = pitchers.length ? pitchers.map(row).join('') : noDataMsg;
+      ? `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted)">No Sorare data</td></tr>`
+      : `<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted)">No data</td></tr>`;
+
+  batTbody.innerHTML = batters.length
+    ? batters.map((p, i) => row(p, i)).join('')
+    : noDataMsg;
+
+  pitTbody.innerHTML = pitchers.length
+    ? pitchers.map((p, i) => row(p, i)).join('')
+    : noDataMsg;
 }
 
 
