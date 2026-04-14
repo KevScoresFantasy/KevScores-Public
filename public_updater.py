@@ -191,21 +191,25 @@ def compute_fp(rows, sheet_type):
             return float(r.get(col, 0) or 0)
 
         if sheet_type == "batting":
-            fp = (g("1B") + g("2B")*2 + g("3B")*3 + g("HR")*4
-                + g("R") + g("RBI")
-                + g("BB")
-                + g("SB")
-                - g("SO")
+            # ESPN Standard H2H Points:
+            # TB=1 (1B=1, 2B=2, 3B=3, HR=4), R=1, RBI=1, BB=1, SB=1, K=-1
+            fp = (g("1B")*1 + g("2B")*2 + g("3B")*3 + g("HR")*4
+                + g("R")*1 + g("RBI")*1
+                + g("BB")*1
+                + g("SB")*1
+                - g("SO")*1
             )
             pa = g("PA")
             games = g("G") if g("G") > 0 else 1
             elig = pa >= MIN_PA
             fpg = round(fp / games, 3) if elig else None
         else:
-            ip   = convert_ip(r.get("IP", 0))
-            fp = (g("W")*2 - g("L")*2 + g("SV")*5 + g("HLD")*2
-                + ip*3 + g("SO")
-                - g("ER")*2 - g("H") - g("BB")
+            ip = convert_ip(r.get("IP", 0))
+            # ESPN Standard H2H Points:
+            # IP=3 (1pt per out), W=5, L=-5, SV=5, K=1, ER=-2, H=-1, BB=-1
+            fp = (g("W")*5 - g("L")*5 + g("SV")*5
+                + ip*3 + g("SO")*1
+                - g("ER")*2 - g("H")*1 - g("BB")*1
             )
             games = g("G") if g("G") > 0 else 1
             elig = ip >= MIN_IP
@@ -216,6 +220,44 @@ def compute_fp(rows, sheet_type):
         eligible[norm] = elig
 
     return fp_total, fp_per_game, eligible
+
+def compute_sorare(rows, sheet_type):
+    """
+    Sorare scoring (separate from ESPN fpScore).
+    Batting:  R=3, RBI=3, 1B=2, 2B=5, 3B=8, HR=10, BB=2, K=-1, SB=5, CS=-1, HBP=2
+    Pitching: IP=3, K=2, H=-0.5, ER=-2, BB=-1, HBP=-1, W=5, RA=5, SV=10, Hold=5, NoHitter=30
+    """
+    sorare_total = {}
+    sorare_pg = {}
+
+    for norm, r in rows.items():
+        def g(col):
+            return float(r.get(col, 0) or 0)
+
+        if sheet_type == "batting":
+            sr = (g("1B")*2 + g("2B")*5 + g("3B")*8 + g("HR")*10
+                + g("R")*3 + g("RBI")*3
+                + g("BB")*2
+                + g("SB")*5
+                - g("SO")*1
+                - g("CS")*1
+                + g("HBP")*2
+            )
+        else:
+            ip = convert_ip(r.get("IP", 0))
+            # Note: MLB API doesn't expose no-hitters directly; NoHitter=30 omitted
+            # RA (Relief Appearance) not a standard MLB API stat; omitted
+            sr = (g("W")*5 + g("SV")*10 + g("HLD")*5
+                + ip*3 + g("SO")*2
+                - g("ER")*2 - g("H")*0.5 - g("BB")*1 - g("HBP")*1
+            )
+
+        games = g("G") if g("G") > 0 else 1
+        sorare_total[norm] = int(round(sr))
+        sorare_pg[norm] = round(sr / games, 3)
+
+    return sorare_total, sorare_pg
+
 
 def rank_scores(fp_per_game_dict):
     """
@@ -251,12 +293,33 @@ def adjusted_espn_value(espn_value, rank_score):
 def build_players(batting_rows, pitching_rows,
                   bat_fp_total, bat_fp_pg, bat_rs,
                   pit_fp_total, pit_fp_pg, pit_rs,
+                  bat_sr_total, bat_sr_pg,
+                  pit_sr_total, pit_sr_pg,
                   espn_baseline):
     rows = []
     all_norms = set(batting_rows.keys()) | set(pitching_rows.keys())
 
     for norm in all_norms:
-        is_pitcher = norm in pitching_rows and norm not in batting_rows
+        in_pitching = norm in pitching_rows
+        in_batting = norm in batting_rows
+
+        if in_pitching and in_batting:
+            # Two-way player: use ESPN baseline position to decide.
+            # Fall back to whichever role has more accumulated stats (IP vs PA).
+            espn_pos_check = ""
+            espn_data_check = espn_baseline.get(
+                next((k for k in espn_baseline if normalize(k) == norm), None) or ""
+            ) or {}
+            espn_pos_check = str(espn_data_check.get("pos", "")).upper()
+            if "SP" in espn_pos_check or "RP" in espn_pos_check:
+                is_pitcher = True
+            else:
+                pit_ip = float(pitching_rows[norm].get("IP", 0) or 0)
+                bat_pa = float(batting_rows[norm].get("PA", 0) or 0)
+                is_pitcher = pit_ip > bat_pa
+        else:
+            is_pitcher = in_pitching and not in_batting
+
         raw = pitching_rows.get(norm) or batting_rows.get(norm)
         name = raw["Name"]
         mlb_team = raw["Team"]
@@ -266,11 +329,15 @@ def build_players(batting_rows, pitching_rows,
             rs = pit_rs.get(norm)
             fp = pit_fp_total.get(norm, 0)
             fp_pg = pit_fp_pg.get(norm)
+            sr = pit_sr_total.get(norm, 0)
+            sr_pg = pit_sr_pg.get(norm, 0)
             pb = "Pitcher"
         else:
             rs = bat_rs.get(norm)
             fp = bat_fp_total.get(norm, 0)
             fp_pg = bat_fp_pg.get(norm)
+            sr = bat_sr_total.get(norm, 0)
+            sr_pg = bat_sr_pg.get(norm, 0)
             pb = "Batter"
 
         not_eligible = rs is None
@@ -304,6 +371,8 @@ def build_players(batting_rows, pitching_rows,
             "fp_pg": fp_pg,
             "rs": rs if rs is not None else 0,
             "not_eligible": not_eligible,
+            "sr": sr,
+            "sr_pg": sr_pg,
         })
 
     rows.sort(key=lambda x: -x["kev"])
@@ -380,6 +449,8 @@ def build_json(rows, weekly_prev):
             "fpWeekly": fp_weekly,
             "kevWeekly": kev_weekly,
             "kevChange": None,
+            "sorareScore": int(round(r.get("sr", 0))),
+            "sorarePG": round(r.get("sr_pg", 0), 3),
         })
 
         overall.append({
@@ -398,9 +469,10 @@ def build_json(rows, weekly_prev):
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
             "kevWeekly": kev_weekly,
-            "fpWeekly": fp_weekly,
             "fpPG": r.get("fp_pg"),
             "notEligible": r.get("not_eligible", False),
+            "sorareScore": int(round(r.get("sr", 0))),
+            "sorarePG": round(r.get("sr_pg", 0), 3),
         })
 
     return players, overall
@@ -533,6 +605,8 @@ def main():
 
     bat_fp_total, bat_fp_pg, bat_elig = compute_fp(batting, "batting")
     pit_fp_total, pit_fp_pg, pit_elig = compute_fp(pitching, "pitching")
+    bat_sr_total, bat_sr_pg = compute_sorare(batting, "batting")
+    pit_sr_total, pit_sr_pg = compute_sorare(pitching, "pitching")
     bat_rs = rank_scores(bat_fp_pg)
     pit_rs = rank_scores(pit_fp_pg)
 
@@ -563,6 +637,8 @@ def main():
         batting, pitching,
         bat_fp_total, bat_fp_pg, bat_rs,
         pit_fp_total, pit_fp_pg, pit_rs,
+        bat_sr_total, bat_sr_pg,
+        pit_sr_total, pit_sr_pg,
         espn_baseline
     )
     rows = assign_ratings(rows)
