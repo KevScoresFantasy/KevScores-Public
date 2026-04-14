@@ -429,8 +429,11 @@ def build_json(rows, weekly_prev):
         wp = weekly_prev.get(r["name"], {}) if isinstance(weekly_prev, dict) else {}
 
         current_fp = int(round(r["fp"]))
-        baseline_fp = int(round(wp.get("fp", current_fp))) if isinstance(wp, dict) else current_fp
-        fp_weekly = current_fp - baseline_fp
+        if isinstance(wp, dict) and "fp" in wp:
+            baseline_fp = int(round(wp["fp"]))
+            fp_weekly = current_fp - baseline_fp
+        else:
+            fp_weekly = None
 
         baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
         kev_weekly = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
