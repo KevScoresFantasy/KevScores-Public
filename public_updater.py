@@ -193,7 +193,7 @@ def compute_fp(rows, sheet_type):
         if sheet_type == "batting":
             # ESPN Standard H2H Points:
             # TB=1 (1B=1, 2B=2, 3B=3, HR=4), R=1, RBI=1, BB=1, SB=1, K=-1
-            fp = (g("TB")*1
+            fp = (g("1B")*1 + g("2B")*2 + g("3B")*3 + g("HR")*4
                 + g("R")*1 + g("RBI")*1
                 + g("BB")*1
                 + g("SB")*1
@@ -207,7 +207,7 @@ def compute_fp(rows, sheet_type):
             ip = convert_ip(r.get("IP", 0))
             # ESPN Standard H2H Points:
             # IP=3 (1pt per out), W=5, L=-5, SV=5, K=1, ER=-2, H=-1, BB=-1
-            fp = (g("W")*2 - g("L")*2 + g("SV")*5 + g("HLD")*2
+            fp = (g("W")*5 - g("L")*5 + g("SV")*5
                 + ip*3 + g("SO")*1
                 - g("ER")*2 - g("H")*1 - g("BB")*1
             )
@@ -332,6 +332,7 @@ def build_players(batting_rows, pitching_rows,
             sr = pit_sr_total.get(norm, 0)
             sr_pg = pit_sr_pg.get(norm, 0)
             pb = "Pitcher"
+            stats_src = pitching_rows.get(norm, {})
         else:
             rs = bat_rs.get(norm)
             fp = bat_fp_total.get(norm, 0)
@@ -339,6 +340,7 @@ def build_players(batting_rows, pitching_rows,
             sr = bat_sr_total.get(norm, 0)
             sr_pg = bat_sr_pg.get(norm, 0)
             pb = "Batter"
+            stats_src = batting_rows.get(norm, {})
 
         not_eligible = rs is None
 
@@ -373,6 +375,7 @@ def build_players(batting_rows, pitching_rows,
             "not_eligible": not_eligible,
             "sr": sr,
             "sr_pg": sr_pg,
+            "stats_src": stats_src,
         })
 
     rows.sort(key=lambda x: -x["kev"])
@@ -438,6 +441,47 @@ def build_json(rows, weekly_prev):
         baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
         kev_weekly = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
 
+        # Export full season stats for Sleeper-style modal popup
+        s = r.get("stats_src", {}) or {}
+        def _num(x, default=0):
+            try:
+                if x is None or x == "":
+                    return default
+                return float(x)
+            except Exception:
+                return default
+
+        if r["pb"] == "Batter":
+            stats = {
+                "G": int(_num(s.get("G", 0))),
+                "AB": int(_num(s.get("AB", 0))),
+                "PA": int(_num(s.get("PA", 0))),
+                "H": int(_num(s.get("H", 0))),
+                "HR": int(_num(s.get("HR", 0))),
+                "RBI": int(_num(s.get("RBI", 0))),
+                "R": int(_num(s.get("R", 0))),
+                "BB": int(_num(s.get("BB", 0))),
+                "SO": int(_num(s.get("SO", 0))),
+                "SB": int(_num(s.get("SB", 0))),
+                "TB": int(_num(s.get("TB", 0))) if "TB" in s else int(_num(s.get("1B", 0)) + 2*_num(s.get("2B", 0)) + 3*_num(s.get("3B", 0)) + 4*_num(s.get("HR", 0))),
+                "AVG": round(_num(s.get("AVG", 0.0), 0.0), 3) if s.get("AVG", "") not in ("", None) else "—",
+            }
+        else:
+            stats = {
+                "G": int(_num(s.get("G", 0))),
+                "GS": int(_num(s.get("GS", 0))),
+                "IP": round(_num(s.get("IP", 0.0), 0.0), 1),
+                "W": int(_num(s.get("W", 0))),
+                "L": int(_num(s.get("L", 0))),
+                "SV": int(_num(s.get("SV", 0))),
+                "HLD": int(_num(s.get("HLD", 0))),
+                "SO": int(_num(s.get("SO", 0))),
+                "ER": int(_num(s.get("ER", 0))),
+                "H": int(_num(s.get("H", 0))),
+                "BB": int(_num(s.get("BB", 0))),
+                "ERA": round(_num(s.get("ERA", 0.0), 0.0), 2) if s.get("ERA", "") not in ("", None) else "—",
+            }
+
         players.append({
             "name": r["name"],
             "kevScore": kev,
@@ -454,6 +498,7 @@ def build_json(rows, weekly_prev):
             "kevChange": None,
             "sorareScore": int(round(r.get("sr", 0))),
             "sorarePG": round(r.get("sr_pg", 0), 3),
+            "stats": stats,
         })
 
         overall.append({
@@ -476,6 +521,7 @@ def build_json(rows, weekly_prev):
             "notEligible": r.get("not_eligible", False),
             "sorareScore": int(round(r.get("sr", 0))),
             "sorarePG": round(r.get("sr_pg", 0), 3),
+            "stats": stats,
         })
 
     return players, overall
@@ -563,6 +609,10 @@ def _find_js_const_bounds(html, const_name):
     return None, None
 
 def inject(html, players, overall):
+    """
+    Patch the public `index.html` template: LAST_UPDATED, PLAYERS, OVERALL.
+    Leaves other declarations intact (e.g. `const FANTASY_TEAM_NAMES = {}` for trade labels).
+    """
     today = datetime.now().strftime("%B %d, %Y")
 
     if re.search(r'const LAST_UPDATED = "[^"]*";', html):
