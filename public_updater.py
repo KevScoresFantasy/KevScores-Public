@@ -193,7 +193,7 @@ def compute_fp(rows, sheet_type):
         if sheet_type == "batting":
             # ESPN Standard H2H Points:
             # TB=1 (1B=1, 2B=2, 3B=3, HR=4), R=1, RBI=1, BB=1, SB=1, K=-1
-            fp = (g("1B")*1 + g("2B")*2 + g("3B")*3 + g("HR")*4
+            fp = (g("TB")*1
                 + g("R")*1 + g("RBI")*1
                 + g("BB")*1
                 + g("SB")*1
@@ -207,7 +207,7 @@ def compute_fp(rows, sheet_type):
             ip = convert_ip(r.get("IP", 0))
             # ESPN Standard H2H Points:
             # IP=3 (1pt per out), W=5, L=-5, SV=5, K=1, ER=-2, H=-1, BB=-1
-            fp = (g("W")*5 - g("L")*5 + g("SV")*5
+            fp = (g("W")*2 - g("L")*2 + g("SV")*5 + g("HLD")*2
                 + ip*3 + g("SO")*1
                 - g("ER")*2 - g("H")*1 - g("BB")*1
             )
