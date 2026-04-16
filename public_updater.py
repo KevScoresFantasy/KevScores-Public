@@ -221,6 +221,8 @@ def download_headshots(players):
             if sha: payload["sha"] = sha
             github_request("PUT", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{github_path}", payload)
             pushed += 1
+            # Add delay to avoid GitHub rate limits
+            time.sleep(0.5)
         except Exception:
             pass
     print(f"  Pushed {pushed}/{len(downloaded)} headshots to GitHub")
