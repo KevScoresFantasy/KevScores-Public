@@ -6,7 +6,7 @@ Fetches MLB stats, computes Kev Scores, pushes fresh HTML to GitHub.
 Vercel auto-deploys on every push.
 """
 
-import sys, os, json, base64, re, unicodedata, urllib.request, urllib.error, urllib.parse
+import sys, os, json, base64, re, unicodedata, urllib.request, urllib.error, urllib.parse, time
 from datetime import datetime
 
 # ── CONFIGURATION ──
@@ -23,6 +23,10 @@ WEEKLY_SCORES_FILE  = "weekly_scores.json"   # Monday baseline for weekly FP
 
 # Keep only the most recent N days of daily history
 MAX_HISTORY_DAYS = 7
+
+# Headshot configuration
+HEADSHOTS_DIR = "headshots"
+ESPN_MAP_PATH = "espn_id_map.json"
 
 HEADERS_JSON = {
     "User-Agent":    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -89,6 +93,137 @@ def github_put_file(path, content, sha, message):
     except urllib.error.HTTPError as e:
         body = e.read().decode() if hasattr(e, 'read') else ''
         raise Exception(f"GitHub PUT {path} failed {e.code}: {body[:200]}") from e
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# HEADSHOT DOWNLOADING FUNCTIONS
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+def load_espn_map():
+    """Load ESPN player ID map from local file."""
+    if not os.path.exists(ESPN_MAP_PATH): 
+        return {}
+    try:
+        with open(ESPN_MAP_PATH) as f:
+            data = json.load(f)
+        return data.get("by_name", {})
+    except: 
+        return {}
+
+def refresh_espn_map():
+    """Refresh ESPN player ID map by fetching from all MLB team rosters."""
+    espn_map = {}
+    for team_id in range(1, 31):
+        url = f"https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/{team_id}/roster"
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                "Accept": "application/json"
+            })
+            with urllib.request.urlopen(req, timeout=10) as r:
+                data = json.loads(r.read())
+            for group in data.get("athletes", []):
+                items = group.get("items", [group])
+                for athlete in items:
+                    espn_id  = str(athlete.get("id", ""))
+                    fullname = athlete.get("fullName", athlete.get("displayName", ""))
+                    if espn_id and fullname:
+                        espn_map[normalize(fullname)] = espn_id
+            time.sleep(0.1)  # Be nice to ESPN API
+        except Exception:
+            pass
+    if espn_map:
+        with open(ESPN_MAP_PATH, "w") as f:
+            json.dump({"by_name": espn_map}, f)
+    return espn_map
+
+def download_headshots(players):
+    """Download missing headshots for players and push to GitHub repo."""
+    os.makedirs(HEADSHOTS_DIR, exist_ok=True)
+    espn_map = load_espn_map()
+    
+    # Refresh ESPN map weekly (Monday) or if missing
+    if not espn_map or datetime.now().weekday() == 0:
+        print("  Refreshing ESPN player ID map...")
+        fresh = refresh_espn_map()
+        if fresh:
+            espn_map = fresh
+            print(f"  ESPN map updated: {len(espn_map)} players")
+    
+    if not espn_map:
+        print("  ESPN map unavailable - skipping headshots")
+        return
+
+    # Find players missing headshots
+    to_download = []
+    for p in players:
+        norm    = normalize(p["name"])
+        espn_id = espn_map.get(norm, "")
+        if not espn_id: 
+            continue
+        mlb_id  = p.get("mlbId", "")
+        if not mlb_id: 
+            continue
+        path = os.path.join(HEADSHOTS_DIR, f"{mlb_id}.jpg")
+        if not os.path.exists(path):
+            to_download.append((p["name"], espn_id, mlb_id, path))
+
+    # Report status
+    players_with_espn = sum(1 for p in players if espn_map.get(normalize(p["name"])))
+    has_headshot = sum(1 for p in players if p.get("mlbId") and
+                       os.path.exists(os.path.join(HEADSHOTS_DIR, f"{p['mlbId']}.jpg")))
+    missing = [p["name"] for p in players if p.get("mlbId") and
+               espn_map.get(normalize(p["name"])) and
+               not os.path.exists(os.path.join(HEADSHOTS_DIR, f"{p['mlbId']}.jpg"))]
+    
+    print(f"  {players_with_espn}/{len(players)} have ESPN ID | {has_headshot} headshots cached")
+    if missing:
+        print(f"  Will download {len(missing)}: {', '.join(missing[:5])}{'...' if len(missing)>5 else ''}")
+
+    if not to_download:
+        print("  Headshots: all up to date")
+        return
+
+    # Download new headshots
+    print(f"  Downloading {len(to_download)} new headshots from ESPN...")
+    downloaded = []
+    for name, espn_id, mlb_id, path in to_download:
+        url = f"https://a.espncdn.com/combiner/i?img=/i/headshots/mlb/players/full/{espn_id}.png&w=160&h=120"
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+            with urllib.request.urlopen(req, timeout=10) as r:
+                data = r.read()
+            if len(data) > 2000:  # Valid image check
+                with open(path, "wb") as f:
+                    f.write(data)
+                downloaded.append((mlb_id, path))
+        except Exception:
+            pass
+
+    if not downloaded:
+        print("  No headshots downloaded")
+        return
+
+    # Push downloaded headshots to GitHub
+    print(f"  Downloaded {len(downloaded)} headshots - pushing to GitHub...")
+    pushed = 0
+    for mlb_id, path in downloaded:
+        with open(path, "rb") as f:
+            img_data = f.read()
+        encoded     = base64.b64encode(img_data).decode("utf-8")
+        github_path = f"headshots/{mlb_id}.jpg"
+        try:
+            try:
+                info = github_request("GET", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{github_path}")
+                sha  = info["sha"]
+            except Exception:
+                sha = None
+            payload = {"message": f"Add headshot {mlb_id}", "content": encoded}
+            if sha: payload["sha"] = sha
+            github_request("PUT", f"/repos/{GITHUB_USER}/{GITHUB_REPO}/contents/{github_path}", payload)
+            pushed += 1
+        except Exception:
+            pass
+    print(f"  Pushed {pushed}/{len(downloaded)} headshots to GitHub")
 
 # ── FETCH MLB STATS ──
 def fetch_all(group, label):
@@ -706,6 +841,10 @@ def main():
         print(f"  Sample: {p0['name']} → team='{p0.get('team', '')}', mlbId={p0.get('mlbId', '')}")
 
     today_str = datetime.now().strftime("%Y-%m-%d")
+
+    # Download and push new headshots
+    print("\nChecking headshots...")
+    download_headshots(players)
 
     # Then save today's baseline once, without affecting same-day reruns
     daily_history, history_changed = update_daily_history(daily_history, players, today_str)
