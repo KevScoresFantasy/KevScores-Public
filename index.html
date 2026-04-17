@@ -701,7 +701,7 @@ function openPlayerModal(p) {
     .map(([k, v]) => {
       let displayValue = v ?? '—';
       if (k === 'ERA' && v !== null && v !== undefined && !isNaN(v)) {
-        displayValue = Number(v).toFixed(3);
+        displayValue = Number(v).toFixed(2);
       } else if (k === 'Average' && v !== null && v !== undefined && !isNaN(v)) {
         displayValue = Number(v).toFixed(3).replace(/^0+/, '');
       }
@@ -853,7 +853,7 @@ function verdictHtml(valA, valB, label) {
   if (diff < 1.0) {
     return `<div class="verdict-tag">${label}</div>
             <div class="verdict-even">Even Trade</div>
-            <div class="verdict-even-sub">&lt;Minimal Difference</div>`;
+            <div class="verdict-even-sub">No Meaningful Edge</div>`;
   }
 
   const aWins = valA > valB;
