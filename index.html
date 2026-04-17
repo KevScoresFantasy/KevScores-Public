@@ -491,7 +491,16 @@ const OVERALL = [{"kevRank": 1, "kevRating": "SP1", "kevScore": 100.51, "name": 
 let leagueSize = 8;
 
 function calcWeighted(p) {
-  const base = Number(p.weighted ?? p.kevScore ?? 0);
+  const kev = Number(p.kevScore ?? 0);
+
+  const leagueFactor =
+    leagueSize === 8 ? 1.00 :
+    leagueSize === 10 ? 0.96 :
+    leagueSize === 12 ? 0.92 :
+    0.88; // fallback safety for 14 etc
+
+  return Math.max(0, Math.pow(kev, 1.12) * leagueFactor);
+}
 
   // small league-size adjustment only, without changing the shape or going negative
   const leagueFactor =
@@ -853,7 +862,7 @@ function verdictHtml(valA, valB, label) {
   if (diff < 1.0) {
     return `<div class="verdict-tag">${label}</div>
             <div class="verdict-even">Even Trade</div>
-            <div class="verdict-even-sub">&lt;0.5 pt difference</div>`;
+            <div class="verdict-even-sub">&lt;Minimal Difference</div>`;
   }
 
   const aWins = valA > valB;
