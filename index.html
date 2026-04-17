@@ -502,15 +502,6 @@ function calcWeighted(p) {
   return Math.max(0, Math.pow(kev, 1.12) * leagueFactor);
 }
 
-  // small league-size adjustment only, without changing the shape or going negative
-  const leagueFactor =
-    leagueSize === 8 ? 1.00 :
-    leagueSize === 10 ? 0.96 :
-    0.92;
-
-  return Math.max(0, base * leagueFactor);
-}
-
 // ── League size toggle ──
 function setLeagueSize(size, btn) {
   leagueSize = size;
