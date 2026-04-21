@@ -22,7 +22,7 @@ DAILY_HISTORY_FILE  = "daily_history.json"   # stores several days of score snap
 WEEKLY_SCORES_FILE  = "weekly_scores.json"   # Monday baseline for weekly FP
 
 # Keep only the most recent N days of daily history
-MAX_HISTORY_DAYS = 7
+MAX_HISTORY_DAYS = 8  # keep 8 so "7 days ago" is always available for kevChange7d
 
 # Headshot configuration
 HEADSHOTS_DIR = "headshots"
@@ -674,28 +674,42 @@ def clean_zero(v):
 
 def apply_daily_changes(players, overall, daily_history, today_str):
     """
-    Compare today's scores against the most recent prior saved day.
-    This keeps 'daily change' stable across same-day reruns.
+    Compare today's scores against:
+      - the most recent prior saved day (kevChange, ~1 day back)
+      - the oldest saved day, which is ~7 days back (kevChange7d, rolling week)
+    Keeps both values stable across same-day reruns.
     """
     prior_dates = sorted(d for d in daily_history.keys() if d < today_str)
     if not prior_dates:
         print("  Daily history: no prior day found — changes set to None")
         return players, overall
 
+    # 1-day baseline (yesterday)
     baseline_date = prior_dates[-1]
     baseline_scores = daily_history.get(baseline_date, {})
-    print(f"  Daily change baseline: {baseline_date}")
+    print(f"  Daily change baseline:  {baseline_date}")
+
+    # 7-day baseline (oldest entry in history; with MAX_HISTORY_DAYS=8 this is 7 days back)
+    week_date = prior_dates[0]
+    week_scores = daily_history.get(week_date, {})
+    print(f"  7-day change baseline:  {week_date}")
 
     for p in players:
         prev = baseline_scores.get(p["name"])
         p["kevChange"] = clean_zero(round(p["kevScore"] - prev, 2)) if prev is not None else None
+        prev7 = week_scores.get(p["name"])
+        p["kevChange7d"] = clean_zero(round(p["kevScore"] - prev7, 2)) if prev7 is not None else None
 
     for o in overall:
         prev = baseline_scores.get(o["name"])
         o["kevChange"] = clean_zero(round(o["kevScore"] - prev, 2)) if prev is not None else None
+        prev7 = week_scores.get(o["name"])
+        o["kevChange7d"] = clean_zero(round(o["kevScore"] - prev7, 2)) if prev7 is not None else None
 
     changers = sum(1 for o in overall if o.get("kevChange") not in (None, 0, 0.0))
-    print(f"  Daily changes: {changers} players moved")
+    changers7 = sum(1 for o in overall if o.get("kevChange7d") not in (None, 0, 0.0))
+    print(f"  Daily changes: {changers} players moved (1-day)")
+    print(f"  Weekly changes: {changers7} players moved (7-day)")
     return players, overall
 
 def update_daily_history(daily_history, players, today_str):
