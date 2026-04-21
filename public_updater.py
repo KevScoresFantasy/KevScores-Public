@@ -571,8 +571,10 @@ def build_json(rows, weekly_prev):
         current_fp = int(round(r["fp"]))
         if isinstance(wp, dict) and "fp" in wp:
             baseline_fp = int(round(wp["fp"]))
+            fp_prev_week = baseline_fp
             fp_weekly = current_fp - baseline_fp
         else:
+            fp_prev_week = None
             fp_weekly = None
 
         baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
@@ -631,6 +633,7 @@ def build_json(rows, weekly_prev):
             "mlbId": r["mlb_id"],
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
+            "fpPrevWeek": fp_prev_week,
             "kevWeekly": kev_weekly,
             "kevChange": None,
             "sorareScore": int(round(r.get("sr", 0))),
@@ -653,6 +656,7 @@ def build_json(rows, weekly_prev):
             "kevChange": None,
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
+            "fpPrevWeek": fp_prev_week,
             "kevWeekly": kev_weekly,
             "fpPG": r.get("fp_pg"),
             "notEligible": r.get("not_eligible", False),
