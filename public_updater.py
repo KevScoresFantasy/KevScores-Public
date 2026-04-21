@@ -571,11 +571,12 @@ def build_json(rows, weekly_prev):
         current_fp = int(round(r["fp"]))
         if isinstance(wp, dict) and "fp" in wp:
             baseline_fp = int(round(wp["fp"]))
-            fp_prev_week = baseline_fp
             fp_weekly = current_fp - baseline_fp
+            fp_prev_week = int(round(wp["prev_week_fp"])) if "prev_week_fp" in wp else None
         else:
-            fp_prev_week = None
+            baseline_fp = current_fp
             fp_weekly = None
+            fp_prev_week = None
 
         baseline_kev = wp.get("kev") if isinstance(wp, dict) else None
         kev_weekly = round(kev - float(baseline_kev), 2) if baseline_kev is not None else None
@@ -867,13 +868,17 @@ def main():
             print(f"  WARNING: Could not save daily history: {e}")
             
     if datetime.now().weekday() == 0 and weekly_prev.get("_saved_on") != today_str:
-        new_weekly = {
-            p["name"]: {
+        new_weekly = {}
+        for p in players:
+            old = weekly_prev.get(p["name"], {})
+            old_baseline = int(round(old["fp"])) if isinstance(old, dict) and "fp" in old else None
+            current = int(round(p.get("fpScore", 0)))
+            prev_week_fp = (current - old_baseline) if old_baseline is not None else None
+            new_weekly[p["name"]] = {
                 "kev": round(p["kevScore"], 2),
-                "fp": int(round(p.get("fpScore", 0)))
+                "fp": current,
+                "prev_week_fp": prev_week_fp,
             }
-            for p in players
-        }
         new_weekly["_saved_on"] = today_str
         
         try:
