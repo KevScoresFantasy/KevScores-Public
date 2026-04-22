@@ -8,6 +8,9 @@ Vercel auto-deploys on every push.
 
 import sys, os, json, base64, re, unicodedata, urllib.request, urllib.error, urllib.parse, time
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+ET = ZoneInfo("America/New_York")  # handles EST/EDT automatically
 
 # ── CONFIGURATION ──
 GITHUB_TOKEN  = os.environ.get("KEVSCORES_TOKEN", "")
@@ -772,7 +775,11 @@ def inject(html, players, overall):
     The players/overall args are kept for signature compatibility.
     Returns the (possibly unchanged) html string.
     """
-    today = datetime.now().strftime("%B %d, %Y")
+    # Build Eastern Time timestamp — e.g. "Apr 22, 2026 7:15 AM ET"
+    now_et = datetime.now(ET)
+    # %I gives 12-hour hour with leading zero ("07"); replace strips leading
+    # zeros from both hour and day ("Apr 05" -> "Apr 5", "07:15" -> "7:15")
+    today = now_et.strftime("%b %d, %Y %I:%M %p ET").replace(" 0", " ")
 
     if re.search(r'const LAST_UPDATED = "[^"]*";', html):
         html = re.sub(
