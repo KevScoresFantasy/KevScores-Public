@@ -295,9 +295,17 @@ MIN_PA = 25
 MIN_IP = 5.0
 
 # ── Breakout Boost parameters ──
-# Targeted bonus for low-baseline players who rank among the top per-game
+# Targeted bonus for low-baseline players who rank among the top total-points
 # scorers at their position (batters or pitchers). Recalculated daily — no
 # boost state is stored.
+#
+# Using TOTAL fantasy points (not per-game) for ranking because:
+#   - Total FP naturally penalizes injured/sidelined players (their totals
+#     stop growing while peers pull ahead).
+#   - It rewards players who actually accumulate value through availability
+#     and consistency, not just brief hot streaks.
+#   - It captures closers (like Mason Miller) who rack up total points
+#     across many appearances even if each outing is short.
 #
 # Eligibility (all must pass):
 #   1. Baseline cap: ESPN value ≤ BOOST_MAX_BASELINE (keeps elite-baseline
@@ -306,9 +314,9 @@ MIN_IP = 5.0
 #      - Batters: ≥ BOOST_MIN_PA plate appearances.
 #      - Pitchers: ≥ BOOST_MIN_IP_PIT innings OR ≥ BOOST_MIN_SV_PIT saves.
 #        (Either gate qualifies — covers both starters and closers.)
-#   3. Top N by FP/PG within their bucket (BAT or PIT).
+#   3. Top N by TOTAL FP within their bucket (BAT or PIT).
 #
-# Boost magnitude: ladder over within-bucket FP/PG rank.
+# Boost magnitude: ladder over within-bucket total-FP rank.
 #   #1 → BOOST_MAX_VALUE, each rank down loses BOOST_RANK_STEP.
 #   Default ladder: 10, 9, 8, 7, 6, 5, 4, 3, 2, 1.
 # Up to 10 boosted players per bucket → max 20 total boosted across the site.
@@ -316,7 +324,7 @@ BOOST_MIN_PA         = 80     # batters — min plate appearances
 BOOST_MIN_IP_PIT     = 25.0   # pitchers — min innings (OR saves gate below)
 BOOST_MIN_SV_PIT     = 5      # pitchers — min saves (OR innings gate above)
 BOOST_MAX_BASELINE   = 35     # ESPN baseline must be ≤ this
-BOOST_TOP_N_PPG      = 10     # top N by FP/PG per bucket
+BOOST_TOP_N          = 10     # top N by total FP per bucket
 BOOST_MAX_VALUE      = 10.0   # #1 gets this much
 BOOST_RANK_STEP      = 1.0    # each rank below #1 loses this much
 
@@ -464,25 +472,25 @@ def _boost_bucket(is_pitcher, pos):
     """
     return "PIT" if is_pitcher else "BAT"
 
-def compute_boost_rank_map(candidates, top_n_ppg=BOOST_TOP_N_PPG):
+def compute_boost_rank_map(candidates, top_n=BOOST_TOP_N):
     """
-    Given an iterable of candidate dicts with keys: name, bucket, fp_pg,
-    return {name: rank_within_bucket} for players in the top N by FP/PG
+    Given an iterable of candidate dicts with keys: name, bucket, fp_total,
+    return {name: rank_within_bucket} for players in the top N by total FP
     within their bucket. Rank is 1-indexed.
 
-    Candidates whose bucket is None, or whose fp_pg is None, are skipped.
+    Candidates whose bucket is None, or whose fp_total is None, are skipped.
     """
     by_bucket = {}
     for c in candidates:
         if c.get("bucket") is None:
             continue
-        if c.get("fp_pg") is None:
+        if c.get("fp_total") is None:
             continue
         by_bucket.setdefault(c["bucket"], []).append(c)
 
     rank_map = {}
     for bucket, lst in by_bucket.items():
-        top = sorted(lst, key=lambda x: -x["fp_pg"])[:top_n_ppg]
+        top = sorted(lst, key=lambda x: -x["fp_total"])[:top_n]
         for i, c in enumerate(top, start=1):
             rank_map[c["name"]] = i
     return rank_map
@@ -640,13 +648,15 @@ def build_players(batting_rows, pitching_rows,
         })
 
     # ── Post-pass: apply Breakout Boost ──
-    # Rank each eligible player by FP/PG within their bucket (BAT or PIT)
+    # Rank each eligible player by TOTAL FP within their bucket (BAT or PIT)
     # and apply a 10/9/8/.../1 ladder boost to the top 10 in each bucket.
+    # Using totals (not per-game) rewards availability/consistency and makes
+    # closers competitive with starters in the PIT bucket.
     candidates = [
         {
             "name": r["name"],
             "bucket": _boost_bucket(r["is_pitcher"], r["pos"]),
-            "fp_pg": r["fp_pg"],
+            "fp_total": r["fp"],
         }
         for r in rows if not r["not_eligible"]
     ]
@@ -1028,13 +1038,12 @@ def main():
             rating = p.get("rating", "")
             print(f"    +{boost:5.2f}  {p['name']:30s}  [{rating:>4}]  (final Kev: {score})")
 
-    # Near-miss diagnostic — top 10 by FP/PG per bucket with gate status.
+    # Near-miss diagnostic — top 10 by total FP per bucket.
     # Helps debug why a player who seems like they should qualify doesn't.
-    print("\n[boost diagnostic] Top-10 by FP/PG per bucket:")
+    print("\n[boost diagnostic] Top-10 by total FP per bucket:")
     by_bucket_all = {"BAT": [], "PIT": []}
     for p in players:
         b = _bucket_of(p)
-        # FP/PG for diagnostic: total FP / games played (or games started)
         fpg = None
         games = (p.get("stats", {}) or {}).get("G", 0) or (p.get("stats", {}) or {}).get("GS", 0)
         if games and games > 0:
@@ -1047,11 +1056,11 @@ def main():
             "rating": p.get("rating", ""),
         })
     for bucket in ("BAT", "PIT"):
-        lst = sorted(by_bucket_all[bucket], key=lambda x: -x["fp_pg"])[:10]
-        print(f"\n  [{bucket}] Top 10 by FP/PG:")
+        lst = sorted(by_bucket_all[bucket], key=lambda x: -x["fp_total"])[:10]
+        print(f"\n  [{bucket}] Top 10 by total FP:")
         for i, c in enumerate(lst, 1):
             marker = "  BOOSTED" if c["boost"] > 0 else ""
-            print(f"    {i:>2}. {c['name']:28s}  fp/g={c['fp_pg']:>5.2f}  total={c['fp_total']:>4}  rating={c['rating']:>6}{marker}")
+            print(f"    {i:>2}. {c['name']:28s}  total={c['fp_total']:>4}  fp/g={c['fp_pg']:>5.2f}  rating={c['rating']:>6}{marker}")
 
     teams_filled = sum(1 for p in players if p.get("team"))
     teams_empty = sum(1 for p in players if not p.get("team"))
