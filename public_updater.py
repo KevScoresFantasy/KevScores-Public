@@ -295,26 +295,32 @@ MIN_PA = 25
 MIN_IP = 5.0
 
 # ── Breakout Boost parameters ──
-# Targeted bonus for low-baseline players who are putting up elite per-game
-# performance. Recalculated daily — no boost state is stored.
+# Targeted bonus for low-baseline players with elite per-game performance.
+# Recalculated daily — no boost state is stored.
 #
-# Eligibility gates (all must pass):
+# Eligibility gates:
 #   1. Rank Score ≥ BOOST_RS_FLOOR — must be an elite per-game performer
-#   2. ESPN baseline ≤ BOOST_MAX_BASELINE — baseline must be low enough that
-#      a boost is warranted (high-baseline stars don't need it)
-#   3. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP, RPs ≥ BOOST_MIN_IP_RP
-#   4. Computed boost ≥ BOOST_MIN_VALUE — tiny boosts get zeroed out
+#   2. ESPN baseline ≤ BOOST_MAX_BASELINE — baseline must be low enough
+#      that a boost is warranted (high-baseline stars don't need it)
+#   3. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP,
+#      RPs ≥ BOOST_MIN_IP_RP
 #
-# Boost curve (square root): boost = BOOST_MAX_VALUE × √(1 − baseline/BOOST_MAX_BASELINE)
-# Lower baselines get bigger boosts. Curve is non-linear so mid-range baselines
-# still get some credit instead of dropping off a cliff.
+# Two-factor curve:
+#   baseline_factor = (1 − baseline / BOOST_MAX_BASELINE) ** BOOST_BASELINE_EXP
+#   rank_factor     = (rank_score − BOOST_RS_FLOOR) / BOOST_RS_SCALE
+#   boost           = BOOST_MAX_VALUE × baseline_factor × rank_factor
+#
+# Lower baseline → bigger boost. Higher Rank Score → bigger boost.
+# A player barely above the RS floor gets a tiny boost regardless of baseline;
+# a player at the RS cap with a low baseline approaches BOOST_MAX_VALUE.
 BOOST_MIN_PA       = 80     # batters need this many plate appearances
 BOOST_MIN_IP_SP    = 25.0   # starting pitchers — innings pitched
 BOOST_MIN_IP_RP    = 10.0   # relief pitchers — innings pitched
 BOOST_RS_FLOOR     = 95.0   # Rank Score must be ≥ this to qualify
+BOOST_RS_SCALE     = 5.0    # RS floor→100 maps to rank factor 0→1
 BOOST_MAX_BASELINE = 35     # ESPN baseline must be ≤ this
+BOOST_BASELINE_EXP = 0.2    # gentler curve — keeps high-baseline players in play
 BOOST_MAX_VALUE    = 10.0   # max possible boost
-BOOST_MIN_VALUE    = 2.0    # boosts smaller than this are zeroed out
 
 def convert_ip(ip):
     """
@@ -454,12 +460,14 @@ def adjusted_espn_value(espn_value, rank_score):
 def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip):
     """
     Targeted boost for low-baseline players with elite per-game performance.
-    Recalculated daily — no boost state is stored.
+    See parameter block above for design rationale.
 
-    All four gates must pass. Magnitude follows a square-root curve over
-    baseline (lower baseline = bigger boost, softly tapering).
+    Returns 0.0 if any gate fails. Otherwise returns a boost on [0, BOOST_MAX_VALUE].
+    No hard-coded min floor — even tiny rank scores just above the floor produce
+    tiny boosts, which is intentional so players don't lose their whole boost
+    from a one-day rank slip.
     """
-    # Gate 1: Rank Score floor — must be an elite per-game performer
+    # Gate 1: Rank Score floor — must be elite per-game
     if rank_score is None or rank_score < BOOST_RS_FLOOR:
         return 0.0
 
@@ -467,7 +475,7 @@ def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip):
     if espn_value is None or espn_value > BOOST_MAX_BASELINE or espn_value < 0:
         return 0.0
 
-    # Gate 3: Sample size
+    # Gate 3: Sample size — must have meaningful playing time
     if is_pitcher:
         is_sp = "SP" in str(pos).upper()
         min_ip = BOOST_MIN_IP_SP if is_sp else BOOST_MIN_IP_RP
@@ -477,16 +485,15 @@ def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip):
         if pa < BOOST_MIN_PA:
             return 0.0
 
-    # Curve: square root of how far below the baseline cap the player sits
+    # Two-factor curve
     pct_below = 1.0 - (espn_value / BOOST_MAX_BASELINE)
     if pct_below <= 0:
         return 0.0
-    boost = BOOST_MAX_VALUE * (pct_below ** 0.5)
+    baseline_factor = pct_below ** BOOST_BASELINE_EXP
+    rank_factor     = (rank_score - BOOST_RS_FLOOR) / BOOST_RS_SCALE
+    rank_factor     = max(0.0, min(1.0, rank_factor))  # clamp to [0, 1]
 
-    # Gate 4: Floor — don't show tiny boosts
-    if boost < BOOST_MIN_VALUE:
-        return 0.0
-
+    boost = BOOST_MAX_VALUE * baseline_factor * rank_factor
     return round(min(boost, BOOST_MAX_VALUE), 4)
 
 # ── BUILD PLAYERS LIST ──
@@ -555,9 +562,8 @@ def build_players(batting_rows, pitching_rows,
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
 
-        # Breakout Boost (0 if ineligible). Uses the raw Rank Score (not the
-        # rs_for_calc zero-fallback), and pulls PA/IP from raw stats so the
-        # eligibility gates use actual playing time.
+        # Breakout Boost (0 if ineligible). Uses the raw Rank Score — not the
+        # zero-fallback — and pulls PA/IP from raw stats for accurate gating.
         pa_for_boost = float(stats_src.get("PA", 0) or 0)
         ip_for_boost = convert_ip(stats_src.get("IP", 0))
         breakout_boost = 0.0 if not_eligible else calculate_breakout_boost(
@@ -922,15 +928,21 @@ def main():
     players, overall = build_json(rows, weekly_prev)
     print(f"  {len(players)} players computed")
 
-    # Breakout Boost diagnostic — shows which players got the boost this run
-    boosted = [(p["name"], p["kevScore"], p.get("breakoutBoost", 0))
-               for p in players if p.get("breakoutBoost", 0) > 0]
-    boosted.sort(key=lambda x: -x[2])
-    print(f"\nBreakout Boost applied to {len(boosted)} players:")
-    for name, score, boost in boosted[:25]:
+    # Breakout Boost diagnostic. All nonzero boosts go into the JSON, but the
+    # log only shows boosts ≥ 1.0 to keep output readable (tiny boosts from
+    # players hugging the RS floor would otherwise dominate the list).
+    all_boosted = [(p["name"], p["kevScore"], p.get("breakoutBoost", 0))
+                   for p in players if p.get("breakoutBoost", 0) > 0]
+    visible = [x for x in all_boosted if x[2] >= 1.0]
+    visible.sort(key=lambda x: -x[2])
+    hidden_count = len(all_boosted) - len(visible)
+    print(f"\nBreakout Boost applied to {len(all_boosted)} players total (showing boosts ≥ 1.0):")
+    for name, score, boost in visible[:25]:
         print(f"  +{boost:5.2f}  {name:30s}  (final Kev: {score})")
-    if len(boosted) > 25:
-        print(f"  ... and {len(boosted) - 25} more")
+    if len(visible) > 25:
+        print(f"  ... and {len(visible) - 25} more visible")
+    if hidden_count:
+        print(f"  ({hidden_count} additional players got boosts < 1.0, hidden)")
 
     teams_filled = sum(1 for p in players if p.get("team"))
     teams_empty = sum(1 for p in players if not p.get("team"))
