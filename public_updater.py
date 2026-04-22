@@ -766,8 +766,11 @@ def _find_js_const_bounds(html, const_name):
 
 def inject(html, players, overall):
     """
-    Patch the public `index.html` template: LAST_UPDATED, PLAYERS, OVERALL.
-    Leaves other declarations intact (e.g. `const FANTASY_TEAM_NAMES = {}` for trade labels).
+    Update LAST_UPDATED inside index.html. PLAYERS and OVERALL are now
+    written as separate JSON files (players.json, overall.json) so that
+    index.html stays small and the browser can cache data independently.
+    The players/overall args are kept for signature compatibility.
+    Returns the (possibly unchanged) html string.
     """
     today = datetime.now().strftime("%B %d, %Y")
 
@@ -777,24 +780,9 @@ def inject(html, players, overall):
             f'const LAST_UPDATED = "{today}";',
             html
         )
+        print(f"  Updated LAST_UPDATED to {today} ✓")
     else:
         print("  WARNING: LAST_UPDATED pattern not found in HTML")
-
-    p_start, p_end = _find_js_const_bounds(html, "PLAYERS")
-    if p_start is not None:
-        new_block = f"const PLAYERS = {json.dumps(players)};"
-        html = html[:p_start] + new_block + html[p_end:]
-        print(f"  Injected PLAYERS: {len(players)} entries ✓")
-    else:
-        print("  ERROR: Could not find PLAYERS array bounds — HTML may be malformed")
-
-    o_start, o_end = _find_js_const_bounds(html, "OVERALL")
-    if o_start is not None:
-        new_block = f"const OVERALL = {json.dumps(overall)};"
-        html = html[:o_start] + new_block + html[o_end:]
-        print(f"  Injected OVERALL: {len(overall)} entries ✓")
-    else:
-        print("  ERROR: Could not find OVERALL array bounds — HTML may be malformed")
 
     return html
 
@@ -906,7 +894,37 @@ def main():
         except Exception as e:
             print(f"  WARNING: Could not save weekly snapshot: {e}")
 
-    print("\nBuilding website...")
+    print("\nWriting data files...")
+
+    # Push players.json
+    players_raw, players_sha = github_get_file("players.json")
+    try:
+        github_put_file(
+            "players.json",
+            json.dumps(players),
+            players_sha,
+            f"Update players data {datetime.now().strftime('%b %d, %Y')}"
+        )
+        print(f"  players.json pushed ✓ ({len(players)} entries)")
+    except Exception as e:
+        print(f"  ERROR pushing players.json: {e}")
+        sys.exit(1)
+
+    # Push overall.json
+    overall_raw, overall_sha = github_get_file("overall.json")
+    try:
+        github_put_file(
+            "overall.json",
+            json.dumps(overall),
+            overall_sha,
+            f"Update overall data {datetime.now().strftime('%b %d, %Y')}"
+        )
+        print(f"  overall.json pushed ✓ ({len(overall)} entries)")
+    except Exception as e:
+        print(f"  ERROR pushing overall.json: {e}")
+        sys.exit(1)
+
+    print("\nUpdating index.html (LAST_UPDATED only)...")
     html_raw, html_sha = github_get_file(GITHUB_FILE)
     if not html_raw:
         print("ERROR: index.html not found in repo")
@@ -914,27 +932,19 @@ def main():
 
     new_html = inject(html_raw, players, overall)
 
-    import re as _re
-    first_team_match = _re.search(r'"team"\s*:\s*"([^"]*)"', new_html)
-    first_mlbTeam_match = _re.search(r'"mlbTeam"\s*:\s*"([^"]*)"', new_html)
-    print(f"  Post-inject check: PLAYERS first team='{first_team_match.group(1) if first_team_match else 'NOT FOUND'}'")
-    print(f"  Post-inject check: OVERALL first mlbTeam='{first_mlbTeam_match.group(1) if first_mlbTeam_match else 'NOT FOUND'}'")
+    # Only push index.html if LAST_UPDATED actually changed
+    if new_html != html_raw:
+        result = github_put_file(
+            GITHUB_FILE,
+            new_html,
+            html_sha,
+            f"Daily stats update {datetime.now().strftime('%b %d, %Y')}"
+        )
+        new_sha = result["content"]["sha"]
+        print(f"  index.html pushed ✓ — SHA: {new_sha[:12]}")
+    else:
+        print("  index.html unchanged — skipping push")
 
-    if len(new_html) < len(html_raw) * 0.5:
-        print(f"  ABORT: Output HTML ({len(new_html):,} chars) is less than 50% of template ({len(html_raw):,} chars)")
-        print("  This indicates a failed injection — not pushing to avoid corrupting the site")
-        sys.exit(1)
-
-    print(f"  Final size: {len(new_html):,} chars ✓")
-
-    result = github_put_file(
-        GITHUB_FILE,
-        new_html,
-        html_sha,
-        f"Daily stats update {datetime.now().strftime('%b %d, %Y')}"
-    )
-    new_sha = result["content"]["sha"]
-    print(f"  Pushed ✓ — SHA: {new_sha[:12]}")
     print("  Live at: https://kev-scores-public.vercel.app")
     print()
     print("All done!")
