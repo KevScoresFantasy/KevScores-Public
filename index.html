@@ -706,14 +706,14 @@ function openPlayerModal(p) {
 
   const statRows = isPitcher
     ? [
-        ['Games', stats.G], ['Starts', stats.GS], ['Innings', stats.IP], ['Wins', stats.W], ['Losses', stats.L],
-        ['Saves', stats.SV], ['Holds', stats.HLD], ['Strikeouts', stats.SO], ['Earned Runs', stats.ER], ['Hits', stats.H],
+        ['Starts', stats.GS], ['Innings', stats.IP], ['W/L', `${stats.W ?? 0}-${stats.L ?? 0}`],
+        ['Saves', stats.SV], ['Holds', stats.HLD], ['Strikeouts', stats.SO], ['Hits', stats.H],
         ['Walks', stats.BB], ['ERA', stats.ERA],
       ]
     : [
-        ['Games', stats.G], ['At Bats', stats.AB], ['Plate Appearances', stats.PA], ['Hits', stats.H], ['Home Runs', stats.HR],
+        ['Games', stats.G], ['Hits', stats.H], ['Home Runs', stats.HR],
         ['Runs Batted In', stats.RBI], ['Runs', stats.R], ['Walks', stats.BB], ['Strikeouts', stats.SO], ['Stolen Bases', stats.SB],
-        ['Total Bases', stats.TB], ['Average', stats.AVG],
+        ['Average', stats.AVG],
       ];
 
   const statsHtml = statRows
@@ -735,8 +735,17 @@ function openPlayerModal(p) {
     })
     .join('');
 
+  // Team logos with dark-blue primaries need a lighter background for contrast.
+  // Yankees/Twins/Padres -> gray (their logos are dark blue, a subtle gray reads better than bright white)
+  // Tigers/Royals/Rays   -> white (their logos are still too low-contrast on dark bg but white works fine)
+  const grayBgTeams = ['twins', 'yankees', 'padres'];
+  const whiteBgTeams = ['tigers', 'royals', 'rays'];
+  let logoBg = 'transparent';
+  if (grayBgTeams.includes(teamAbbr)) logoBg = 'rgba(200,200,200,0.7)';
+  else if (whiteBgTeams.includes(teamAbbr)) logoBg = 'rgba(255,255,255,0.8)';
+
   const teamLogo = team
-    ? `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:${['twins','tigers','yankees','royals','rays','padres'].includes(teamAbbr) ? 'rgba(255,255,255,0.8)' : 'transparent'};border-radius:50%;margin-left:10px;">
+    ? `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:${logoBg};border-radius:50%;margin-left:10px;">
         <img src="https://a.espncdn.com/i/teamlogos/mlb/500/${escapeHtml(teamAbbr)}.png" alt="${escapeHtml(team)} logo" style="width:26px;height:26px;object-fit:contain;opacity:.9;">
       </span>`
     : '';
