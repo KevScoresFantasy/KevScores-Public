@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About KevScores — Fantasy Baseball Trade Calculator &amp; Rankings</title>
+<meta name="description" content="The story behind KevScores — a free fantasy baseball trade calculator and player ranking tool built by a first-year fantasy manager for casual and serious players alike.">
+<meta name="keywords" content="about kevscores, fantasy baseball trade calculator, kev score, fantasy baseball rankings, fantasy baseball tools">
+<meta name="author" content="KevScores">
+
+<!-- Open Graph / Social Card -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://kevscores.com/about.html">
+<meta property="og:title" content="About KevScores — A Fantasy Baseball Tool Built From Scratch">
+<meta property="og:description" content="How a first-year fantasy baseball manager turned a spreadsheet into a free trade calculator and ranking tool used to evaluate every player in the MLB.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="About KevScores — A Fantasy Baseball Tool Built From Scratch">
+<meta name="twitter:description" content="How a first-year fantasy baseball manager turned a spreadsheet into a free trade calculator and ranking tool.">
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14;--surface:#161920;--border:rgba(255,255,255,0.07);
+  --text:#f0f2f5;--text-muted:#6b7280;--text-dim:#9ca3af;
+  --accent:#00c8e8;--accent-dim:rgba(0,200,232,0.08);
+  --font-display:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.7;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(0,200,232,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+.page-wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 24px 80px;}
+
+/* Header */
+header{padding:36px 0 32px;border-bottom:1px solid var(--border);margin-bottom:48px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-decoration:none;margin-bottom:20px;opacity:.8;transition:opacity .15s;}
+.back-link:hover{opacity:1;}
+.logo-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+h1{font-family:var(--font-display);font-size:40px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1;}
+h1 span{color:var(--accent);}
+.effective-date{font-size:13px;color:var(--text-muted);margin-top:8px;}
+
+/* Content */
+.policy-body{color:var(--text-dim);}
+.section{margin-bottom:40px;}
+h2{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+p{margin-bottom:14px;color:var(--text-dim);}
+p:last-child{margin-bottom:0;}
+ul{padding-left:20px;margin-bottom:14px;}
+li{margin-bottom:6px;color:var(--text-dim);}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+strong{color:var(--text);font-weight:500;}
+
+/* Pull quote */
+.pull-quote{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:20px 0;font-style:italic;color:var(--text);font-size:16px;}
+
+/* Contact card */
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-top:12px;}
+.contact-card p{margin:0;font-size:14px;}
+
+/* Feature list */
+.feature-list{list-style:none;padding-left:0;}
+.feature-list li{position:relative;padding-left:22px;margin-bottom:10px;}
+.feature-list li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-weight:700;}
+
+/* Footer */
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted);}
+footer a{color:var(--accent);}
+.footer-nav{margin-bottom:10px;}
+.footer-nav a{margin:0 8px;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <a href="index.html" class="back-link">← Back to KevScores</a>
+    <div class="logo-eyebrow">KevScores</div>
+    <h1>About <span>KevScores</span></h1>
+    <p class="effective-date">A fantasy baseball tool built from scratch &mdash; for casuals, by a casual.</p>
+  </header>
+
+  <div class="policy-body">
+
+    <div class="section">
+      <h2>The Short Version</h2>
+      <p>KevScores is a free fantasy baseball analytics tool. It gives you a daily-updated ranking of every MLB player, a trade calculator that evaluates any deal, risers and fallers reports, and weekly top scorers &mdash; all powered by a custom metric called the <strong>Kev Score</strong> that combines preseason value with live 2026 performance.</p>
+      <p>Want to see the math? Read the <a href="methodology.html">Methodology</a> page. Want the story? Keep reading.</p>
+    </div>
+
+    <div class="section">
+      <h2>Why I Built This</h2>
+      <p>This is my first year playing fantasy baseball. I&rsquo;m a casual viewer of the game and a stats enthusiast by nature, and pretty quickly into the season I realized I needed help &mdash; the defaults weren&rsquo;t cutting it.</p>
+      <p>Every fantasy platform shows you a player&rsquo;s preseason ranking, their season totals, and maybe a few rate stats. What none of them show you cleanly is the thing you actually need to answer: <em>what is this player worth right now?</em> ESPN&rsquo;s preseason values are frozen from March. Season totals tell you the past. Neither tells you whether the player your league-mate just offered you is a bargain or a trap.</p>
+      <div class="pull-quote">
+        I wanted a number that said: here is where this player ranks today, accounting for who they were expected to be and what they&rsquo;ve actually done this year.
+      </div>
+      <p>Fantasy football has trade calculators everywhere. Fantasy baseball has almost none. So I built one.</p>
+    </div>
+
+    <div class="section">
+      <h2>How It Started</h2>
+      <p>KevScores started life as a spreadsheet. I wanted a quick way to see my own league&rsquo;s power rankings &mdash; not the ESPN-provided version based purely on standings, but a real view of which teams had the most valuable rosters.</p>
+      <p>Once I had a working formula, I kept pushing it. If I could rank my league&rsquo;s rosters, I could rank every player. If I could rank every player, I could build a trade calculator. If I could track daily changes, I could build a risers and fallers list. Every new feature answered a question I was asking myself as a new manager.</p>
+      <p>The spreadsheet became a Python script. The Python script became a daily automated pipeline. The pipeline became this website.</p>
+    </div>
+
+    <div class="section">
+      <h2>What You Can Do Here</h2>
+      <ul class="feature-list">
+        <li><strong>Evaluate any trade.</strong> Add players to both sides of a proposed deal and see who&rsquo;s winning &mdash; with league-size adjustments for 8-, 10-, and 12-team leagues.</li>
+        <li><strong>Browse the full rankings.</strong> Every MLB player with a Kev Score, filtered by position, type, or name. Sortable by whatever matters to you.</li>
+        <li><strong>See who&rsquo;s hot and who&rsquo;s cold.</strong> Rolling 7-day movers, both up and down, refreshed every morning.</li>
+        <li><strong>Check weekly top scorers.</strong> See who&rsquo;s earning the most fantasy points this week for trade-deadline and waiver decisions.</li>
+        <li><strong>Click any player for details.</strong> 2026 season stats, position, team, Kev Score breakdown &mdash; all in a single view.</li>
+      </ul>
+      <p>The whole site updates daily, automatically, every morning at 7 AM Central.</p>
+    </div>
+
+    <div class="section">
+      <h2>Who Runs This</h2>
+      <p>My name is Kevin. I&rsquo;m a stats enthusiast who got hooked on fantasy baseball this year and couldn&rsquo;t find the tool I wanted to use, so I built it. There&rsquo;s no team behind KevScores &mdash; it&rsquo;s just me, a Python script, and a hosting bill.</p>
+      <p>If you&rsquo;ve found this site useful, the best thing you can do is share it with a league-mate. If you&rsquo;ve found a bug or have a feature request, reach out &mdash; I read every message.</p>
+    </div>
+
+    <div class="section">
+      <h2>What&rsquo;s Next</h2>
+      <p>A few things I&rsquo;m actively working on or considering:</p>
+      <ul>
+        <li>A &ldquo;paste your roster&rdquo; tool for any platform (Yahoo, Sleeper, ESPN, CBS) that scores your team against the league</li>
+        <li>League power rankings via ESPN league ID</li>
+        <li>Weekly written breakdowns of the biggest Kev Score movers</li>
+      </ul>
+      <p>If there&rsquo;s something you&rsquo;d love to see, <a href="#contact">let me know</a>.</p>
+    </div>
+
+    <div class="section" id="contact">
+      <h2>Get in Touch</h2>
+      <p>Questions, feature ideas, bug reports, or just want to say hi:</p>
+      <div class="contact-card">
+        <p><strong>KevScores</strong><br>
+        Email: <a href="mailto:kspinelli24@gmail.com">kspinelli24@gmail.com</a><br>
+        GitHub: <a href="https://github.com/KevScoresFantasy" target="_blank" rel="noopener">github.com/KevScoresFantasy</a>
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /policy-body -->
+
+  <footer>
+    <div class="footer-nav">
+      <a href="index.html">Home</a> ·
+      <a href="methodology.html">Methodology</a> ·
+      <a href="privacy.html">Privacy</a>
+    </div>
+    <p>Updated Daily &nbsp;·&nbsp; Kev Score Methodology™ &nbsp;·&nbsp; 2026 Fantasy Baseball</p>
+  </footer>
+
+</div>
+</body>
+</html>
