@@ -103,8 +103,6 @@ h1 span{color:var(--accent);}
 .player-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;animation:slideIn .15s ease;}
 @keyframes slideIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
 .chip-avatar{flex-shrink:0;width:64px;display:flex;align-items:center;justify-content:center;}
-/* Stretch all headshot images horizontally (applies everywhere headshots are rendered) */
-img[src^="headshots/"]{transform:scaleX(1.25);transform-origin:center;}
 .chip-initials{width:64px;height:46px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;font-weight:800;color:#fff;letter-spacing:.02em;flex-shrink:0;}
 .chip-rank{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--text-muted);min-width:28px;text-align:center;background:var(--surface2);border-radius:4px;padding:2px 4px;}
 .chip-info{flex:1;min-width:0;}
@@ -196,8 +194,12 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .modal-name{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:-.4px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .modal-sub{margin-top:4px;color:var(--text-muted);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .pill{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);}
-.pill-boost{font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(250,204,21,0.22),rgba(250,204,21,0.12));color:#fbbf24;border:1px solid rgba(250,204,21,0.45);display:inline-flex;align-items:center;gap:4px;}
+.pill-boost{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(250,204,21,0.22),rgba(250,204,21,0.12));color:#fbbf24;border:1px solid rgba(250,204,21,0.45);display:inline-flex;align-items:center;gap:4px;cursor:help;}
 .pill-boost::before{content:"★";font-size:10px;line-height:1;}
+.pill-boost .boost-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(250,204,21,0.45);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-boost .boost-tip strong{color:#fbbf24;font-weight:700;}
+.pill-boost .boost-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(250,204,21,0.45);}
+.pill-boost:hover .boost-tip{opacity:1;}
 .modal-close{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:6px 10px;cursor:pointer;font-family:var(--font-display);font-weight:800;}
 .modal-close:hover{color:var(--text);border-color:var(--border-accent);}
 .modal-body{padding:14px 16px 18px;}
@@ -242,7 +244,8 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     </div>
     <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
       <a href="https://www.mlb.com/scores" target="_blank" rel="noopener" class="header-badge">Today's Live Scores ↗</a>
-      </div>
+      <a href="https://x.com/KevScores" target="_blank" rel="noopener" class="header-badge">Follow @KevScores ↗</a>
+    </div>
   </div>
   <nav class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('trade',this)">Trade Calculator</button>
@@ -468,10 +471,14 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 
 <footer>
   <p>
-    <a href="privacy.html" style="color:var(--accent);text-decoration:none;">Privacy Policy</a>
-    &middot; Updated Daily
-    &middot; Kev Score Methodology&trade;
-    &middot; 2026 Fantasy Baseball
+    <a href="about.html" style="color:var(--accent);text-decoration:none;">About</a>
+    &middot;
+    <a href="methodology.html" style="color:var(--accent);text-decoration:none;">Methodology</a>
+    &middot;
+    <a href="privacy.html" style="color:var(--accent);text-decoration:none;">Privacy</a>
+  </p>
+  <p style="margin-top:4px">
+    Updated Daily &middot; Kev Score Methodology&trade; &middot; 2026 Fantasy Baseball
   </p>
   <p style="margin-top:4px">Data last updated: <span id="last-updated"></span></p>
 </footer>
@@ -485,7 +492,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 </div>
 
 <script>
-const LAST_UPDATED = "Apr 22, 2026 4:15 PM ET";
+const LAST_UPDATED = "April 21, 2026";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
 
 // ── Nav ──
@@ -718,14 +725,14 @@ function openPlayerModal(p) {
 
   const statRows = isPitcher
     ? [
-        ['Games', stats.G], ['Starts', stats.GS], ['Innings', stats.IP], ['Wins', stats.W], ['Losses', stats.L],
-        ['Saves', stats.SV], ['Holds', stats.HLD], ['Strikeouts', stats.SO], ['Earned Runs', stats.ER], ['Hits', stats.H],
+        ['Starts', stats.GS], ['Innings', stats.IP], ['W/L', `${stats.W ?? 0}-${stats.L ?? 0}`],
+        ['Saves', stats.SV], ['Holds', stats.HLD], ['Strikeouts', stats.SO], ['Hits', stats.H],
         ['Walks', stats.BB], ['ERA', stats.ERA],
       ]
     : [
-        ['Games', stats.G], ['At Bats', stats.AB], ['Plate Appearances', stats.PA], ['Hits', stats.H], ['Home Runs', stats.HR],
+        ['Games', stats.G], ['Hits', stats.H], ['Home Runs', stats.HR],
         ['Runs Batted In', stats.RBI], ['Runs', stats.R], ['Walks', stats.BB], ['Strikeouts', stats.SO], ['Stolen Bases', stats.SB],
-        ['Total Bases', stats.TB], ['Average', stats.AVG],
+        ['Average', stats.AVG],
       ];
 
   const statsHtml = statRows
@@ -747,8 +754,17 @@ function openPlayerModal(p) {
     })
     .join('');
 
+  // Team logos with dark-blue primaries need a lighter background for contrast.
+  // Yankees/Twins/Padres -> gray (their logos are dark blue, a subtle gray reads better than bright white)
+  // Tigers/Royals/Rays   -> white (their logos are still too low-contrast on dark bg but white works fine)
+  const grayBgTeams = ['twins', 'yankees', 'padres'];
+  const whiteBgTeams = ['tigers', 'royals', 'rays'];
+  let logoBg = 'transparent';
+  if (grayBgTeams.includes(teamAbbr)) logoBg = 'rgba(200,200,200,0.7)';
+  else if (whiteBgTeams.includes(teamAbbr)) logoBg = 'rgba(255,255,255,0.8)';
+
   const teamLogo = team
-    ? `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:${['twins','tigers','yankees','royals','rays','padres'].includes(teamAbbr) ? 'rgba(255,255,255,0.8)' : 'transparent'};border-radius:50%;margin-left:10px;">
+    ? `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:${logoBg};border-radius:50%;margin-left:10px;">
         <img src="https://a.espncdn.com/i/teamlogos/mlb/500/${escapeHtml(teamAbbr)}.png" alt="${escapeHtml(team)} logo" style="width:26px;height:26px;object-fit:contain;opacity:.9;">
       </span>`
     : '';
@@ -770,7 +786,7 @@ function openPlayerModal(p) {
           ${team ? `<span class="pill">${escapeHtml(team)}</span>` : ''}
           ${pos ? `<span class="pill">${escapeHtml(pos)}</span>` : ''}
           ${type ? `<span class="pill">${escapeHtml(type)}</span>` : ''}
-          ${(p.breakoutBoost && p.breakoutBoost > 0) ? `<span class="pill-boost" title="Top-5 performer at position — +${p.breakoutBoost} Kev Score boost">Breakout</span>` : ''}
+          ${(p.breakoutBoost && p.breakoutBoost > 0) ? `<span class="pill-boost">Breakout<span class="boost-tip">Top-5 performer at their position<br>Kev Score boosted by <strong>+${p.breakoutBoost}</strong></span></span>` : ''}
         </div>
       </div>
       <button class="modal-close" onclick="closePlayerModal()" aria-label="Close">✕</button>
