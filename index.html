@@ -359,7 +359,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
           <th onclick="sortOverall('pos')" id="th-pos">Eligible</th>
           <th onclick="sortOverall('type')" id="th-type">Type</th>
           <th onclick="sortOverall('espnRank')" id="th-espnRank" class="num">ESPN Rank</th>
-          <th onclick="sortOverall('kevWeekly')" id="th-kevWeekly" class="num" title="Score change since previous week">&#916; Score</th>
+          <th onclick="sortOverall('kevChange7d')" id="th-kevChange7d" class="num" title="Score change over the last 7 days">&#916; 7-Day</th>
           <th onclick="sortOverall('rankDiff')" id="th-rankDiff" class="num">Rank Diff</th>
           
         </tr>
@@ -722,12 +722,18 @@ function openPlayerModal(p) {
     .filter(([k]) => k) // keep order
     .map(([k, v]) => {
       let displayValue = v ?? '—';
+      let valueColor = '';
       if (k === 'ERA' && v !== null && v !== undefined && !isNaN(v)) {
-        displayValue = Number(v).toFixed(2);
+        const numVal = Number(v);
+        displayValue = numVal.toFixed(2);
+        valueColor = numVal < 4.00 ? 'var(--green)' : 'var(--red)';
       } else if (k === 'Average' && v !== null && v !== undefined && !isNaN(v)) {
-        displayValue = Number(v).toFixed(3).replace(/^0+/, '');
+        const numVal = Number(v);
+        displayValue = numVal.toFixed(3).replace(/^0+/, '');
+        valueColor = numVal >= 0.250 ? 'var(--green)' : 'var(--red)';
       }
-      return `<div class="stat"><div class="k">${escapeHtml(k)}</div><div class="v">${escapeHtml(displayValue)}</div></div>`;
+      const vStyle = valueColor ? ` style="color:${valueColor}"` : '';
+      return `<div class="stat"><div class="k">${escapeHtml(k)}</div><div class="v"${vStyle}>${escapeHtml(displayValue)}</div></div>`;
     })
     .join('');
 
