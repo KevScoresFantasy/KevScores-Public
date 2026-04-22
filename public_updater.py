@@ -304,7 +304,8 @@ MIN_IP = 5.0
 #   2. Must be in top N by FP/PG AND top M by total FP within bucket.
 #   3. Baseline cap: ESPN value ≤ BOOST_MAX_BASELINE.
 #   4. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP,
-#      RPs ≥ BOOST_MIN_IP_RP.
+#      RPs ≥ BOOST_MIN_SV_RP (saves — keeps out fake relievers who are
+#      really starters or long men).
 #
 # Boost magnitude: purely a function of within-bucket FP/PG rank.
 # Ladder: #1 → 10, #2 → 8, #3 → 6, #4 → 4, #5 → 2. Below #5 → 0.
@@ -312,7 +313,7 @@ MIN_IP = 5.0
 # feels appropriately modest (a 2-point boost is still noticeable but not huge).
 BOOST_MIN_PA         = 80     # batters need this many PA
 BOOST_MIN_IP_SP      = 25.0   # starting pitchers — innings pitched
-BOOST_MIN_IP_RP      = 10.0   # relief pitchers — innings pitched
+BOOST_MIN_SV_RP      = 5      # relief pitchers — saves (filters out fake RPs)
 BOOST_MAX_BASELINE   = 35     # ESPN baseline must be ≤ this
 BOOST_TOP_N_PPG      = 5      # top N by FP/PG per bucket
 BOOST_TOP_N_TOTAL_FP = 10     # and also top M by total FP per bucket
@@ -509,7 +510,7 @@ def compute_boost_rank_map(candidates,
                 rank += 1
     return rank_map
 
-def calculate_breakout_boost(espn_value, is_pitcher, pos, pa, ip,
+def calculate_breakout_boost(espn_value, is_pitcher, pos, pa, ip, sv,
                               name, rank_map):
     """
     Boost magnitude is determined purely by within-bucket FP/PG rank:
@@ -517,6 +518,10 @@ def calculate_breakout_boost(espn_value, is_pitcher, pos, pa, ip,
 
     Baseline remains a *gate* (≤ BOOST_MAX_BASELINE) so elite-baseline
     players like Judge or Ohtani don't get boosted.
+
+    For pitchers, the SP sample gate is innings (≥ BOOST_MIN_IP_SP) while
+    the RP gate is saves (≥ BOOST_MIN_SV_RP). Saves cleanly separate true
+    closers from starters or long men who happen to have "RP" eligibility.
     """
     # Gate 1: positional rank (must be in the pre-computed rank map)
     bucket_rank = rank_map.get(name)
@@ -527,12 +532,15 @@ def calculate_breakout_boost(espn_value, is_pitcher, pos, pa, ip,
     if espn_value is None or espn_value > BOOST_MAX_BASELINE or espn_value < 0:
         return 0.0
 
-    # Gate 3: sample size
+    # Gate 3: sample size (SP uses innings, RP uses saves, batters use PA)
     if is_pitcher:
         is_sp = "SP" in str(pos).upper()
-        min_ip = BOOST_MIN_IP_SP if is_sp else BOOST_MIN_IP_RP
-        if ip < min_ip:
-            return 0.0
+        if is_sp:
+            if ip < BOOST_MIN_IP_SP:
+                return 0.0
+        else:
+            if sv < BOOST_MIN_SV_RP:
+                return 0.0
     else:
         if pa < BOOST_MIN_PA:
             return 0.0
@@ -602,7 +610,9 @@ def build_players(batting_rows, pitching_rows,
 
         espn_rank = espn_data.get("rank", 999)
         espn_value = espn_data.get("value", 0)
-        pos = espn_data.get("pos", "SP" if is_pitcher else "OF")
+        pos_raw = espn_data.get("pos")
+        pos_explicit = pos_raw is not None and str(pos_raw).strip() != ""
+        pos = pos_raw if pos_explicit else ("SP" if is_pitcher else "OF")
 
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
@@ -630,6 +640,7 @@ def build_players(batting_rows, pitching_rows,
             "rs": rs if rs is not None else 0,
             "rs_raw": rs,
             "is_pitcher": is_pitcher,
+            "pos_explicit": pos_explicit,
             "not_eligible": not_eligible,
             "sr": sr,
             "sr_pg": sr_pg,
@@ -639,16 +650,29 @@ def build_players(batting_rows, pitching_rows,
     # ── Post-pass: apply Breakout Boost ──
     # Compute each eligible player's within-bucket rank, then apply a boost
     # purely determined by that rank (10 / 8 / 6 / 4 / 2 ladder).
-    candidates = [
-        {
+    # Pitchers without an explicit position in espn_baseline are excluded from
+    # the boost — we can't confidently bucket them as SP vs RP.
+    candidates = []
+    excluded_pitchers = []
+    for r in rows:
+        if r["not_eligible"]:
+            continue
+        # Exclude pitchers whose position came from the fallback default
+        if r["is_pitcher"] and not r["pos_explicit"]:
+            excluded_pitchers.append(r["name"])
+            continue
+        candidates.append({
             "name": r["name"],
             "bucket": _boost_bucket(r["is_pitcher"], r["pos"]),
             "fp_pg": r["fp_pg"],
             "fp_total": r["fp"],
-        }
-        for r in rows if not r["not_eligible"]
-    ]
+        })
     rank_map = compute_boost_rank_map(candidates)
+    if excluded_pitchers:
+        print(f"  [boost] {len(excluded_pitchers)} pitchers excluded from boost "
+              f"(no explicit SP/RP position in baseline): "
+              f"{', '.join(excluded_pitchers[:5])}"
+              f"{'...' if len(excluded_pitchers) > 5 else ''}")
 
     for r in rows:
         if r["not_eligible"]:
@@ -656,12 +680,14 @@ def build_players(batting_rows, pitching_rows,
         stats_src = r["stats_src"]
         pa_for_boost = float(stats_src.get("PA", 0) or 0)
         ip_for_boost = convert_ip(stats_src.get("IP", 0))
+        sv_for_boost = int(stats_src.get("SV", 0) or 0)
         boost = calculate_breakout_boost(
             espn_value=r["espn_val"],
             is_pitcher=r["is_pitcher"],
             pos=r["pos"],
             pa=pa_for_boost,
             ip=ip_for_boost,
+            sv=sv_for_boost,
             name=r["name"],
             rank_map=rank_map,
         )
