@@ -730,8 +730,6 @@ def build_json(rows, weekly_prev):
         weighted = round(kev * (200 - espn_rk) / 100, 2) if espn_rk < 900 else round(kev * 0.2, 2)
         rank_diff = (espn_rk - kev_rank) if espn_rk < 900 else None
         rating = r.get("rating", "")
-        is_unr_rp = espn_rk >= 900 and rating.startswith("RP")
-        kev = round(kev * 0.75, 2) if is_unr_rp else kev
 
         wp = weekly_prev.get(r["name"], {}) if isinstance(weekly_prev, dict) else {}
 
