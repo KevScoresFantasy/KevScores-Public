@@ -858,6 +858,12 @@ def main():
 
     today_str = datetime.now().strftime("%Y-%m-%d")
 
+    # Compute 1-day and 7-day kev score changes (compares today's scores to
+    # prior snapshots stored in daily_history). Must run before we push the
+    # JSONs so kevChange and kevChange7d make it into the output.
+    print("\nComputing score changes...")
+    players, overall = apply_daily_changes(players, overall, daily_history, today_str)
+
     # Download and push new headshots
     print("\nChecking headshots...")
     download_headshots(players)
