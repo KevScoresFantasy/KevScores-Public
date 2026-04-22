@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — How the Kev Score Works | KevScores</title>
+<meta name="description" content="A plain-English explanation of the Kev Score metric — how we combine ESPN preseason values with live 2026 stats to track fantasy baseball player value day to day.">
+<meta name="keywords" content="kev score methodology, fantasy baseball valuation, ESPN dollar value, fantasy baseball formula, player value calculator">
+<meta name="author" content="KevScores">
+
+<!-- Open Graph / Social Card -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://kevscores.com/methodology.html">
+<meta property="og:title" content="The Kev Score Methodology — How We Rank Every MLB Player">
+<meta property="og:description" content="The plain-English explanation of how the Kev Score blends preseason expectations with real 2026 performance to give every MLB player a moving daily value.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Kev Score Methodology — How We Rank Every MLB Player">
+<meta name="twitter:description" content="The formula behind the Kev Score, explained in plain English.">
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14;--surface:#161920;--border:rgba(255,255,255,0.07);
+  --text:#f0f2f5;--text-muted:#6b7280;--text-dim:#9ca3af;
+  --accent:#00c8e8;--accent-dim:rgba(0,200,232,0.08);
+  --green:#22c55e;--red:#ef4444;
+  --font-display:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.7;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(0,200,232,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+.page-wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 24px 80px;}
+
+/* Header */
+header{padding:36px 0 32px;border-bottom:1px solid var(--border);margin-bottom:48px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-decoration:none;margin-bottom:20px;opacity:.8;transition:opacity .15s;}
+.back-link:hover{opacity:1;}
+.logo-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+h1{font-family:var(--font-display);font-size:40px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1;}
+h1 span{color:var(--accent);}
+.effective-date{font-size:13px;color:var(--text-muted);margin-top:8px;}
+
+/* Content */
+.policy-body{color:var(--text-dim);}
+.section{margin-bottom:40px;}
+h2{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+h3{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin-top:20px;margin-bottom:8px;}
+p{margin-bottom:14px;color:var(--text-dim);}
+p:last-child{margin-bottom:0;}
+ul,ol{padding-left:22px;margin-bottom:14px;}
+li{margin-bottom:6px;color:var(--text-dim);}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+strong{color:var(--text);font-weight:500;}
+em{color:var(--text-dim);}
+
+/* Formula block */
+.formula{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin:16px 0;font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--text);letter-spacing:.02em;text-align:center;line-height:1.4;}
+.formula .accent{color:var(--accent);}
+
+/* Example card */
+.example{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin:16px 0;}
+.example h3{margin-top:0;color:var(--accent);}
+.example p{margin-bottom:8px;font-size:14px;}
+.example p:last-child{margin-bottom:0;}
+
+/* Callout */
+.callout{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:20px 0;color:var(--text);font-size:15px;}
+
+/* Stat pills */
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px;}
+.stat-pill{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:3px 10px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
+.stat-pill.bat{color:var(--green);border-color:rgba(34,197,94,0.3);}
+.stat-pill.pit{color:var(--accent);border-color:rgba(0,200,232,0.3);}
+
+/* Footer */
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted);}
+footer a{color:var(--accent);}
+.footer-nav{margin-bottom:10px;}
+.footer-nav a{margin:0 8px;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <a href="index.html" class="back-link">← Back to KevScores</a>
+    <div class="logo-eyebrow">Methodology</div>
+    <h1>How the <span>Kev Score</span> Works</h1>
+    <p class="effective-date">The formula behind every ranking on this site &mdash; explained in plain English.</p>
+  </header>
+
+  <div class="policy-body">
+
+    <div class="section">
+      <h2>The Problem We&rsquo;re Solving</h2>
+      <p>Every fantasy baseball platform gives you two numbers for a player: a <strong>preseason value</strong> (what they were projected to be worth before opening day) and <strong>year-to-date stats</strong> (what they&rsquo;ve actually done so far). Neither answers the question that matters when you&rsquo;re staring down a trade offer or a waiver pickup:</p>
+      <div class="callout">
+        <em>&ldquo;What is this player actually worth <strong>right now</strong>?&rdquo;</em>
+      </div>
+      <p>Preseason values are useful but stale &mdash; they don&rsquo;t know that the top-10 pitcher you drafted has a 5.80 ERA in April. Year-to-date stats are useful but noisy &mdash; a hot first week can put a fringe player above an elite one, even though everyone knows it won&rsquo;t last.</p>
+      <p>The Kev Score blends both: it anchors to what we expected a player to be, then moves that number based on what they&rsquo;re actually doing.</p>
+    </div>
+
+    <div class="section">
+      <h2>The Core Formula</h2>
+      <p>At a high level, every player&rsquo;s Kev Score is a weighted blend of two numbers:</p>
+      <div class="formula">
+        Kev Score = <span class="accent">(ESPN Baseline)</span> &times; weight<sub>1</sub> + <span class="accent">(Rank Score)</span> &times; weight<sub>2</sub>
+      </div>
+      <p>Let&rsquo;s break down each piece.</p>
+
+      <h3>1. The ESPN Baseline</h3>
+      <p>We start with ESPN&rsquo;s preseason <strong>dollar value</strong> &mdash; the auction-draft price for each player in a standard 10-team rotisserie league with a $260 salary cap. Shohei Ohtani opens the season at $101. An unranked reliever opens at $0.</p>
+      <p>This is our &ldquo;floor&rdquo; for how good a player is. Elite talent doesn&rsquo;t become bad overnight, and scrubs don&rsquo;t become stars without doing something to earn it. The baseline protects the ranking from overreacting to small samples.</p>
+
+      <h3>2. The Rank Score</h3>
+      <p>Every morning, we pull the latest MLB stats for every player and compute a per-game fantasy-points total using ESPN&rsquo;s standard scoring:</p>
+      <div class="stat-row">
+        <span class="stat-pill bat">Batters: 1B, 2B, 3B, HR, R, RBI, BB, SB, –SO</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-pill pit">Pitchers: IP×3, K, W×5, SV×5, –ER×2, –H, –BB, –L×5</span>
+      </div>
+      <p>Players are then ranked against their peers (batters vs. batters, pitchers vs. pitchers). The top per-game scorer becomes a 100; the bottom is near 0. This is the <strong>Rank Score</strong> &mdash; a pure, noise-heavy reflection of who&rsquo;s actually producing right now.</p>
+
+      <h3>3. The Weighted Blend</h3>
+      <p>Here&rsquo;s where it gets interesting. In Week 1, we weight heavily toward the ESPN Baseline &mdash; the season hasn&rsquo;t had time to reveal anything. By late September, we weight much more toward the Rank Score &mdash; six months of games is plenty of evidence to update our priors.</p>
+      <p>The shift happens gradually, week by week. A hot start in April nudges a player up a little. A hot start that continues into June moves them a lot. A cold September for an aging veteran finally cracks the preseason assumption that they&rsquo;re still elite.</p>
+      <div class="callout">
+        <em>In short: early season, we trust the experts. Late season, we trust the data. And every week in between, the weighting slides just a bit.</em>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>A Real Example</h2>
+      <div class="example">
+        <h3>Player: Jacob deGrom</h3>
+        <p><strong>ESPN Baseline:</strong> $32 (top-30 pitcher coming into 2026)</p>
+        <p><strong>Week 4 Rank Score:</strong> ~65 (pitching like a top-15 guy through 5 starts)</p>
+        <p><strong>Week 4 Weighting:</strong> ~77% baseline, 23% rank</p>
+        <p><strong>Kev Score ≈ (32 × 0.77) + (65 × 0.23) = 39.5</strong></p>
+        <p>Early in the season, even with great results, deGrom&rsquo;s score doesn&rsquo;t shoot to the top &mdash; the baseline still dominates. But if he keeps pitching like a top-15 arm through July, the weighting continues to shift, and his Kev Score keeps climbing.</p>
+      </div>
+      <p>This is the whole point. A single great week shouldn&rsquo;t make a player &ldquo;worth&rdquo; more than Shohei Ohtani. Six months of great weeks probably should.</p>
+    </div>
+
+    <div class="section">
+      <h2>Eligibility Thresholds</h2>
+      <p>To avoid ranking players based on tiny samples, we require a minimum workload before a player enters the rankings:</p>
+      <ul>
+        <li><strong>Batters:</strong> 25 plate appearances minimum</li>
+        <li><strong>Pitchers:</strong> 5 innings pitched minimum</li>
+      </ul>
+      <p>Players below these thresholds still appear in the database (with their baseline score) but aren&rsquo;t eligible for the Rank Score calculation until they&rsquo;ve played enough. This keeps a hot 10-plate-appearance September call-up from topping the charts.</p>
+    </div>
+
+    <div class="section">
+      <h2>Two Scoring Modes</h2>
+      <p>The Trade Calculator offers two ways to evaluate a trade:</p>
+      <h3>Kev Score Mode</h3>
+      <p>Sums the raw Kev Scores on each side. This is the straightforward &ldquo;total value&rdquo; view &mdash; good for roughly-equal deals.</p>
+      <h3>Weighted Mode</h3>
+      <p>Penalizes deals where one side is dumping quantity for quality. In most leagues, rostering 5 fringe players is not equivalent to rostering 1 elite player, because you can&rsquo;t start them all at once. The weighted mode accounts for the drop-off in value from your best roster spot to your worst, making &ldquo;5-for-1&rdquo; trade offers look less appealing than raw totals might suggest.</p>
+      <p>The weighted mode also adjusts for league size. An elite player is much more scarce &mdash; and therefore more valuable &mdash; in an 8-team league than a 12-team league, where waiver-wire replacements are easier to find.</p>
+    </div>
+
+    <div class="section">
+      <h2>The Risers and Fallers</h2>
+      <p>Every score is saved daily for up to 8 days. We compare today&rsquo;s score to the score from 7 days ago to produce a <strong>rolling 7-day change</strong>. This change is what powers the Risers and Fallers tab.</p>
+      <p>Why 7 days? A single game is too noisy. A full month smooths away trends worth paying attention to. One week hits a sweet spot &mdash; it covers a typical rotation cycle for pitchers and a healthy sample for hitters, while still being short enough to surface real hot and cold streaks.</p>
+    </div>
+
+    <div class="section">
+      <h2>What the Kev Score Isn&rsquo;t</h2>
+      <p>A few things worth being upfront about:</p>
+      <ul>
+        <li><strong>It&rsquo;s not a projection.</strong> The Kev Score is a snapshot of current value based on current performance. It doesn&rsquo;t predict who will be good in August.</li>
+        <li><strong>It&rsquo;s not a rate stat.</strong> A player who&rsquo;s been on the IL for a month will see their score drift down toward their baseline &mdash; our per-game calculation means a few great starts don&rsquo;t fully compensate for missed time, but a zero-game week doesn&rsquo;t crater them either.</li>
+        <li><strong>It&rsquo;s not infallible.</strong> Standard ESPN scoring is a simplification. H2H categories, OBP leagues, and dynasty formats all value players differently. Use the Kev Score as a starting point, not a final verdict.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Questions?</h2>
+      <p>If you want more detail on any piece of this, or you&rsquo;ve spotted something that doesn&rsquo;t add up, send an email &mdash; I read everything.</p>
+      <p>Email: <a href="mailto:kspinelli24@gmail.com">kspinelli24@gmail.com</a></p>
+      <p>Or head back and try it out: <a href="index.html">KevScores Trade Calculator &amp; Rankings →</a></p>
+    </div>
+
+  </div><!-- /policy-body -->
+
+  <footer>
+    <div class="footer-nav">
+      <a href="index.html">Home</a> ·
+      <a href="about.html">About</a> ·
+      <a href="privacy.html">Privacy</a>
+    </div>
+    <p>Updated Daily &nbsp;·&nbsp; Kev Score Methodology™ &nbsp;·&nbsp; 2026 Fantasy Baseball</p>
+  </footer>
+
+</div>
+</body>
+</html>
