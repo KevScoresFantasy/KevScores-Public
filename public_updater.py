@@ -295,31 +295,29 @@ MIN_PA = 25
 MIN_IP = 5.0
 
 # ── Breakout Boost parameters ──
-# Targeted bonus for low-baseline players with elite performance. Recalculated
-# daily — no boost state is stored. Tunable here.
+# Targeted bonus for low-baseline players who are performing at an elite
+# level within their position bucket. Recalculated daily — no boost state.
 #
 # Eligibility (all must pass):
-#   1. Positional rank: must be in top N by FP/PG AND top M by total FP,
-#      within their position bucket (Batters / SP / RP). This filter handles
-#      the "cheeser" problem where a pitcher has great FP/PG over tiny sample.
-#   2. Baseline cap: ESPN value ≤ BOOST_MAX_BASELINE
-#   3. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP,
-#      RPs ≥ BOOST_MIN_IP_RP
+#   1. Position bucket: must resolve to BAT, SP, or RP (pure-SP-only / pure-RP-only
+#      for pitchers — dual-eligibility pitchers are excluded).
+#   2. Must be in top N by FP/PG AND top M by total FP within bucket.
+#   3. Baseline cap: ESPN value ≤ BOOST_MAX_BASELINE.
+#   4. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP,
+#      RPs ≥ BOOST_MIN_IP_RP.
 #
-# Boost magnitude (two-factor curve):
-#   baseline_factor = (1 − baseline / BOOST_MAX_BASELINE) ** BOOST_BASELINE_EXP
-#   rank_factor     = rank_score / 100                 # scale 0..1
-#   boost           = BOOST_MAX_VALUE × baseline_factor × rank_factor
-#
-# Lower baseline → bigger boost. Higher Rank Score → bigger boost.
+# Boost magnitude: purely a function of within-bucket FP/PG rank.
+# Ladder: #1 → 10, #2 → 8, #3 → 6, #4 → 4, #5 → 2. Below #5 → 0.
+# Wide steps so the difference between rankings is meaningful and the #5 slot
+# feels appropriately modest (a 2-point boost is still noticeable but not huge).
 BOOST_MIN_PA         = 80     # batters need this many PA
 BOOST_MIN_IP_SP      = 25.0   # starting pitchers — innings pitched
 BOOST_MIN_IP_RP      = 10.0   # relief pitchers — innings pitched
 BOOST_MAX_BASELINE   = 35     # ESPN baseline must be ≤ this
-BOOST_TOP_N_PPG      = 5      # must be top N by FP/PG in their bucket
-BOOST_TOP_N_TOTAL_FP = 10     # must also be top N by total FP in their bucket
-BOOST_BASELINE_EXP   = 0.2    # gentler curve — high-baseline players still qualify
-BOOST_MAX_VALUE      = 10.0   # max possible boost
+BOOST_TOP_N_PPG      = 5      # top N by FP/PG per bucket
+BOOST_TOP_N_TOTAL_FP = 10     # and also top M by total FP per bucket
+BOOST_MAX_VALUE      = 10.0   # #1 gets this much
+BOOST_RANK_STEP      = 2.0    # each rank below #1 loses this much → 10, 8, 6, 4, 2
 
 def convert_ip(ip):
     """
@@ -458,51 +456,74 @@ def adjusted_espn_value(espn_value, rank_score):
 
 def _boost_bucket(is_pitcher, pos):
     """
-    Roll a player's position into one of three buckets for boost eligibility:
-    'BAT' (all batters), 'SP' (starting pitcher), 'RP' (relief pitcher).
+    Roll a player's position into a boost bucket, or None if they should
+    be excluded entirely.
+
+    Batters → 'BAT'.
+    Pitchers are split STRICTLY: pure SP → 'SP', pure RP → 'RP'.
+    Dual-eligibility pitchers (e.g. "SP,RP" or "SP/RP") → None (excluded).
     """
     if not is_pitcher:
         return "BAT"
-    pos_upper = str(pos or "").upper()
-    # Treat anything pitcher-related without explicit SP as RP.
-    return "SP" if "SP" in pos_upper else "RP"
+    # Split on common separators to detect multi-position eligibility
+    raw = str(pos or "").upper()
+    parts = [p.strip() for p in raw.replace("/", ",").split(",") if p.strip()]
+    if not parts:
+        return None
+    # Normalize — ignore anything that's not SP/RP
+    pitching_roles = [p for p in parts if p in ("SP", "RP")]
+    if len(pitching_roles) != 1:
+        return None  # zero or multiple → exclude
+    return pitching_roles[0]
 
-def compute_boost_eligible_set(candidates,
-                                top_n_ppg=BOOST_TOP_N_PPG,
-                                top_n_total=BOOST_TOP_N_TOTAL_FP):
+def compute_boost_rank_map(candidates,
+                            top_n_ppg=BOOST_TOP_N_PPG,
+                            top_n_total=BOOST_TOP_N_TOTAL_FP):
     """
-    Given an iterable of candidate dicts — each with keys: name, bucket,
-    fp_pg, fp_total — return the set of names who are in the top N by FP/PG
-    AND top M by total FP within their bucket.
+    Given an iterable of candidate dicts with keys: name, bucket, fp_pg, fp_total,
+    return {name: rank_within_bucket} for players who are in the top N by FP/PG
+    AND top M by total FP within their bucket. Rank is 1-indexed by FP/PG.
 
-    Candidates with fp_pg None or fp_total None are skipped.
+    Candidates whose bucket is None are skipped (dual-eligibility pitchers).
     """
     by_bucket = {}
     for c in candidates:
+        if c.get("bucket") is None:
+            continue
         if c.get("fp_pg") is None or c.get("fp_total") is None:
             continue
         by_bucket.setdefault(c["bucket"], []).append(c)
 
-    eligible = set()
+    rank_map = {}
     for bucket, lst in by_bucket.items():
-        top_ppg = {c["name"] for c in sorted(lst, key=lambda x: -x["fp_pg"])[:top_n_ppg]}
-        top_tot = {c["name"] for c in sorted(lst, key=lambda x: -x["fp_total"])[:top_n_total]}
-        eligible |= (top_ppg & top_tot)
-    return eligible
+        top_ppg = sorted(lst, key=lambda x: -x["fp_pg"])[:top_n_ppg]
+        top_ppg_names = {c["name"] for c in top_ppg}
+        top_tot_names = {c["name"] for c in sorted(lst, key=lambda x: -x["fp_total"])[:top_n_total]}
+        eligible_names = top_ppg_names & top_tot_names
 
-def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip,
-                              name, eligible_names):
-    """
-    Two-factor boost curve, gated by the pre-computed eligible_names set.
+        # Assign 1-indexed rank by FP/PG, skipping those who failed the intersection
+        rank = 1
+        for c in top_ppg:
+            if c["name"] in eligible_names:
+                rank_map[c["name"]] = rank
+                rank += 1
+    return rank_map
 
-    All gates must pass; returns 0.0 otherwise. No minimum-value floor — the
-    top-N-at-position gate is strict enough that tiny boosts don't leak in.
+def calculate_breakout_boost(espn_value, is_pitcher, pos, pa, ip,
+                              name, rank_map):
     """
-    # Gate 1: positional eligibility (top-N by FP/PG AND by total FP in bucket)
-    if name not in eligible_names:
+    Boost magnitude is determined purely by within-bucket FP/PG rank:
+    #1 → BOOST_MAX_VALUE, each rank down loses BOOST_RANK_STEP.
+
+    Baseline remains a *gate* (≤ BOOST_MAX_BASELINE) so elite-baseline
+    players like Judge or Ohtani don't get boosted.
+    """
+    # Gate 1: positional rank (must be in the pre-computed rank map)
+    bucket_rank = rank_map.get(name)
+    if not bucket_rank:
         return 0.0
 
-    # Gate 2: baseline cap
+    # Gate 2: baseline cap — keeps elite-baseline players out
     if espn_value is None or espn_value > BOOST_MAX_BASELINE or espn_value < 0:
         return 0.0
 
@@ -516,17 +537,9 @@ def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip,
         if pa < BOOST_MIN_PA:
             return 0.0
 
-    # Two-factor curve
-    pct_below = 1.0 - (espn_value / BOOST_MAX_BASELINE)
-    if pct_below <= 0:
-        return 0.0
-    baseline_factor = pct_below ** BOOST_BASELINE_EXP
-
-    rs_safe = 0.0 if rank_score is None else max(0.0, min(100.0, rank_score))
-    rank_factor = rs_safe / 100.0
-
-    boost = BOOST_MAX_VALUE * baseline_factor * rank_factor
-    return round(min(boost, BOOST_MAX_VALUE), 4)
+    # Ladder: 10 / 8 / 6 / 4 / 2 (based on BOOST_MAX_VALUE and BOOST_RANK_STEP)
+    boost = BOOST_MAX_VALUE - (bucket_rank - 1) * BOOST_RANK_STEP
+    return round(max(0.0, boost), 4)
 
 # ── BUILD PLAYERS LIST ──
 def build_players(batting_rows, pitching_rows,
@@ -594,9 +607,8 @@ def build_players(batting_rows, pitching_rows,
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
 
-        # Store raw FP/PG and total FP for the post-pass boost computation.
-        # Actual boost gets applied after the loop when we know every player's
-        # relative ranking within their bucket.
+        # Boost is applied in a post-pass after we know every player's rank
+        # within their bucket. For now, initialize kev_score without boost.
         kev_score = round(adj_value, 4)
 
         if kev_score < 0.5 and espn_rank >= 900:
@@ -608,7 +620,7 @@ def build_players(batting_rows, pitching_rows,
             "espn_rk": espn_rank,
             "espn_val": espn_value,
             "adj_val": adj_value,
-            "breakout_boost": 0.0,  # filled in by post-pass
+            "breakout_boost": 0.0,  # set in post-pass
             "pb": pb,
             "pos": pos,
             "mlb_team": mlb_team,
@@ -625,10 +637,8 @@ def build_players(batting_rows, pitching_rows,
         })
 
     # ── Post-pass: apply Breakout Boost ──
-    # Compute the top-N-at-bucket eligibility set, then apply the boost to
-    # each eligible player's Kev Score. This has to happen after the main
-    # loop because bucket-relative rankings require knowing every player's
-    # FP/PG and total FP.
+    # Compute each eligible player's within-bucket rank, then apply a boost
+    # purely determined by that rank (10 / 8 / 6 / 4 / 2 ladder).
     candidates = [
         {
             "name": r["name"],
@@ -638,7 +648,7 @@ def build_players(batting_rows, pitching_rows,
         }
         for r in rows if not r["not_eligible"]
     ]
-    eligible_names = compute_boost_eligible_set(candidates)
+    rank_map = compute_boost_rank_map(candidates)
 
     for r in rows:
         if r["not_eligible"]:
@@ -648,13 +658,12 @@ def build_players(batting_rows, pitching_rows,
         ip_for_boost = convert_ip(stats_src.get("IP", 0))
         boost = calculate_breakout_boost(
             espn_value=r["espn_val"],
-            rank_score=r["rs_raw"],
             is_pitcher=r["is_pitcher"],
             pos=r["pos"],
             pa=pa_for_boost,
             ip=ip_for_boost,
             name=r["name"],
-            eligible_names=eligible_names,
+            rank_map=rank_map,
         )
         if boost > 0:
             r["breakout_boost"] = boost
@@ -993,17 +1002,15 @@ def main():
     players, overall = build_json(rows, weekly_prev)
     print(f"  {len(players)} players computed")
 
-    # Breakout Boost diagnostic — grouped by bucket so we can see whether each
-    # (BAT / SP / RP) is populated as expected and who's getting what.
+    # Breakout Boost diagnostic — grouped by bucket so each (BAT / SP / RP)
+    # can be inspected independently.
     boosted = [p for p in players if p.get("breakoutBoost", 0) > 0]
     boosted.sort(key=lambda p: -p.get("breakoutBoost", 0))
     print(f"\nBreakout Boost applied to {len(boosted)} players:")
 
-    # Split by bucket for readability
     def _bucket_of(p):
         if p.get("type") != "Pitcher":
             return "BAT"
-        # Infer from ESPN rating (e.g. "RP3", "SP15")
         rating = str(p.get("rating", "")).upper()
         return "SP" if rating.startswith("SP") else "RP"
 
@@ -1013,6 +1020,8 @@ def main():
 
     for bucket in ("BAT", "SP", "RP"):
         lst = by_bucket[bucket]
+        # Sort within bucket by boost descending (ties broken by kevScore)
+        lst.sort(key=lambda p: (-p.get("breakoutBoost", 0), -p.get("kevScore", 0)))
         print(f"\n  {bucket} ({len(lst)} players):")
         for p in lst:
             boost = p.get("breakoutBoost", 0)
