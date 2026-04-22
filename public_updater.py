@@ -295,16 +295,26 @@ MIN_PA = 25
 MIN_IP = 5.0
 
 # ── Breakout Boost parameters ──
-# Targeted bonus that compensates low-baseline players whose Kev Score is
-# being artificially suppressed by their low preseason value. Recalculated
-# every day — no boost state is stored. Tunable here.
+# Targeted bonus for low-baseline players who are putting up elite per-game
+# performance. Recalculated daily — no boost state is stored.
+#
+# Eligibility gates (all must pass):
+#   1. Rank Score ≥ BOOST_RS_FLOOR — must be an elite per-game performer
+#   2. ESPN baseline ≤ BOOST_MAX_BASELINE — baseline must be low enough that
+#      a boost is warranted (high-baseline stars don't need it)
+#   3. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP, RPs ≥ BOOST_MIN_IP_RP
+#   4. Computed boost ≥ BOOST_MIN_VALUE — tiny boosts get zeroed out
+#
+# Boost curve (square root): boost = BOOST_MAX_VALUE × √(1 − baseline/BOOST_MAX_BASELINE)
+# Lower baselines get bigger boosts. Curve is non-linear so mid-range baselines
+# still get some credit instead of dropping off a cliff.
 BOOST_MIN_PA       = 80     # batters need this many plate appearances
 BOOST_MIN_IP_SP    = 25.0   # starting pitchers — innings pitched
 BOOST_MIN_IP_RP    = 10.0   # relief pitchers — innings pitched
-BOOST_MAX_BASELINE = 35     # only ESPN baseline ≤ this is eligible
-BOOST_MULTIPLIER   = 0.15   # boost = (rank_score - baseline) * this
-BOOST_MIN_VALUE    = 3.0    # floor — anything smaller is zeroed out
-BOOST_MAX_VALUE    = 10.0   # cap — never adds more than this
+BOOST_RS_FLOOR     = 95.0   # Rank Score must be ≥ this to qualify
+BOOST_MAX_BASELINE = 35     # ESPN baseline must be ≤ this
+BOOST_MAX_VALUE    = 10.0   # max possible boost
+BOOST_MIN_VALUE    = 2.0    # boosts smaller than this are zeroed out
 
 def convert_ip(ip):
     """
@@ -443,22 +453,21 @@ def adjusted_espn_value(espn_value, rank_score):
 
 def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip):
     """
-    Targeted boost for low-baseline players who are dramatically outperforming
-    their preseason expectation. Recalculated daily — no boost state is stored.
+    Targeted boost for low-baseline players with elite per-game performance.
+    Recalculated daily — no boost state is stored.
 
-    Eligibility (all three must pass):
-      1. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP, RPs ≥ BOOST_MIN_IP_RP
-      2. Baseline cap: ESPN value ≤ BOOST_MAX_BASELINE
-      3. Floor: raw boost ≥ BOOST_MIN_VALUE
-
-    Magnitude: (rank_score - espn_value) * BOOST_MULTIPLIER, capped at BOOST_MAX_VALUE.
-    Negative gaps return 0 — we never penalize underperformers via the boost.
+    All four gates must pass. Magnitude follows a square-root curve over
+    baseline (lower baseline = bigger boost, softly tapering).
     """
-    # Gate 1: baseline cap (boost only helps low-baseline players)
-    if espn_value > BOOST_MAX_BASELINE:
+    # Gate 1: Rank Score floor — must be an elite per-game performer
+    if rank_score is None or rank_score < BOOST_RS_FLOOR:
         return 0.0
 
-    # Gate 2: sample size (must have meaningful playing time)
+    # Gate 2: Baseline cap — boost only helps low-baseline players
+    if espn_value is None or espn_value > BOOST_MAX_BASELINE or espn_value < 0:
+        return 0.0
+
+    # Gate 3: Sample size
     if is_pitcher:
         is_sp = "SP" in str(pos).upper()
         min_ip = BOOST_MIN_IP_SP if is_sp else BOOST_MIN_IP_RP
@@ -468,19 +477,17 @@ def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip):
         if pa < BOOST_MIN_PA:
             return 0.0
 
-    # Gap: how much they're outperforming their baseline
-    gap = rank_score - espn_value
-    if gap <= 0:
+    # Curve: square root of how far below the baseline cap the player sits
+    pct_below = 1.0 - (espn_value / BOOST_MAX_BASELINE)
+    if pct_below <= 0:
+        return 0.0
+    boost = BOOST_MAX_VALUE * (pct_below ** 0.5)
+
+    # Gate 4: Floor — don't show tiny boosts
+    if boost < BOOST_MIN_VALUE:
         return 0.0
 
-    raw_boost = gap * BOOST_MULTIPLIER
-
-    # Gate 3: floor (only meaningful overperformance gets a boost)
-    if raw_boost < BOOST_MIN_VALUE:
-        return 0.0
-
-    # Cap at BOOST_MAX_VALUE
-    return round(min(raw_boost, BOOST_MAX_VALUE), 4)
+    return round(min(boost, BOOST_MAX_VALUE), 4)
 
 # ── BUILD PLAYERS LIST ──
 def build_players(batting_rows, pitching_rows,
@@ -548,12 +555,13 @@ def build_players(batting_rows, pitching_rows,
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
 
-        # Breakout boost (0 if ineligible). Pulled from raw stats so we use
-        # the actual playing time, not the rounded stats dict version.
+        # Breakout Boost (0 if ineligible). Uses the raw Rank Score (not the
+        # rs_for_calc zero-fallback), and pulls PA/IP from raw stats so the
+        # eligibility gates use actual playing time.
         pa_for_boost = float(stats_src.get("PA", 0) or 0)
         ip_for_boost = convert_ip(stats_src.get("IP", 0))
         breakout_boost = 0.0 if not_eligible else calculate_breakout_boost(
-            espn_value, rs_for_calc, is_pitcher, pos, pa_for_boost, ip_for_boost
+            espn_value, rs, is_pitcher, pos, pa_for_boost, ip_for_boost
         )
 
         kev_score = round(adj_value + breakout_boost, 4)
