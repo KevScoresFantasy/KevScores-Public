@@ -786,7 +786,7 @@ function openPlayerModal(p) {
           ${team ? `<span class="pill">${escapeHtml(team)}</span>` : ''}
           ${pos ? `<span class="pill">${escapeHtml(pos)}</span>` : ''}
           ${type ? `<span class="pill">${escapeHtml(type)}</span>` : ''}
-          ${(p.breakoutBoost && p.breakoutBoost > 0) ? `<span class="pill-boost">Breakout<span class="boost-tip">Top-5 performer at their position<br>Kev Score boosted by <strong>+${p.breakoutBoost}</strong></span></span>` : ''}
+          ${(p.breakoutBoost && p.breakoutBoost > 0) ? `<span class="pill-boost">Breakout<span class="boost-tip">Top-10 performer at their position<br>Kev Score boosted by <strong>+${p.breakoutBoost}</strong></span></span>` : ''}
         </div>
       </div>
       <button class="modal-close" onclick="closePlayerModal()" aria-label="Close">✕</button>
