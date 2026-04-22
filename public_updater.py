@@ -294,6 +294,18 @@ def fetch_all(group, label):
 MIN_PA = 25
 MIN_IP = 5.0
 
+# ── Breakout Boost parameters ──
+# Targeted bonus that compensates low-baseline players whose Kev Score is
+# being artificially suppressed by their low preseason value. Recalculated
+# every day — no boost state is stored. Tunable here.
+BOOST_MIN_PA       = 80     # batters need this many plate appearances
+BOOST_MIN_IP_SP    = 25.0   # starting pitchers — innings pitched
+BOOST_MIN_IP_RP    = 10.0   # relief pitchers — innings pitched
+BOOST_MAX_BASELINE = 35     # only ESPN baseline ≤ this is eligible
+BOOST_MULTIPLIER   = 0.15   # boost = (rank_score - baseline) * this
+BOOST_MIN_VALUE    = 3.0    # floor — anything smaller is zeroed out
+BOOST_MAX_VALUE    = 10.0   # cap — never adds more than this
+
 def convert_ip(ip):
     """
     Convert MLB innings pitched format to true decimal innings.
@@ -429,6 +441,47 @@ def adjusted_espn_value(espn_value, rank_score):
     espn_weight = 1 - stat_weight
     return round(espn_weight * espn_value + stat_weight * rank_score, 4)
 
+def calculate_breakout_boost(espn_value, rank_score, is_pitcher, pos, pa, ip):
+    """
+    Targeted boost for low-baseline players who are dramatically outperforming
+    their preseason expectation. Recalculated daily — no boost state is stored.
+
+    Eligibility (all three must pass):
+      1. Sample size: batters ≥ BOOST_MIN_PA, SPs ≥ BOOST_MIN_IP_SP, RPs ≥ BOOST_MIN_IP_RP
+      2. Baseline cap: ESPN value ≤ BOOST_MAX_BASELINE
+      3. Floor: raw boost ≥ BOOST_MIN_VALUE
+
+    Magnitude: (rank_score - espn_value) * BOOST_MULTIPLIER, capped at BOOST_MAX_VALUE.
+    Negative gaps return 0 — we never penalize underperformers via the boost.
+    """
+    # Gate 1: baseline cap (boost only helps low-baseline players)
+    if espn_value > BOOST_MAX_BASELINE:
+        return 0.0
+
+    # Gate 2: sample size (must have meaningful playing time)
+    if is_pitcher:
+        is_sp = "SP" in str(pos).upper()
+        min_ip = BOOST_MIN_IP_SP if is_sp else BOOST_MIN_IP_RP
+        if ip < min_ip:
+            return 0.0
+    else:
+        if pa < BOOST_MIN_PA:
+            return 0.0
+
+    # Gap: how much they're outperforming their baseline
+    gap = rank_score - espn_value
+    if gap <= 0:
+        return 0.0
+
+    raw_boost = gap * BOOST_MULTIPLIER
+
+    # Gate 3: floor (only meaningful overperformance gets a boost)
+    if raw_boost < BOOST_MIN_VALUE:
+        return 0.0
+
+    # Cap at BOOST_MAX_VALUE
+    return round(min(raw_boost, BOOST_MAX_VALUE), 4)
+
 # ── BUILD PLAYERS LIST ──
 def build_players(batting_rows, pitching_rows,
                   bat_fp_total, bat_fp_pg, bat_rs,
@@ -494,7 +547,16 @@ def build_players(batting_rows, pitching_rows,
 
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
-        kev_score = round(adj_value, 4)
+
+        # Breakout boost (0 if ineligible). Pulled from raw stats so we use
+        # the actual playing time, not the rounded stats dict version.
+        pa_for_boost = float(stats_src.get("PA", 0) or 0)
+        ip_for_boost = convert_ip(stats_src.get("IP", 0))
+        breakout_boost = 0.0 if not_eligible else calculate_breakout_boost(
+            espn_value, rs_for_calc, is_pitcher, pos, pa_for_boost, ip_for_boost
+        )
+
+        kev_score = round(adj_value + breakout_boost, 4)
 
         if kev_score < 0.5 and espn_rank >= 900:
             continue
@@ -505,6 +567,7 @@ def build_players(batting_rows, pitching_rows,
             "espn_rk": espn_rank,
             "espn_val": espn_value,
             "adj_val": adj_value,
+            "breakout_boost": breakout_boost,
             "pb": pb,
             "pos": pos,
             "mlb_team": mlb_team,
@@ -628,6 +691,7 @@ def build_json(rows, weekly_prev):
         players.append({
             "name": r["name"],
             "kevScore": kev,
+            "breakoutBoost": r.get("breakout_boost", 0),
             "kevRank": kev_rank,
             "espnRank": espn_rk,
             "rating": rating,
@@ -649,6 +713,7 @@ def build_json(rows, weekly_prev):
             "kevRank": kev_rank,
             "kevRating": rating,
             "kevScore": kev,
+            "breakoutBoost": r.get("breakout_boost", 0),
             "name": r["name"],
             "mlbTeam": r["mlb_team"],
             "pos": r["pos"],
@@ -848,6 +913,16 @@ def main():
     rows = assign_ratings(rows)
     players, overall = build_json(rows, weekly_prev)
     print(f"  {len(players)} players computed")
+
+    # Breakout Boost diagnostic — shows which players got the boost this run
+    boosted = [(p["name"], p["kevScore"], p.get("breakoutBoost", 0))
+               for p in players if p.get("breakoutBoost", 0) > 0]
+    boosted.sort(key=lambda x: -x[2])
+    print(f"\nBreakout Boost applied to {len(boosted)} players:")
+    for name, score, boost in boosted[:25]:
+        print(f"  +{boost:5.2f}  {name:30s}  (final Kev: {score})")
+    if len(boosted) > 25:
+        print(f"  ... and {len(boosted) - 25} more")
 
     teams_filled = sum(1 for p in players if p.get("team"))
     teams_empty = sum(1 for p in players if not p.get("team"))
