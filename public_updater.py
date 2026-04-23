@@ -350,14 +350,19 @@ BOOST_RANK_STEP      = 1.0    # each rank below #1 loses this much
 #   DEC  = Declared for (e.g. WBC, military)
 
 # Multiplier applied to the final Kev Score (after boost). 1.0 = no change.
+# Penalty is matched to days off: the longer the absence, the bigger the hit.
+#   D10 → -10% (mild, players typically return on schedule)
+#   D15 → -15% (mild, slightly longer absence)
+#   D60 → -60% (severe, long-term injury)
+#   RES/SU → -60% (equivalent to 60-day absence in fantasy terms)
 IL_PENALTY_BY_CODE = {
     "A":    1.0,     # active — no change
     "D7":   1.0,     # concussion IL — short, no penalty
-    "D10":  0.85,    # 10-day IL — -15%
+    "D10":  0.90,    # 10-day IL — -10%
     "D15":  0.85,    # 15-day IL — -15%
-    "D60":  0.50,    # 60-day IL — -50%
-    "RES":  0.50,    # restricted list — -50%
-    "SU":   0.50,    # suspended — -50%
+    "D60":  0.40,    # 60-day IL — -60%
+    "RES":  0.40,    # restricted list — -60%
+    "SU":   0.40,    # suspended — -60%
     "PL":   1.0,     # paternity — no penalty
     "BRV":  1.0,     # bereavement — no penalty
     "DEC":  1.0,     # declared (WBC, etc.) — no penalty
@@ -1227,7 +1232,7 @@ def main():
             by_sev.setdefault(sev, []).append(p)
 
         # severe first (bigger penalty), then mild
-        for sev_label, sev_key in (("SEVERE (-50%)", "severe"), ("MILD (-15%)", "mild")):
+        for sev_label, sev_key in (("SEVERE (-60%)", "severe"), ("MILD (-10% to -15%)", "mild")):
             lst = by_sev.get(sev_key, [])
             if not lst:
                 continue
