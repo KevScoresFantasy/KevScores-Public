@@ -200,6 +200,24 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-boost .boost-tip strong{color:#fbbf24;font-weight:700;}
 .pill-boost .boost-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(250,204,21,0.45);}
 .pill-boost:hover .boost-tip{opacity:1;}
+
+/* IL (Injured List) badges — mirror pill-boost structure but severity-colored */
+.pill-il{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-il::before{content:"+";font-size:12px;line-height:1;font-weight:900;}
+.pill-il .il-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-il .il-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;}
+.pill-il:hover .il-tip{opacity:1;}
+/* Mild: orange (D10, D15) — short-term absences */
+.pill-il-mild{background:linear-gradient(180deg,rgba(249,115,22,0.22),rgba(249,115,22,0.12));color:#fb923c;border:1px solid rgba(249,115,22,0.45);}
+.pill-il-mild .il-tip{border:1px solid rgba(249,115,22,0.45);}
+.pill-il-mild .il-tip strong{color:#fb923c;font-weight:700;}
+.pill-il-mild .il-tip::after{border-top-color:rgba(249,115,22,0.45);}
+/* Severe: red (D60, RES, SU) — long-term absences */
+.pill-il-severe{background:linear-gradient(180deg,rgba(239,68,68,0.22),rgba(239,68,68,0.12));color:#f87171;border:1px solid rgba(239,68,68,0.45);}
+.pill-il-severe .il-tip{border:1px solid rgba(239,68,68,0.45);}
+.pill-il-severe .il-tip strong{color:#f87171;font-weight:700;}
+.pill-il-severe .il-tip::after{border-top-color:rgba(239,68,68,0.45);}
+
 .modal-close{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:6px 10px;cursor:pointer;font-family:var(--font-display);font-weight:800;}
 .modal-close:hover{color:var(--text);border-color:var(--border-accent);}
 .modal-body{padding:14px 16px 18px;}
@@ -495,6 +513,26 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 const LAST_UPDATED = "Apr 22, 2026 5:20 PM ET";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
 
+// IL status code → human-readable label (used in the badge tooltip)
+const IL_LABEL_BY_CODE = {
+  "D7":  "7-Day IL (Concussion)",
+  "D10": "10-Day IL",
+  "D15": "15-Day IL",
+  "D60": "60-Day IL",
+  "RES": "Restricted List",
+  "SU":  "Suspended",
+  "PL":  "Paternity List",
+  "BRV": "Bereavement List",
+  "DEC": "Unavailable"
+};
+
+// IL status code → severity bucket (drives badge color)
+// Only penalized codes appear here; D7/PL/BRV/DEC render no badge.
+const IL_SEVERITY_BY_CODE = {
+  "D10": "mild", "D15": "mild",
+  "D60": "severe", "RES": "severe", "SU": "severe"
+};
+
 // ── Nav ──
 function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -720,6 +758,16 @@ function openPlayerModal(p) {
       ? `<span style="color:var(--text-muted)">—</span>`
       : `<span style="color:${wk > 0 ? 'var(--green)' : 'var(--red)'}">${wk > 0 ? '+' : ''}${wk.toFixed(2)}</span>`;
 
+  // IL badge — only render when ilStatus maps to a known penalized code.
+  // ilPenalty is already a positive percentage (e.g. 15 for D10, 50 for D60).
+  const ilCode     = p.ilStatus || '';
+  const ilSeverity = IL_SEVERITY_BY_CODE[ilCode];
+  const ilPenalty  = p.ilPenalty || 0;
+  const ilLabel    = IL_LABEL_BY_CODE[ilCode] || ilCode;
+  const ilBadge    = (ilCode && ilSeverity && ilPenalty > 0)
+    ? `<span class="pill-il pill-il-${ilSeverity}">IL · ${escapeHtml(ilCode)}<span class="il-tip">${escapeHtml(ilLabel)}<br>Kev Score reduced by <strong>-${ilPenalty}%</strong></span></span>`
+    : '';
+
   const stats = p.stats || {};
   const isPitcher = (type === 'Pitcher') || (String(pos).toUpperCase().includes('SP') || String(pos).toUpperCase().includes('RP'));
 
@@ -787,6 +835,7 @@ function openPlayerModal(p) {
           ${pos ? `<span class="pill">${escapeHtml(pos)}</span>` : ''}
           ${type ? `<span class="pill">${escapeHtml(type)}</span>` : ''}
           ${(p.breakoutBoost && p.breakoutBoost > 0) ? `<span class="pill-boost">Breakout<span class="boost-tip">Top-10 performer at their position<br>Kev Score boosted by <strong>+${p.breakoutBoost}</strong></span></span>` : ''}
+          ${ilBadge}
         </div>
       </div>
       <button class="modal-close" onclick="closePlayerModal()" aria-label="Close">✕</button>
