@@ -328,6 +328,122 @@ BOOST_TOP_N          = 10     # top N by total FP per bucket
 BOOST_MAX_VALUE      = 10.0   # #1 gets this much
 BOOST_RANK_STEP      = 1.0    # each rank below #1 loses this much
 
+# ── Injured List (IL) adjustment ──
+# Daily pull from MLB Stats API roster endpoint. Each player's status.code
+# is mapped to a Kev Score multiplier. Players on any IL are penalized to
+# reflect that their "current value" is lower than their season-to-date
+# rate suggests. Short-term/administrative statuses are ignored.
+#
+# The IL penalty is applied AFTER the Breakout Boost in build_json, so a
+# boosted player who gets hurt still sees their Kev Score come down.
+#
+# Status codes come from MLB Stats API. Observed values during 2025-2026:
+#   A    = Active
+#   D7   = 7-Day IL (concussion)
+#   D10  = 10-Day IL
+#   D15  = 15-Day IL (some team APIs still use this)
+#   D60  = 60-Day IL
+#   RES  = Restricted list
+#   SU   = Suspended
+#   PL   = Paternity list
+#   BRV  = Bereavement list
+#   DEC  = Declared for (e.g. WBC, military)
+
+# Multiplier applied to the final Kev Score (after boost). 1.0 = no change.
+IL_PENALTY_BY_CODE = {
+    "A":    1.0,     # active — no change
+    "D7":   1.0,     # concussion IL — short, no penalty
+    "D10":  0.85,    # 10-day IL — -15%
+    "D15":  0.85,    # 15-day IL — -15%
+    "D60":  0.50,    # 60-day IL — -50%
+    "RES":  0.50,    # restricted list — -50%
+    "SU":   0.50,    # suspended — -50%
+    "PL":   1.0,     # paternity — no penalty
+    "BRV":  1.0,     # bereavement — no penalty
+    "DEC":  1.0,     # declared (WBC, etc.) — no penalty
+}
+
+# Display label for each status code (shown in the UI IL badge)
+IL_LABEL_BY_CODE = {
+    "D7":   "IL · 7-Day",
+    "D10":  "IL · 10-Day",
+    "D15":  "IL · 15-Day",
+    "D60":  "IL · 60-Day",
+    "RES":  "Restricted",
+    "SU":   "Suspended",
+    "PL":   "Paternity",
+    "BRV":  "Bereavement",
+    "DEC":  "Unavailable",
+}
+
+# Severity bucket for styling (used by the UI): "mild" = orange, "severe" = red
+IL_SEVERITY_BY_CODE = {
+    "D10":  "mild",
+    "D15":  "mild",
+    "D60":  "severe",
+    "RES":  "severe",
+    "SU":   "severe",
+}
+
+# MLB Stats API team IDs (30 active MLB teams as of 2026)
+MLB_TEAM_IDS = [
+    108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+    118, 119, 120, 121, 133, 134, 135, 136, 137, 138,
+    139, 140, 141, 142, 143, 144, 145, 146, 147, 158,
+]
+
+def fetch_il_statuses():
+    """
+    Fetch current MLB IL / roster status for every player on every team.
+    Returns {mlbId(str): status_code(str)}. Missing players are assumed active.
+
+    The endpoint returns a roster per team with a `status` block for each
+    player; we extract status.code (e.g. "A", "D10", "D60") and key it off
+    the player's mlbId (person.id) for downstream lookup.
+
+    rosterType=depthChart is used (not fullRoster) because 60-day IL players
+    are removed from the 40-man roster by MLB rules — that's literally the
+    point of the 60-day IL, to free up a 40-man spot. fullRoster misses them.
+    depthChart includes everyone currently assigned to the team's depth,
+    including long-term injured players.
+    """
+    statuses = {}
+    ok_count = 0
+    err_count = 0
+    for team_id in MLB_TEAM_IDS:
+        url = (f"https://statsapi.mlb.com/api/v1/teams/{team_id}"
+               f"/roster?rosterType=depthChart")
+        try:
+            req = urllib.request.Request(url, headers=HEADERS_JSON)
+            with urllib.request.urlopen(req, timeout=10) as r:
+                data = json.loads(r.read())
+            for p in data.get("roster", []):
+                person = p.get("person", {}) or {}
+                pid = str(person.get("id", "")).strip()
+                st  = p.get("status", {}) or {}
+                code = str(st.get("code", "A")).strip().upper()
+                if pid:
+                    statuses[pid] = code
+            ok_count += 1
+            time.sleep(0.05)  # be nice to the API
+        except Exception as e:
+            err_count += 1
+            # Non-fatal — missing team data just means those players
+            # default to "active" downstream.
+            continue
+
+    print(f"  IL statuses fetched: {ok_count}/{len(MLB_TEAM_IDS)} teams "
+          f"({err_count} errors), {len(statuses)} players mapped")
+    # Summary of non-active statuses
+    non_active = {k: v for k, v in statuses.items() if v != "A"}
+    if non_active:
+        code_counts = {}
+        for v in non_active.values():
+            code_counts[v] = code_counts.get(v, 0) + 1
+        summary = ", ".join(f"{c}={n}" for c, n in sorted(code_counts.items()))
+        print(f"  Non-active: {len(non_active)} players ({summary})")
+    return statuses
+
 def convert_ip(ip):
     """
     Convert MLB innings pitched format to true decimal innings.
@@ -535,7 +651,9 @@ def build_players(batting_rows, pitching_rows,
                   pit_fp_total, pit_fp_pg, pit_rs,
                   bat_sr_total, bat_sr_pg,
                   pit_sr_total, pit_sr_pg,
-                  espn_baseline):
+                  espn_baseline, il_statuses=None):
+    if il_statuses is None:
+        il_statuses = {}
     rows = []
     all_norms = set(batting_rows.keys()) | set(pitching_rows.keys())
 
@@ -682,6 +800,19 @@ def build_players(batting_rows, pitching_rows,
             r["breakout_boost"] = boost
             r["kev"] = round(r["adj_val"] + boost, 4)
 
+    # ── IL penalty pass ──
+    # Apply before the final sort so Kev Rank and Kev Score stay consistent.
+    # A player on the 60-day IL should fall down the rankings to match their
+    # reduced displayed score.
+    for r in rows:
+        mlb_id = str(r.get("mlb_id", ""))
+        il_code = il_statuses.get(mlb_id, "A") if mlb_id else "A"
+        multiplier = IL_PENALTY_BY_CODE.get(il_code, 1.0)
+        r["il_code"] = il_code
+        r["il_multiplier"] = multiplier
+        if multiplier < 1.0:
+            r["kev"] = round(r["kev"] * multiplier, 4)
+
     rows.sort(key=lambda x: -x["kev"])
     return rows
 
@@ -720,7 +851,10 @@ def assign_ratings(rows):
 
     return rows
 
-def build_json(rows, weekly_prev):
+def build_json(rows, weekly_prev, il_statuses=None):
+    # il_statuses param retained for API consistency; actual penalty is applied
+    # in build_players (so sort/rank match the displayed score). We just read
+    # r["il_code"] here to emit it to the JSON.
     players, overall = [], []
 
     for i, r in enumerate(rows):
@@ -787,6 +921,19 @@ def build_json(rows, weekly_prev):
                 "ERA": round(_num(s.get("ERA", 0.0), 0.0), 2) if s.get("ERA", "") not in ("", None) else "—",
             }
 
+        # IL status display fields. Only set when there's an actual penalty
+        # so the UI can render a badge with `if (p.ilStatus)`. Codes like
+        # "A", "D7", "PL", "BRV", "DEC" (multiplier 1.0) are left as empty
+        # string / 0 so no badge shows.
+        il_code_raw = r.get("il_code", "A")
+        il_mult = r.get("il_multiplier", 1.0)
+        if il_mult < 1.0 and il_code_raw in IL_SEVERITY_BY_CODE:
+            il_status_out = il_code_raw
+            il_penalty_pct = int(round((1.0 - il_mult) * 100))
+        else:
+            il_status_out = ""
+            il_penalty_pct = 0
+
         players.append({
             "name": r["name"],
             "kevScore": kev,
@@ -806,6 +953,8 @@ def build_json(rows, weekly_prev):
             "sorareScore": int(round(r.get("sr", 0))),
             "sorarePG": round(r.get("sr_pg", 0), 3),
             "stats": stats,
+            "ilStatus": il_status_out,
+            "ilPenalty": il_penalty_pct,
         })
 
         overall.append({
@@ -831,6 +980,8 @@ def build_json(rows, weekly_prev):
             "sorareScore": int(round(r.get("sr", 0))),
             "sorarePG": round(r.get("sr_pg", 0), 3),
             "stats": stats,
+            "ilStatus": il_status_out,
+            "ilPenalty": il_penalty_pct,
         })
 
     return players, overall
@@ -1000,6 +1151,9 @@ def main():
 
     print(f"  Daily history dates loaded: {len(daily_history)}")
 
+    print("\nFetching IL statuses from MLB Stats API...")
+    il_statuses = fetch_il_statuses()
+
     print("\nComputing Kev Scores...")
     rows = build_players(
         batting, pitching,
@@ -1007,10 +1161,11 @@ def main():
         pit_fp_total, pit_fp_pg, pit_rs,
         bat_sr_total, bat_sr_pg,
         pit_sr_total, pit_sr_pg,
-        espn_baseline
+        espn_baseline,
+        il_statuses=il_statuses,
     )
     rows = assign_ratings(rows)
-    players, overall = build_json(rows, weekly_prev)
+    players, overall = build_json(rows, weekly_prev, il_statuses)
     print(f"  {len(players)} players computed")
 
     # Breakout Boost diagnostic — grouped by bucket so each (BAT / SP / RP)
@@ -1059,6 +1214,34 @@ def main():
         for i, c in enumerate(lst, 1):
             marker = "  BOOSTED" if c["boost"] > 0 else ""
             print(f"    {i:>2}. {c['name']:28s}  total={c['fp_total']:>4}  fp/g={c['fp_pg']:>5.2f}  rating={c['rating']:>6}{marker}")
+
+    # IL Status diagnostic — grouped by severity so we can eyeball which
+    # players dropped the most in today's run. Mirrors the boost diagnostic
+    # above.
+    on_il = [p for p in players if p.get("ilStatus")]
+    print(f"\nIL penalty applied to {len(on_il)} players:")
+    if on_il:
+        by_sev = {"severe": [], "mild": []}
+        for p in on_il:
+            sev = IL_SEVERITY_BY_CODE.get(p["ilStatus"], "mild")
+            by_sev.setdefault(sev, []).append(p)
+
+        # severe first (bigger penalty), then mild
+        for sev_label, sev_key in (("SEVERE (-50%)", "severe"), ("MILD (-15%)", "mild")):
+            lst = by_sev.get(sev_key, [])
+            if not lst:
+                continue
+            # sort by Kev Score desc so the biggest-name names on each tier surface first
+            lst.sort(key=lambda p: -p.get("kevScore", 0))
+            print(f"\n  {sev_label} ({len(lst)} players):")
+            for p in lst:
+                code = p.get("ilStatus", "")
+                score = p.get("kevScore")
+                rating = p.get("rating", "")
+                label = IL_LABEL_BY_CODE.get(code, code)
+                print(f"    [{code:>3}] -{p.get('ilPenalty', 0):>2}%  "
+                      f"{p['name']:30s}  [{rating:>4}]  "
+                      f"(post-penalty Kev: {score})  ({label})")
 
     teams_filled = sum(1 for p in players if p.get("team"))
     teams_empty = sum(1 for p in players if not p.get("team"))
