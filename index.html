@@ -218,6 +218,30 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-il-severe .il-tip strong{color:#f87171;font-weight:700;}
 .pill-il-severe .il-tip::after{border-top-color:rgba(239,68,68,0.45);}
 
+/* Superstar badge — top-10 overall Kev Rank (purple) */
+.pill-star{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(168,85,247,0.28),rgba(168,85,247,0.14));color:#c084fc;border:1px solid rgba(168,85,247,0.5);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-star::before{content:"◆";font-size:10px;line-height:1;}
+.pill-star .star-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(168,85,247,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-star .star-tip strong{color:#c084fc;font-weight:700;}
+.pill-star .star-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(168,85,247,0.5);}
+.pill-star:hover .star-tip{opacity:1;}
+
+/* Hot badge — top-50 of the 7-day Risers list (bright red, distinct from IL red) */
+.pill-hot{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(255,87,34,0.28),rgba(255,87,34,0.14));color:#ff7043;border:1px solid rgba(255,87,34,0.5);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-hot::before{content:"🔥";font-size:11px;line-height:1;}
+.pill-hot .hot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(255,87,34,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-hot .hot-tip strong{color:#ff7043;font-weight:700;}
+.pill-hot .hot-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(255,87,34,0.5);}
+.pill-hot:hover .hot-tip{opacity:1;}
+
+/* Cold badge — top-50 of the 7-day Fallers list (blue) */
+.pill-cold{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(59,130,246,0.28),rgba(59,130,246,0.14));color:#60a5fa;border:1px solid rgba(59,130,246,0.5);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-cold::before{content:"❄️";font-size:11px;line-height:1;}
+.pill-cold .cold-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(59,130,246,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-cold .cold-tip strong{color:#60a5fa;font-weight:700;}
+.pill-cold .cold-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(59,130,246,0.5);}
+.pill-cold:hover .cold-tip{opacity:1;}
+
 .modal-close{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:6px 10px;cursor:pointer;font-family:var(--font-display);font-weight:800;}
 .modal-close:hover{color:var(--text);border-color:var(--border-accent);}
 .modal-body{padding:14px 16px 18px;}
@@ -510,7 +534,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 </div>
 
 <script>
-const LAST_UPDATED = "Apr 23, 2026 12:15 AM ET";
+const LAST_UPDATED = "Apr 22, 2026 5:20 PM ET";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
 
 // IL status code → human-readable label (used in the badge tooltip)
@@ -546,6 +570,35 @@ function showPage(name, btn) {
 // ══════════════════════════════════════
 let PLAYERS = [];
 let OVERALL = [];
+
+// Sets of player names flagged as hot/cold (top 50 risers / top 50 fallers by
+// rolling 7-day Kev Score change). Recomputed each time data loads so the
+// flags reflect the latest daily update.
+let HOT_SET = new Set();
+let COLD_SET = new Set();
+
+function computeHotColdSets() {
+  HOT_SET = new Set();
+  COLD_SET = new Set();
+  if (!OVERALL || !OVERALL.length) return;
+
+  const withChange = OVERALL.filter(p =>
+    p.kevChange7d !== null && p.kevChange7d !== undefined && p.kevChange7d !== 0
+  );
+  // Top 50 risers (largest positive swing)
+  withChange
+    .filter(p => p.kevChange7d > 0)
+    .sort((a, b) => b.kevChange7d - a.kevChange7d)
+    .slice(0, 50)
+    .forEach(p => HOT_SET.add(p.name));
+  // Top 50 fallers (largest negative swing)
+  withChange
+    .filter(p => p.kevChange7d < 0)
+    .sort((a, b) => a.kevChange7d - b.kevChange7d)
+    .slice(0, 50)
+    .forEach(p => COLD_SET.add(p.name));
+}
+
 (async function loadKevScoresData() {
   try {
     const [p, o] = await Promise.all([
@@ -554,6 +607,7 @@ let OVERALL = [];
     ]);
     PLAYERS = p;
     OVERALL = o;
+    computeHotColdSets();
     if (typeof renderOverall === "function") renderOverall();
     if (typeof renderRisers === "function") renderRisers();
     if (typeof renderWeekly === "function") renderWeekly();
@@ -768,6 +822,22 @@ function openPlayerModal(p) {
     ? `<span class="pill-il pill-il-${ilSeverity}">IL · ${escapeHtml(ilCode)}<span class="il-tip">${escapeHtml(ilLabel)}<br>Kev Score reduced by <strong>-${ilPenalty}%</strong></span></span>`
     : '';
 
+  // Superstar badge — top-10 overall Kev Rank
+  const superstarBadge = (p.kevRank !== undefined && p.kevRank !== null && p.kevRank <= 10)
+    ? `<span class="pill-star">Superstar<span class="star-tip">Top-10 overall Kev Rank<br>Currently ranked <strong>#${p.kevRank}</strong></span></span>`
+    : '';
+
+  // Hot badge — among top-50 weekly risers. Mutually exclusive with cold;
+  // a player can't be rising and falling at the same time.
+  const hotBadge = HOT_SET.has(p.name)
+    ? `<span class="pill-hot">Hot<span class="hot-tip">Top-50 weekly riser<br>Kev Score up ${p.kevChange7d > 0 ? '+' : ''}${Number(p.kevChange7d).toFixed(2)} in 7 days</span></span>`
+    : '';
+
+  // Cold badge — among top-50 weekly fallers
+  const coldBadge = COLD_SET.has(p.name)
+    ? `<span class="pill-cold">Cold<span class="cold-tip">Top-50 weekly faller<br>Kev Score down ${Number(p.kevChange7d).toFixed(2)} in 7 days</span></span>`
+    : '';
+
   const stats = p.stats || {};
   const isPitcher = (type === 'Pitcher') || (String(pos).toUpperCase().includes('SP') || String(pos).toUpperCase().includes('RP'));
 
@@ -834,8 +904,11 @@ function openPlayerModal(p) {
           ${team ? `<span class="pill">${escapeHtml(team)}</span>` : ''}
           ${pos ? `<span class="pill">${escapeHtml(pos)}</span>` : ''}
           ${type ? `<span class="pill">${escapeHtml(type)}</span>` : ''}
+          ${superstarBadge}
           ${(p.breakoutBoost && p.breakoutBoost > 0) ? `<span class="pill-boost">Breakout<span class="boost-tip">Top-10 performer at their position<br>Kev Score boosted by <strong>+${p.breakoutBoost}</strong></span></span>` : ''}
           ${ilBadge}
+          ${hotBadge}
+          ${coldBadge}
         </div>
       </div>
       <button class="modal-close" onclick="closePlayerModal()" aria-label="Close">✕</button>
