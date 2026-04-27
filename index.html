@@ -352,6 +352,41 @@ table.pr-table td.num{text-align:right;font-family:var(--font-display);font-size
 .pr-expand-icon{display:inline-block;color:var(--text-muted);font-size:10px;margin-right:6px;transition:transform .15s;}
 .pr-team-row.expanded .pr-expand-icon{transform:rotate(90deg);color:var(--accent);}
 
+/* League breakdown sections (Position Strength + Free Agents) */
+.pr-section{margin-top:36px;padding-top:28px;border-top:1px solid var(--border);}
+.pr-section-header{margin-bottom:16px;}
+.pr-section-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.pr-section-title{font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:-.3px;color:var(--text);line-height:1.05;}
+.pr-section-sub{font-size:12px;color:var(--text-muted);margin-top:5px;}
+
+/* Position strength grid */
+.pr-pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.pr-pos-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;}
+.pr-pos-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.pr-pos-card-title{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:.04em;color:var(--text);}
+.pr-pos-card-count{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-display);font-weight:600;}
+.pr-pos-row{margin-bottom:9px;}
+.pr-pos-row:last-child{margin-bottom:0;}
+.pr-pos-row-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.pr-pos-row-name{font-size:12px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%;}
+.pr-pos-row-name.first{color:var(--accent);font-weight:600;}
+.pr-pos-row-score{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--text-dim);flex-shrink:0;}
+.pr-pos-row-score.first{color:var(--accent);}
+.pr-pos-bar-track{height:4px;background:var(--surface2);border-radius:2px;overflow:hidden;}
+.pr-pos-bar-fill{height:100%;background:var(--text-muted);border-radius:2px;transition:width .35s cubic-bezier(.4,0,.2,1);}
+.pr-pos-bar-fill.first{background:var(--accent);}
+.pr-pos-empty{font-size:12px;color:var(--text-muted);font-style:italic;text-align:center;padding:14px 0;}
+
+/* Free agents */
+.pr-fa-controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.pr-fa-controls .filter-btn{font-size:11px;padding:5px 11px;}
+.pr-fa-row-name{font-size:13px;font-weight:500;}
+.pr-fa-row-meta{font-size:11px;color:var(--text-muted);margin-top:1px;}
+
+@media(max-width:600px){
+  .pr-pos-grid{grid-template-columns:1fr;}
+}
+
 /* Footer */
 footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted);}
 
@@ -613,19 +648,19 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
   <div class="pr-disclaimer">
     <div class="pr-disclaimer-icon">ⓘ</div>
     <div class="pr-disclaimer-body">
-      <strong>Currently supports ESPN public leagues only.</strong>
-      Private league? You'll need to flip your league to public in your settings, or wait &mdash; private league support is coming soon. Yahoo and Sleeper are on the roadmap. League IDs are not stored or transmitted to KevScores servers; they're sent directly from your browser to ESPN.
+      <strong>Public ESPN leagues + invited private leagues only.</strong>
+      Enter a numeric ESPN league ID, or a private-league access code if your commissioner gave you one. Yahoo and Sleeper are on the roadmap. League IDs are not stored or transmitted to KevScores servers; they're sent directly from your browser to ESPN.
     </div>
   </div>
 
   <div class="pr-form" id="pr-form">
-    <label class="pr-form-label" for="pr-league-id">ESPN League ID</label>
+    <label class="pr-form-label" for="pr-league-id">ESPN League ID or Access Code</label>
     <div class="pr-form-row">
-      <input id="pr-league-id" class="pr-input" type="text" inputmode="numeric" placeholder="e.g. 1234567890" autocomplete="off">
+      <input id="pr-league-id" class="pr-input" type="text" placeholder="e.g. 1234567890 or your private code" autocomplete="off">
       <button id="pr-submit-btn" class="pr-submit" onclick="loadPowerRankings()">Load League</button>
     </div>
     <div class="pr-help">
-      Find your league ID in the URL when you visit your ESPN fantasy baseball league &mdash; it's the number after <code style="color:var(--text-dim);background:var(--surface2);padding:1px 5px;border-radius:3px;">leagueId=</code> in the address bar.
+      Find your ESPN league ID in the URL when you visit your league &mdash; it's the number after <code style="color:var(--text-dim);background:var(--surface2);padding:1px 5px;border-radius:3px;">leagueId=</code> in the address bar. Members of supported private leagues should use the access code from their commissioner.
     </div>
   </div>
 
@@ -655,6 +690,54 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       </table>
     </div>
     <div class="pr-match-stat" id="pr-match-stat"></div>
+
+    <!-- Position strength grid -->
+    <div class="pr-section" id="pr-positions-section" style="display:none;">
+      <div class="pr-section-header">
+        <div class="pr-section-eyebrow">League Breakdown</div>
+        <div class="pr-section-title">Position <span style="color:var(--accent);">Strength</span></div>
+        <div class="pr-section-sub">Total Kev Score by primary position &mdash; teams ranked within each spot.</div>
+      </div>
+      <div class="pr-pos-grid" id="pr-pos-grid"></div>
+    </div>
+
+    <!-- Top Free Agents -->
+    <div class="pr-section" id="pr-fa-section" style="display:none;">
+      <div class="pr-section-header">
+        <div class="pr-section-eyebrow">Waiver Wire</div>
+        <div class="pr-section-title">Top <span style="color:var(--accent);">Free Agents</span></div>
+        <div class="pr-section-sub">Highest-Kev unrostered players in this league.</div>
+      </div>
+      <div class="pr-fa-controls">
+        <button class="filter-btn pr-fa-btn active" data-fa-filter="all">All</button>
+        <button class="filter-btn pr-fa-btn" data-fa-filter="Batter">Batters</button>
+        <button class="filter-btn pr-fa-btn" data-fa-filter="Pitcher">Pitchers</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="C">C</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="1B">1B</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="2B">2B</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="3B">3B</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="SS">SS</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="OF">OF</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="DH">DH</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="SP">SP</button>
+        <button class="filter-btn position-btn pr-fa-btn" data-fa-filter="RP">RP</button>
+      </div>
+      <div class="pr-table-wrap">
+        <table class="pr-table">
+          <thead>
+            <tr>
+              <th style="text-align:center;">#</th>
+              <th>Player</th>
+              <th>Pos</th>
+              <th>Type</th>
+              <th class="num">Kev Score</th>
+              <th class="num" title="Score change over the last 7 days">7&#8209;Day Δ</th>
+            </tr>
+          </thead>
+          <tbody id="pr-fa-tbody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1560,25 +1643,35 @@ function renderWeekly() {
 // ══════════════════════════════════════
 // POWER RANKINGS
 // ══════════════════════════════════════
-// Fetches an ESPN public league's rosters, matches every player against
-// our PLAYERS data by normalized name, then aggregates Kev Scores by team.
+// Two data paths feed one rendering pipeline:
 //
-// Architecture notes:
-// - Direct browser fetch to lm-api-reads.fantasy.espn.com (CORS-permissive
-//   in our testing). Falls back to a clear error message if blocked.
-// - League ID is persisted to localStorage so returning users skip the form.
-// - Name matching mirrors the Python normalize() in public_updater.py:
-//   lowercase, strip accents/punctuation, collapse Jr/Sr/II/III suffixes.
+//   1. ESPN public leagues
+//      - Input is a numeric league ID (extracted from raw text or full URL).
+//      - We fetch lm-api-reads.fantasy.espn.com directly from the browser.
+//      - CORS has been permissive in our testing; if it isn't, the catch
+//        block surfaces a clear error.
+//
+//   2. Private leagues
+//      - Input is an alphabetic access code (e.g. "ank").
+//      - We fetch private_league.json from our own origin (no CORS issue).
+//      - The JSON's leagueCode field must match the entered code.
+//
+// Both paths produce a uniform "teams" array that feeds renderTeamRankings(),
+// renderPositionStrength(), and renderFreeAgents().
+//
+// Name matching mirrors the Python normalize_name() in export_private_league.py
+// and public_updater.py: lowercase, strip accents/punctuation, drop Jr/Sr/II/III.
 const PR_LS_KEY = 'kevscores_power_rankings_league';
 const PR_SEASON = 2026;
+const PR_PRIVATE_JSON_URL = 'private_league.json';
+
+// Position cards rendered by the strength grid, in order.
+const PR_POSITIONS = ['C', '1B', '2B', '3B', 'SS', 'OF', 'DH', 'SP', 'RP'];
 
 // Build a lookup map (normalized name -> player object) once when data loads.
-// Lazy-initialized on first call.
 let PR_PLAYER_MAP = null;
 function buildPlayerMap() {
   PR_PLAYER_MAP = new Map();
-  // Use OVERALL since it has fantasy team aggregation fields and matches the
-  // dataset shown elsewhere on the site. Fall back to PLAYERS if needed.
   const source = (OVERALL && OVERALL.length) ? OVERALL : PLAYERS;
   for (const p of source) {
     if (!p || !p.name) continue;
@@ -1590,15 +1683,24 @@ function buildPlayerMap() {
 function prNormalize(name) {
   if (!name) return '';
   let s = String(name).toLowerCase().trim();
-  // Strip accents (NFD-style)
   s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  // Strip common punctuation
   s = s.replace(/[.,'"]/g, '').replace(/-/g, ' ');
-  // Strip Jr/Sr/II/III suffixes at word boundaries
   s = s.replace(/\b(jr|sr|ii|iii|iv)\b/g, '');
-  // Collapse whitespace
   s = s.replace(/\s+/g, ' ').trim();
   return s;
+}
+
+// Extract a player's primary position from kevRating ("OF12" -> "OF").
+// Falls back to the first token of pos ("OF, 1B" -> "OF") if kevRating is empty.
+function prPrimaryPosition(p) {
+  const rating = String(p.kevRating || '').toUpperCase();
+  // Pull leading letters from kevRating: "1B25" -> "1B", "SP10" -> "SP"
+  const m = rating.match(/^(\d?[A-Z]+)/);
+  if (m) return m[1];
+  const pos = String(p.pos || '').toUpperCase();
+  // First token before slash, comma, or space
+  const first = pos.split(/[,/\s]/).filter(Boolean)[0] || '';
+  return first;
 }
 
 function setPRStatus(html) {
@@ -1612,27 +1714,27 @@ function clearPRStatus() {
 function resetPowerRankings() {
   document.getElementById('pr-results').style.display = 'none';
   document.getElementById('pr-form').style.display = 'block';
+  document.getElementById('pr-positions-section').style.display = 'none';
+  document.getElementById('pr-fa-section').style.display = 'none';
   clearPRStatus();
   document.getElementById('pr-league-id').value = '';
   document.getElementById('pr-league-id').focus();
 }
 
+// ── ENTRY POINT ─────────────────────────────────────────────────────
+// Detects whether the input is a numeric ESPN ID or an alphabetic
+// private code, then dispatches to the appropriate fetch path.
 async function loadPowerRankings() {
   const inputEl = document.getElementById('pr-league-id');
   const btn     = document.getElementById('pr-submit-btn');
   const raw     = (inputEl.value || '').trim();
-  // ESPN league IDs are integers — strip anything else just in case the user
-  // pasted the whole URL.
-  const match    = raw.match(/(\d{4,})/);
-  const leagueId = match ? match[1] : '';
 
-  if (!leagueId) {
-    setPRStatus(`<div class="pr-error"><strong>That doesn't look like a league ID.</strong> League IDs are usually 6&ndash;10 digit numbers. You can paste the full ESPN URL and we'll extract it.</div>`);
+  if (!raw) {
+    setPRStatus(`<div class="pr-error"><strong>Enter a league ID or access code.</strong></div>`);
     return;
   }
 
-  // Make sure player data is loaded — the page may have been opened before
-  // the async fetch in the page header completes.
+  // Make sure player data has loaded.
   if (!OVERALL || !OVERALL.length) {
     setPRStatus(`<div class="pr-status pr-status-loading">Player data still loading</div>`);
     for (let i = 0; i < 30; i++) {
@@ -1646,7 +1748,34 @@ async function loadPowerRankings() {
   }
   if (!PR_PLAYER_MAP) buildPlayerMap();
 
+  // Detect input type:
+  //  - All digits (possibly with non-digit prefix like a URL) → ESPN
+  //  - Has letters → private code
+  const digitMatch = raw.match(/(\d{4,})/);
+  const hasLetters = /[a-zA-Z]/.test(raw);
+
   btn.disabled = true;
+  try {
+    if (hasLetters && !digitMatch) {
+      // Pure alphabetic — private league
+      await loadPrivateLeague(raw.toLowerCase());
+    } else if (digitMatch && !hasLetters) {
+      // Pure numeric — ESPN
+      await loadESPNLeague(digitMatch[1]);
+    } else if (digitMatch) {
+      // Mixed (likely a URL paste with a numeric ID). ESPN URLs always have
+      // long digit sequences embedded; access codes don't. Prefer ESPN.
+      await loadESPNLeague(digitMatch[1]);
+    } else {
+      setPRStatus(`<div class="pr-error"><strong>That doesn't look like a league ID or code.</strong> Use a numeric ESPN league ID, or your private-league access code.</div>`);
+    }
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ── ESPN PUBLIC LEAGUE PATH ─────────────────────────────────────────
+async function loadESPNLeague(leagueId) {
   setPRStatus(`<div class="pr-status pr-status-loading">Fetching league from ESPN</div>`);
 
   const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/flb/seasons/${PR_SEASON}/segments/0/leagues/${encodeURIComponent(leagueId)}?view=mTeam&view=mRoster`;
@@ -1659,26 +1788,19 @@ async function loadPowerRankings() {
     if (!resp.ok) throw new Error('HTTP_' + resp.status);
     data = await resp.json();
   } catch (err) {
-    btn.disabled = false;
     if (err.message === 'PRIVATE') {
-      setPRStatus(`<div class="pr-error"><strong>This league is private.</strong> ESPN won't share private league rosters with KevScores. To use this feature, an owner can flip the league to public in League Settings &rarr; Visibility, or wait for our private league support (coming soon).</div>`);
+      setPRStatus(`<div class="pr-error"><strong>This league is private.</strong> ESPN won't share private league rosters with KevScores. To use this feature, an owner can flip the league to public in League Settings &rarr; Visibility, or use a private access code if your commissioner provided one.</div>`);
     } else if (err.message === 'NOT_FOUND') {
       setPRStatus(`<div class="pr-error"><strong>Couldn't find league <code>${escapeHtml(leagueId)}</code>.</strong> Double-check the ID in your league's URL.</div>`);
     } else if (err.message && err.message.startsWith('HTTP_')) {
       setPRStatus(`<div class="pr-error"><strong>ESPN returned an error</strong> (${escapeHtml(err.message)}). Try again in a moment.</div>`);
     } else {
-      // Most likely a CORS / network error
       setPRStatus(`<div class="pr-error"><strong>Couldn't reach ESPN.</strong> This is usually a network or browser issue. If it keeps happening, your league may be private or ESPN's API may be temporarily unavailable.</div>`);
     }
     return;
   }
 
-  // ESPN payload shape:
-  //   data.teams[]      = teams in the league (id, name, location, nickname, owners[], roster.entries[])
-  //   data.members[]    = league members (id, displayName, firstName, lastName)
-  //   .roster.entries[].playerPoolEntry.player.fullName
   if (!data || !Array.isArray(data.teams) || !data.teams.length) {
-    btn.disabled = false;
     setPRStatus(`<div class="pr-error"><strong>League loaded but no teams were found.</strong> The season may not have started yet, or ESPN returned an unexpected shape.</div>`);
     return;
   }
@@ -1694,10 +1816,11 @@ async function loadPowerRankings() {
     }
   }
 
-  // Process each team
+  // Process each team into the uniform shape used by the renderers.
   const teams = [];
   let totalMatched = 0;
   let totalUnmatched = 0;
+  const rosteredNorms = new Set(); // for free-agent computation
 
   for (const t of data.teams) {
     const teamName = (t.name && String(t.name).trim())
@@ -1708,88 +1831,216 @@ async function loadPowerRankings() {
     const ownerName = ownerIds.length ? (ownerMap[ownerIds[0]] || '') : '';
 
     const entries = (t.roster && Array.isArray(t.roster.entries)) ? t.roster.entries : [];
-    const players = [];
-    let totalKev = 0;
-    let totalChange = 0;
-    let bestBatter = null;
-    let bestPitcher = null;
+    const rosterNames = entries
+      .map(e => e.playerPoolEntry && e.playerPoolEntry.player && e.playerPoolEntry.player.fullName)
+      .filter(Boolean);
 
-    for (const e of entries) {
-      const pe = e.playerPoolEntry || {};
-      const pl = pe.player || {};
-      const fullName = pl.fullName || '';
-      if (!fullName) continue;
-
-      const norm = prNormalize(fullName);
-      const matched = PR_PLAYER_MAP.get(norm);
-
-      if (matched) {
-        totalMatched++;
-        const kev = Number(matched.kevScore || 0);
-        const chg = Number(matched.kevChange7d || 0);
-        totalKev += kev;
-        if (!Number.isNaN(chg)) totalChange += chg;
-        const isPitcher = matched.type === 'Pitcher';
-        if (isPitcher) {
-          if (!bestPitcher || kev > bestPitcher.kevScore) bestPitcher = matched;
-        } else if (matched.type === 'Batter') {
-          if (!bestBatter || kev > bestBatter.kevScore) bestBatter = matched;
-        }
-        players.push({ name: matched.name, kevScore: kev, type: matched.type, matched: true });
-      } else {
-        totalUnmatched++;
-        players.push({ name: fullName, kevScore: 0, type: '', matched: false });
-      }
+    const teamData = aggregateTeam(teamName, ownerName, rosterNames);
+    totalMatched   += teamData.matchedCount;
+    totalUnmatched += teamData.players.length - teamData.matchedCount;
+    for (const p of teamData.players) {
+      if (p.matched) rosteredNorms.add(prNormalize(p.name));
     }
-
-    teams.push({
-      id: t.id,
-      teamName,
-      ownerName,
-      totalKev,
-      totalChange,
-      avgPlayer: players.length ? totalKev / players.length : 0,
-      playerCount: players.length,
-      matchedCount: players.filter(p => p.matched).length,
-      bestBatter,
-      bestPitcher,
-      players,
-    });
+    teams.push(teamData);
   }
 
-  // Sort by total Kev Score, descending — that's the power ranking
   teams.sort((a, b) => b.totalKev - a.totalKev);
   teams.forEach((t, i) => t.rank = i + 1);
 
-  // Persist league ID for next visit
-  try { localStorage.setItem(PR_LS_KEY, leagueId); } catch (_) { /* private mode */ }
+  try { localStorage.setItem(PR_LS_KEY, leagueId); } catch (_) { /* ignore */ }
 
-  // Render
-  btn.disabled = false;
   clearPRStatus();
-  renderPowerRankings({
-    leagueId,
+  renderEverything({
+    leagueIdDisplay: leagueId,
     leagueName: (data.settings && data.settings.name) || ('League ' + leagueId),
     teams,
     totalMatched,
     totalUnmatched,
     season: data.seasonId || PR_SEASON,
+    rosteredNorms,
+    sourceLabel: 'ESPN public league',
   });
 }
 
-let PR_RENDERED_TEAMS = []; // kept around so the expand-row toggle can find them
+// ── PRIVATE LEAGUE PATH ─────────────────────────────────────────────
+async function loadPrivateLeague(code) {
+  setPRStatus(`<div class="pr-status pr-status-loading">Loading private league</div>`);
 
-function renderPowerRankings(payload) {
+  let data;
+  try {
+    const resp = await fetch(PR_PRIVATE_JSON_URL, { cache: 'no-store' });
+    if (resp.status === 404) throw new Error('NO_FILE');
+    if (!resp.ok) throw new Error('HTTP_' + resp.status);
+    data = await resp.json();
+  } catch (err) {
+    if (err.message === 'NO_FILE') {
+      setPRStatus(`<div class="pr-error"><strong>No private league has been published yet.</strong> Make sure you have the right access code, or check back later.</div>`);
+    } else {
+      setPRStatus(`<div class="pr-error"><strong>Couldn't load the private league file.</strong> ${escapeHtml(err.message || 'Unknown error')}</div>`);
+    }
+    return;
+  }
+
+  // Validate the access code
+  const expectedCode = String(data.leagueCode || '').toLowerCase().trim();
+  if (!expectedCode || expectedCode !== code.toLowerCase().trim()) {
+    setPRStatus(`<div class="pr-error"><strong>That code doesn't match any private league we have on file.</strong> Double-check with your commissioner.</div>`);
+    return;
+  }
+
+  const assignments = data.assignments || {};
+  if (!Object.keys(assignments).length) {
+    setPRStatus(`<div class="pr-error"><strong>Private league file is empty.</strong> Tell your commissioner to re-export.</div>`);
+    return;
+  }
+
+  // Group player names by team code (skip FA — they're handled separately)
+  const teamRosters = {}; // teamCode -> [playerName, ...]
+  const rosteredNorms = new Set();
+  for (const [name, teamCode] of Object.entries(assignments)) {
+    const norm = prNormalize(name);
+    if (norm) rosteredNorms.add(norm);
+    const code = String(teamCode || '').trim();
+    if (!code || code.toUpperCase() === 'FA') continue; // free agent
+    if (!teamRosters[code]) teamRosters[code] = [];
+    teamRosters[code].push(name);
+  }
+
+  // If the JSON includes a teamNames list, ensure every team appears even if
+  // the assignments map happens to have no players for them yet.
+  if (Array.isArray(data.teamNames)) {
+    for (const tn of data.teamNames) {
+      if (!teamRosters[tn]) teamRosters[tn] = [];
+    }
+  }
+
+  // Build uniform team objects
+  const teams = [];
+  let totalMatched = 0;
+  let totalUnmatched = 0;
+
+  for (const [teamCode, names] of Object.entries(teamRosters)) {
+    const teamData = aggregateTeam(teamCode, '', names);
+    totalMatched   += teamData.matchedCount;
+    totalUnmatched += teamData.players.length - teamData.matchedCount;
+    teams.push(teamData);
+  }
+
+  teams.sort((a, b) => b.totalKev - a.totalKev);
+  teams.forEach((t, i) => t.rank = i + 1);
+
+  try { localStorage.setItem(PR_LS_KEY, code); } catch (_) { /* ignore */ }
+
+  clearPRStatus();
+  renderEverything({
+    leagueIdDisplay: code.toUpperCase(),
+    leagueName: data.leagueName || 'Private League',
+    teams,
+    totalMatched,
+    totalUnmatched,
+    season: PR_SEASON,
+    rosteredNorms,
+    sourceLabel: 'Private league',
+    lastUpdated: data.lastUpdated || '',
+  });
+}
+
+// ── SHARED TEAM AGGREGATION ─────────────────────────────────────────
+// Takes a team identifier + owner + list of player names; returns the
+// uniform team object the renderers consume.
+function aggregateTeam(teamName, ownerName, rosterNames) {
+  const players = [];
+  let totalKev = 0;
+  let totalChange = 0;
+  let bestBatter = null;
+  let bestPitcher = null;
+
+  for (const fullName of rosterNames) {
+    if (!fullName) continue;
+    const norm = prNormalize(fullName);
+    const matched = PR_PLAYER_MAP.get(norm);
+
+    if (matched) {
+      const kev = Number(matched.kevScore || 0);
+      const chg = Number(matched.kevChange7d || 0);
+      totalKev += kev;
+      if (!Number.isNaN(chg)) totalChange += chg;
+      if (matched.type === 'Pitcher') {
+        if (!bestPitcher || kev > bestPitcher.kevScore) bestPitcher = matched;
+      } else if (matched.type === 'Batter') {
+        if (!bestBatter || kev > bestBatter.kevScore) bestBatter = matched;
+      }
+      players.push({
+        name: matched.name,
+        kevScore: kev,
+        type: matched.type,
+        primaryPos: prPrimaryPosition(matched),
+        matched: true,
+      });
+    } else {
+      players.push({ name: fullName, kevScore: 0, type: '', primaryPos: '', matched: false });
+    }
+  }
+
+  return {
+    teamName,
+    ownerName,
+    totalKev,
+    totalChange,
+    avgPlayer: players.length ? totalKev / players.length : 0,
+    playerCount: players.length,
+    matchedCount: players.filter(p => p.matched).length,
+    bestBatter,
+    bestPitcher,
+    players,
+  };
+}
+
+// ── RENDERING ───────────────────────────────────────────────────────
+let PR_RENDERED_TEAMS = []; // for the expand-row toggle
+let PR_FA_PLAYERS    = []; // free agents pool — filtered by the FA buttons
+let PR_FA_FILTER     = 'all';
+
+function renderEverything(payload) {
   PR_RENDERED_TEAMS = payload.teams;
   document.getElementById('pr-form').style.display = 'none';
   document.getElementById('pr-results').style.display = 'block';
 
+  // League header
   document.getElementById('pr-league-name').textContent = payload.leagueName;
-  document.getElementById('pr-league-info').innerHTML =
-    `${payload.season} season &middot; ${payload.teams.length} teams &middot; League ID <code style="color:var(--text-dim);">${escapeHtml(payload.leagueId)}</code>`;
+  let metaBits = [
+    payload.season + ' season',
+    payload.teams.length + ' teams',
+    payload.sourceLabel
+      ? `<span style="color:var(--text-dim);">${escapeHtml(payload.sourceLabel)}</span>`
+      : '',
+    `<code style="color:var(--text-dim);">${escapeHtml(payload.leagueIdDisplay)}</code>`,
+  ].filter(Boolean);
+  if (payload.lastUpdated) {
+    const d = new Date(payload.lastUpdated);
+    if (!isNaN(d)) {
+      metaBits.push(`Updated ${d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`);
+    }
+  }
+  document.getElementById('pr-league-info').innerHTML = metaBits.join(' &middot; ');
 
+  // Top table
+  renderTeamRankings(payload.teams, payload.totalMatched, payload.totalUnmatched);
+  // Position strength
+  renderPositionStrength(payload.teams);
+  // Free agents
+  PR_FA_PLAYERS = computeFreeAgents(payload.rosteredNorms);
+  PR_FA_FILTER  = 'all';
+  // Reset the filter buttons to "All"
+  document.querySelectorAll('.pr-fa-btn').forEach(b => b.classList.remove('active'));
+  const allBtn = document.querySelector('.pr-fa-btn[data-fa-filter="all"]');
+  if (allBtn) allBtn.classList.add('active');
+  renderFreeAgents();
+}
+
+function renderTeamRankings(teams, totalMatched, totalUnmatched) {
   const tbody = document.getElementById('pr-tbody');
-  tbody.innerHTML = payload.teams.map((t, i) => {
+  tbody.innerHTML = teams.map((t, i) => {
     const rankClass = t.rank === 1 ? 'pr-rank-1' : t.rank === 2 ? 'pr-rank-2' : t.rank === 3 ? 'pr-rank-3' : 'pr-rank-other';
     const chgClass = t.totalChange > 0.05 ? 'pr-change-pos' : t.totalChange < -0.05 ? 'pr-change-neg' : 'pr-change-neutral';
     const chgSym   = t.totalChange > 0.05 ? '▲' : t.totalChange < -0.05 ? '▼' : '—';
@@ -1816,15 +2067,127 @@ function renderPowerRankings(payload) {
       </tr>`;
   }).join('');
 
-  // Match-stat footer
   const matchStat = document.getElementById('pr-match-stat');
-  const total = payload.totalMatched + payload.totalUnmatched;
+  const total = totalMatched + totalUnmatched;
   if (total > 0) {
-    const pct = ((payload.totalMatched / total) * 100).toFixed(0);
-    matchStat.innerHTML = `Matched <strong style="color:var(--text-dim);">${payload.totalMatched}</strong> of <strong style="color:var(--text-dim);">${total}</strong> rostered players (${pct}%). Click a team for the full roster.`;
+    const pct = ((totalMatched / total) * 100).toFixed(0);
+    matchStat.innerHTML = `Matched <strong style="color:var(--text-dim);">${totalMatched}</strong> of <strong style="color:var(--text-dim);">${total}</strong> rostered players (${pct}%). Click a team for the full roster.`;
   } else {
     matchStat.innerHTML = '';
   }
+}
+
+function renderPositionStrength(teams) {
+  const grid = document.getElementById('pr-pos-grid');
+  if (!grid) return;
+  document.getElementById('pr-positions-section').style.display = 'block';
+
+  // For each position, compute each team's total Kev Score for matched
+  // players whose primary position matches.
+  grid.innerHTML = PR_POSITIONS.map(pos => {
+    const teamStrengths = teams.map(t => {
+      const sum = t.players.reduce((acc, p) => {
+        if (!p.matched) return acc;
+        return p.primaryPos === pos ? acc + p.kevScore : acc;
+      }, 0);
+      const count = t.players.filter(p => p.matched && p.primaryPos === pos).length;
+      return { teamName: t.teamName, strength: sum, count };
+    }).filter(t => t.strength > 0 || t.count > 0);
+
+    teamStrengths.sort((a, b) => b.strength - a.strength);
+    const max = teamStrengths.length ? teamStrengths[0].strength : 0;
+
+    const rows = teamStrengths.length
+      ? teamStrengths.map((t, i) => {
+          const pct = max > 0 ? (t.strength / max) * 100 : 0;
+          const firstClass = i === 0 ? ' first' : '';
+          return `<div class="pr-pos-row">
+            <div class="pr-pos-row-meta">
+              <span class="pr-pos-row-name${firstClass}" title="${escapeHtml(t.teamName)}">${escapeHtml(t.teamName)}</span>
+              <span class="pr-pos-row-score${firstClass}">${t.strength.toFixed(1)}</span>
+            </div>
+            <div class="pr-pos-bar-track">
+              <div class="pr-pos-bar-fill${firstClass}" style="width:${pct.toFixed(1)}%"></div>
+            </div>
+          </div>`;
+        }).join('')
+      : `<div class="pr-pos-empty">No ${pos} players rostered yet</div>`;
+
+    const totalCount = teamStrengths.reduce((s, t) => s + t.count, 0);
+    return `<div class="pr-pos-card">
+      <div class="pr-pos-card-header">
+        <div class="pr-pos-card-title">${pos}</div>
+        <div class="pr-pos-card-count">${totalCount} player${totalCount === 1 ? '' : 's'}</div>
+      </div>
+      ${rows}
+    </div>`;
+  }).join('');
+}
+
+function computeFreeAgents(rosteredNorms) {
+  const out = [];
+  const source = (OVERALL && OVERALL.length) ? OVERALL : PLAYERS;
+  for (const p of source) {
+    if (!p || !p.name) continue;
+    const norm = prNormalize(p.name);
+    if (rosteredNorms.has(norm)) continue;
+    if (p.notEligible) continue; // skip ineligible players
+    if (!(p.kevScore > 0)) continue;
+    out.push(p);
+  }
+  out.sort((a, b) => b.kevScore - a.kevScore);
+  return out;
+}
+
+function setFAFilter(filter, btn) {
+  PR_FA_FILTER = filter;
+  document.querySelectorAll('.pr-fa-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFreeAgents();
+}
+
+function renderFreeAgents() {
+  const tbody = document.getElementById('pr-fa-tbody');
+  if (!tbody) return;
+  document.getElementById('pr-fa-section').style.display = 'block';
+
+  let pool = PR_FA_PLAYERS;
+  if (PR_FA_FILTER === 'Batter' || PR_FA_FILTER === 'Pitcher') {
+    pool = pool.filter(p => p.type === PR_FA_FILTER);
+  } else if (PR_FA_FILTER && PR_FA_FILTER !== 'all') {
+    // Position filter — match against kevRating prefix (e.g. "OF12" → "OF")
+    pool = pool.filter(p => prPrimaryPosition(p) === PR_FA_FILTER);
+  }
+  pool = pool.slice(0, 10);
+
+  if (!pool.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--text-muted);font-style:italic;">No free agents match this filter.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = pool.map((p, idx) => {
+    const safeName = p.name.replace(/'/g, "\\'");
+    const initials = p.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    const aColor   = avatarColor(p.name, p.mlbTeam);
+    const avatar = p.mlbId
+      ? `<div style="width:40px;height:30px;border-radius:4px;overflow:hidden;flex-shrink:0;background:rgba(20,24,30,0.3);display:inline-block;vertical-align:middle;margin-right:8px;">
+           <img src="headshots/${p.mlbId}.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" style="width:100%;height:100%;object-fit:cover;object-position:center 10%;display:block;">
+           <div style="display:none;width:40px;height:30px;border-radius:4px;background:${aColor};align-items:center;justify-content:center;font-family:var(--font-display);font-size:10px;font-weight:800;color:#fff;">${initials}</div>
+         </div>`
+      : `<div style="width:40px;height:30px;border-radius:4px;background:${aColor};display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:10px;font-weight:800;color:#fff;flex-shrink:0;vertical-align:middle;margin-right:8px;">${initials}</div>`;
+    const typeClass = p.type === 'Batter' ? 'type-bat' : p.type === 'Pitcher' ? 'type-pit' : '';
+    const chg = Number(p.kevChange7d || 0);
+    const chgClass = chg > 0.05 ? 'val-pos' : chg < -0.05 ? 'val-neg' : '';
+    const chgDisplay = Math.abs(chg) < 0.05 ? '<span style="color:var(--text-muted);">—</span>' : `${chg > 0 ? '+' : ''}${chg.toFixed(1)}`;
+    return `<tr>
+      <td style="text-align:center;font-family:var(--font-display);font-weight:700;color:var(--text-dim);width:36px;">${idx + 1}</td>
+      <td style="white-space:nowrap;">${avatar}<span class="player-link" onclick="openPlayerModalByName('${safeName}')">${escapeHtml(p.name)}</span></td>
+      <td><span class="pos-badge">${escapeHtml(p.kevRating || '')}</span></td>
+      <td class="${typeClass}" style="font-size:12px;font-weight:500;">${escapeHtml(p.type || '')}</td>
+      <td class="num">${Number(p.kevScore).toFixed(1)}</td>
+      <td class="num ${chgClass}" style="font-size:12px;">${chgDisplay}</td>
+    </tr>`;
+  }).join('');
 }
 
 function togglePRRoster(idx) {
@@ -1832,7 +2195,6 @@ function togglePRRoster(idx) {
   const teamRow = tbody.querySelector(`tr.pr-team-row[data-team-idx="${idx}"]`);
   if (!teamRow) return;
 
-  // Toggle: if next sibling is the roster row for this team, remove it
   const next = teamRow.nextElementSibling;
   if (next && next.classList.contains('pr-roster-row') && next.dataset.teamIdx === String(idx)) {
     next.remove();
@@ -1840,14 +2202,12 @@ function togglePRRoster(idx) {
     return;
   }
 
-  // Close any other open roster row (only one expanded at a time)
   tbody.querySelectorAll('tr.pr-roster-row').forEach(r => r.remove());
   tbody.querySelectorAll('tr.pr-team-row.expanded').forEach(r => r.classList.remove('expanded'));
 
   const team = PR_RENDERED_TEAMS[idx];
   if (!team) return;
 
-  // Sort roster by score desc, with unmatched players at the bottom
   const sorted = [...team.players].sort((a, b) => {
     if (a.matched !== b.matched) return a.matched ? -1 : 1;
     return b.kevScore - a.kevScore;
@@ -1875,8 +2235,8 @@ function togglePRRoster(idx) {
   teamRow.parentNode.insertBefore(rosterRow, teamRow.nextSibling);
 }
 
-// On page load: prefill the input with the user's saved league ID (if any)
-// and bind Enter-to-submit. We don't auto-fetch — let the user click.
+// On page load: prefill the input with the user's saved league code (if any),
+// bind Enter-to-submit, and wire up the FA filter buttons.
 (function initPowerRankings() {
   try {
     const saved = localStorage.getItem(PR_LS_KEY);
@@ -1892,6 +2252,13 @@ function togglePRRoster(idx) {
       if (e.key === 'Enter') { e.preventDefault(); loadPowerRankings(); }
     });
   }
+
+  // Wire up free-agent filter buttons via delegation
+  document.querySelectorAll('.pr-fa-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      setFAFilter(this.dataset.faFilter, this);
+    });
+  });
 })();
 
 
