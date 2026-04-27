@@ -1,2971 +1,3943 @@
 {
   "Shohei Ohtani": {
-    "kev": 100.61,
-    "fp": 67
+    "kev": 100.55,
+    "fp": 87,
+    "prev_week_fp": 20
   },
   "Aaron Judge": {
-    "kev": 82.87,
-    "fp": 62
+    "kev": 83.17,
+    "fp": 78,
+    "prev_week_fp": 16
   },
   "Paul Skenes": {
-    "kev": 79.09,
-    "fp": 63
+    "kev": 81.03,
+    "fp": 95,
+    "prev_week_fp": 32
   },
   "Tarik Skubal": {
-    "kev": 77.28,
-    "fp": 86
+    "kev": 77.02,
+    "fp": 94,
+    "prev_week_fp": 8
   },
   "Jos\u00e9 Ram\u00edrez": {
-    "kev": 74.61,
-    "fp": 71
+    "kev": 74.82,
+    "fp": 82,
+    "prev_week_fp": 11
   },
   "Garrett Crochet": {
-    "kev": 63.04,
-    "fp": 16
+    "kev": 68.4,
+    "fp": 41,
+    "prev_week_fp": 25
   },
   "Kyle Tucker": {
-    "kev": 62.48,
-    "fp": 40
+    "kev": 61.91,
+    "fp": 46,
+    "prev_week_fp": 6
+  },
+  "Yordan Alvarez": {
+    "kev": 58.35,
+    "fp": 119,
+    "prev_week_fp": 16
+  },
+  "Chris Sale": {
+    "kev": 56.46,
+    "fp": 113,
+    "prev_week_fp": 29
+  },
+  "Bobby Witt Jr.": {
+    "kev": 54.44,
+    "fp": 46,
+    "prev_week_fp": 22
   },
   "Cristopher S\u00e1nchez": {
-    "kev": 55.28,
-    "fp": 74
+    "kev": 54.2,
+    "fp": 68,
+    "prev_week_fp": -6
   },
-  "Bryan Woo": {
-    "kev": 53.51,
-    "fp": 73
+  "Max Fried": {
+    "kev": 52.48,
+    "fp": 112,
+    "prev_week_fp": 33
   },
   "Yoshinobu Yamamoto": {
     "kev": 52.43,
-    "fp": 70
+    "fp": 79,
+    "prev_week_fp": 9
   },
-  "Max Fried": {
-    "kev": 51.21,
-    "fp": 79
+  "Bryan Woo": {
+    "kev": 51.78,
+    "fp": 60,
+    "prev_week_fp": -13
   },
   "Ronald Acu\u00f1a Jr.": {
-    "kev": 49.93,
-    "fp": 29
-  },
-  "Corbin Carroll": {
-    "kev": 49.27,
-    "fp": 56
-  },
-  "Bobby Witt Jr.": {
-    "kev": 48.81,
-    "fp": 24
-  },
-  "Chris Sale": {
-    "kev": 48.26,
-    "fp": 84
-  },
-  "Yordan Alvarez": {
-    "kev": 47.74,
-    "fp": 103
-  },
-  "Juan Soto": {
-    "kev": 46.76,
-    "fp": 13
-  },
-  "Ketel Marte": {
-    "kev": 45.55,
-    "fp": 33
-  },
-  "Logan Gilbert": {
-    "kev": 45.41,
-    "fp": 49
-  },
-  "Junior Caminero": {
-    "kev": 45.23,
-    "fp": 43
-  },
-  "Jacob deGrom": {
-    "kev": 44.87,
-    "fp": 58
-  },
-  "Vladimir Guerrero Jr.": {
-    "kev": 44.86,
-    "fp": 35
-  },
-  "Dylan Cease": {
-    "kev": 44.64,
-    "fp": 60
-  },
-  "George Kirby": {
-    "kev": 43.75,
-    "fp": 75
-  },
-  "Kevin Gausman": {
-    "kev": 43.24,
-    "fp": 77
-  },
-  "Logan Webb": {
-    "kev": 42.24,
-    "fp": 39
-  },
-  "Kyle Schwarber": {
-    "kev": 41.95,
-    "fp": 45
+    "kev": 50.85,
+    "fp": 42,
+    "prev_week_fp": 13
   },
   "Matt Olson": {
-    "kev": 41.35,
-    "fp": 60
+    "kev": 49.66,
+    "fp": 90,
+    "prev_week_fp": 30
   },
-  "Freddy Peralta": {
-    "kev": 40.89,
-    "fp": 50
+  "Corbin Carroll": {
+    "kev": 49.46,
+    "fp": 64,
+    "prev_week_fp": 8
   },
-  "Gunnar Henderson": {
-    "kev": 40.88,
-    "fp": 49
+  "Junior Caminero": {
+    "kev": 47.56,
+    "fp": 65,
+    "prev_week_fp": 22
   },
-  "Joe Ryan": {
-    "kev": 39.75,
-    "fp": 66
+  "Vladimir Guerrero Jr.": {
+    "kev": 47.18,
+    "fp": 52,
+    "prev_week_fp": 17
   },
-  "Fernando Tatis Jr.": {
-    "kev": 39.36,
-    "fp": 25
+  "Jacob deGrom": {
+    "kev": 46.65,
+    "fp": 82,
+    "prev_week_fp": 24
   },
-  "Cody Bellinger": {
-    "kev": 39.35,
-    "fp": 52
+  "Dylan Cease": {
+    "kev": 45.77,
+    "fp": 81,
+    "prev_week_fp": 21
+  },
+  "Logan Gilbert": {
+    "kev": 45.57,
+    "fp": 50,
+    "prev_week_fp": 1
   },
   "Ben Rice": {
-    "kev": 38.32,
-    "fp": 81
+    "kev": 44.87,
+    "fp": 89,
+    "prev_week_fp": 8
   },
-  "Nico Hoerner": {
-    "kev": 38.13,
-    "fp": 68
+  "Ketel Marte": {
+    "kev": 44.39,
+    "fp": 37,
+    "prev_week_fp": 4
   },
-  "William Contreras": {
-    "kev": 37.7,
-    "fp": 42
+  "George Kirby": {
+    "kev": 44.29,
+    "fp": 90,
+    "prev_week_fp": 15
   },
-  "Jes\u00fas Luzardo": {
-    "kev": 36.95,
-    "fp": 15
+  "Juan Soto": {
+    "kev": 44.08,
+    "fp": 17,
+    "prev_week_fp": 4
   },
-  "Framber Valdez": {
-    "kev": 35.53,
-    "fp": 57
+  "Kevin Gausman": {
+    "kev": 44.02,
+    "fp": 95,
+    "prev_week_fp": 18
   },
-  "Manny Machado": {
-    "kev": 34.13,
-    "fp": 31
+  "Logan Webb": {
+    "kev": 42.93,
+    "fp": 47,
+    "prev_week_fp": 8
   },
-  "Elly De La Cruz": {
-    "kev": 33.93,
-    "fp": 49
+  "Kyle Schwarber": {
+    "kev": 42.87,
+    "fp": 60,
+    "prev_week_fp": 15
   },
-  "Shea Langeliers": {
-    "kev": 32.56,
-    "fp": 42
+  "Freddy Peralta": {
+    "kev": 41.45,
+    "fp": 56,
+    "prev_week_fp": 6
   },
-  "Nick Pivetta": {
-    "kev": 32.32,
-    "fp": 33
+  "Gunnar Henderson": {
+    "kev": 41.03,
+    "fp": 58,
+    "prev_week_fp": 9
   },
-  "Freddie Freeman": {
-    "kev": 32.27,
-    "fp": 49
-  },
-  "Drake Baldwin": {
-    "kev": 31.68,
-    "fp": 55
-  },
-  "Alex Bregman": {
-    "kev": 31.13,
-    "fp": 20
-  },
-  "Sonny Gray": {
-    "kev": 30.88,
-    "fp": 35
-  },
-  "Maikel Garcia": {
-    "kev": 30.61,
-    "fp": 34
+  "Joe Ryan": {
+    "kev": 39.68,
+    "fp": 69,
+    "prev_week_fp": 3
   },
   "Mason Miller": {
-    "kev": 30.36,
-    "fp": 102
+    "kev": 39.33,
+    "fp": 117,
+    "prev_week_fp": 15
   },
-  "Jose Altuve": {
-    "kev": 29.87,
-    "fp": 46
+  "Cody Bellinger": {
+    "kev": 39.14,
+    "fp": 59,
+    "prev_week_fp": 7
   },
-  "George Springer": {
-    "kev": 29.51,
-    "fp": 21
+  "Jes\u00fas Luzardo": {
+    "kev": 38.66,
+    "fp": 21,
+    "prev_week_fp": 6
   },
-  "Jackson Merrill": {
-    "kev": 29.0,
-    "fp": 42
-  },
-  "Hunter Brown": {
-    "kev": 28.75,
-    "fp": 41
-  },
-  "Brent Rooker": {
-    "kev": 28.35,
-    "fp": 11
-  },
-  "Mookie Betts": {
-    "kev": 28.34,
-    "fp": 23
-  },
-  "Nolan McLean": {
-    "kev": 28.2,
-    "fp": 69
-  },
-  "Bryce Harper": {
-    "kev": 27.87,
-    "fp": 48
-  },
-  "Corey Seager": {
-    "kev": 27.85,
-    "fp": 45
-  },
-  "Taylor Ward": {
-    "kev": 27.76,
-    "fp": 44
-  },
-  "Brandon Woodruff": {
-    "kev": 27.54,
-    "fp": 61
-  },
-  "Nathan Eovaldi": {
-    "kev": 27.48,
-    "fp": 33
-  },
-  "Francisco Lindor": {
-    "kev": 27.35,
-    "fp": 21
-  },
-  "Ian Happ": {
-    "kev": 27.35,
-    "fp": 39
-  },
-  "Brice Turang": {
-    "kev": 27.27,
-    "fp": 65
-  },
-  "Adley Rutschman": {
-    "kev": 27.17,
-    "fp": 17
-  },
-  "Will Smith": {
-    "kev": 27.02,
-    "fp": 27
-  },
-  "Eury P\u00e9rez": {
-    "kev": 27.02,
-    "fp": 51
-  },
-  "Julio Rodr\u00edguez": {
-    "kev": 26.94,
-    "fp": 13
-  },
-  "Alec Burleson": {
-    "kev": 26.38,
-    "fp": 48
-  },
-  "Gavin Williams": {
-    "kev": 26.3,
-    "fp": 95
-  },
-  "Pete Alonso": {
-    "kev": 26.13,
-    "fp": 24
-  },
-  "James Wood": {
-    "kev": 26.12,
-    "fp": 64
-  },
-  "Jacob Misiorowski": {
-    "kev": 26.09,
-    "fp": 70
-  },
-  "Trea Turner": {
-    "kev": 25.97,
-    "fp": 27
-  },
-  "Sandy Alcantara": {
-    "kev": 25.93,
-    "fp": 68
-  },
-  "Geraldo Perdomo": {
-    "kev": 25.74,
-    "fp": 32
-  },
-  "Drew Rasmussen": {
-    "kev": 25.48,
-    "fp": 59
-  },
-  "Cam Schlittler": {
-    "kev": 25.41,
-    "fp": 91
-  },
-  "Roman Anthony": {
-    "kev": 24.83,
-    "fp": 17
-  },
-  "Cade Smith": {
-    "kev": 24.77,
-    "fp": 58
-  },
-  "Yandy D\u00edaz": {
-    "kev": 24.63,
-    "fp": 47
-  },
-  "Ozzie Albies": {
-    "kev": 24.61,
-    "fp": 39
-  },
-  "Oneil Cruz": {
-    "kev": 24.59,
-    "fp": 55
-  },
-  "Brandon Nimmo": {
-    "kev": 24.39,
-    "fp": 42
-  },
-  "Andy Pages": {
-    "kev": 24.1,
-    "fp": 48
-  },
-  "Cal Raleigh": {
-    "kev": 24.04,
-    "fp": 12
-  },
-  "Tyler Glasnow": {
-    "kev": 23.9,
-    "fp": 75
-  },
-  "Steven Kwan": {
-    "kev": 23.69,
-    "fp": 25
-  },
-  "Randy Arozarena": {
-    "kev": 23.67,
-    "fp": 45
+  "Nico Hoerner": {
+    "kev": 38.33,
+    "fp": 75,
+    "prev_week_fp": 7
   },
   "Cole Ragans": {
-    "kev": 23.66,
-    "fp": 2
+    "kev": 37.0,
+    "fp": 29,
+    "prev_week_fp": 27
   },
-  "Zac Gallen": {
-    "kev": 23.64,
-    "fp": 33
+  "Manny Machado": {
+    "kev": 36.98,
+    "fp": 47,
+    "prev_week_fp": 16
+  },
+  "William Contreras": {
+    "kev": 36.15,
+    "fp": 45,
+    "prev_week_fp": 3
+  },
+  "Drake Baldwin": {
+    "kev": 36.06,
+    "fp": 78,
+    "prev_week_fp": 23
+  },
+  "Elly De La Cruz": {
+    "kev": 35.78,
+    "fp": 73,
+    "prev_week_fp": 24
+  },
+  "Framber Valdez": {
+    "kev": 35.67,
+    "fp": 61,
+    "prev_week_fp": 4
+  },
+  "Cam Schlittler": {
+    "kev": 35.47,
+    "fp": 118,
+    "prev_week_fp": 27
+  },
+  "Fernando Tatis Jr.": {
+    "kev": 34.88,
+    "fp": 21,
+    "prev_week_fp": -4
   },
   "Jos\u00e9 Soriano": {
-    "kev": 23.56,
-    "fp": 136
+    "kev": 34.54,
+    "fp": 148,
+    "prev_week_fp": 12
   },
-  "Chase Burns": {
-    "kev": 23.43,
-    "fp": 53
+  "Shea Langeliers": {
+    "kev": 33.74,
+    "fp": 54,
+    "prev_week_fp": 12
   },
-  "Sal Stewart": {
-    "kev": 23.25,
-    "fp": 71
+  "Alex Bregman": {
+    "kev": 33.64,
+    "fp": 34,
+    "prev_week_fp": 14
   },
-  "Luis Arraez": {
-    "kev": 23.09,
-    "fp": 27
-  },
-  "CJ Abrams": {
-    "kev": 23.06,
-    "fp": 63
-  },
-  "Christian Yelich": {
-    "kev": 22.96,
-    "fp": 25
+  "Cal Raleigh": {
+    "kev": 33.36,
+    "fp": 38,
+    "prev_week_fp": 26
   },
   "Mike Trout": {
-    "kev": 22.66,
-    "fp": 80
+    "kev": 32.59,
+    "fp": 97,
+    "prev_week_fp": 17
+  },
+  "Zack Wheeler": {
+    "kev": 32.48,
+    "fp": 11,
+    "prev_week_fp": null
+  },
+  "Adley Rutschman": {
+    "kev": 32.41,
+    "fp": 39,
+    "prev_week_fp": 22
+  },
+  "Sal Stewart": {
+    "kev": 32.3,
+    "fp": 95,
+    "prev_week_fp": 24
+  },
+  "James Wood": {
+    "kev": 32.2,
+    "fp": 89,
+    "prev_week_fp": 25
+  },
+  "Freddie Freeman": {
+    "kev": 30.65,
+    "fp": 49,
+    "prev_week_fp": 0
+  },
+  "Maikel Garcia": {
+    "kev": 30.6,
+    "fp": 39,
+    "prev_week_fp": 5
+  },
+  "Tyler Glasnow": {
+    "kev": 30.2,
+    "fp": 111,
+    "prev_week_fp": 36
+  },
+  "Gavin Williams": {
+    "kev": 29.85,
+    "fp": 101,
+    "prev_week_fp": 6
+  },
+  "Taylor Ward": {
+    "kev": 29.6,
+    "fp": 58,
+    "prev_week_fp": 14
+  },
+  "Mookie Betts": {
+    "kev": 29.45,
+    "fp": 23,
+    "prev_week_fp": 0
+  },
+  "Julio Rodr\u00edguez": {
+    "kev": 29.37,
+    "fp": 22,
+    "prev_week_fp": 9
+  },
+  "Jose Altuve": {
+    "kev": 29.04,
+    "fp": 48,
+    "prev_week_fp": 2
+  },
+  "Bryce Harper": {
+    "kev": 28.78,
+    "fp": 64,
+    "prev_week_fp": 16
+  },
+  "Nolan McLean": {
+    "kev": 28.73,
+    "fp": 96,
+    "prev_week_fp": 27
+  },
+  "Corey Seager": {
+    "kev": 28.59,
+    "fp": 55,
+    "prev_week_fp": 10
+  },
+  "Nick Pivetta": {
+    "kev": 28.22,
+    "fp": 33,
+    "prev_week_fp": 0
+  },
+  "Geraldo Perdomo": {
+    "kev": 28.09,
+    "fp": 43,
+    "prev_week_fp": 11
+  },
+  "Ian Happ": {
+    "kev": 27.81,
+    "fp": 50,
+    "prev_week_fp": 11
+  },
+  "Jackson Merrill": {
+    "kev": 27.71,
+    "fp": 43,
+    "prev_week_fp": 1
+  },
+  "Francisco Lindor": {
+    "kev": 27.62,
+    "fp": 31,
+    "prev_week_fp": 10
+  },
+  "Brice Turang": {
+    "kev": 27.61,
+    "fp": 67,
+    "prev_week_fp": 2
+  },
+  "Drew Rasmussen": {
+    "kev": 27.24,
+    "fp": 80,
+    "prev_week_fp": 21
+  },
+  "Trea Turner": {
+    "kev": 27.21,
+    "fp": 39,
+    "prev_week_fp": 12
+  },
+  "Nathan Eovaldi": {
+    "kev": 27.21,
+    "fp": 30,
+    "prev_week_fp": -3
+  },
+  "Eury P\u00e9rez": {
+    "kev": 27.2,
+    "fp": 51,
+    "prev_week_fp": 0
+  },
+  "Brandon Woodruff": {
+    "kev": 27.19,
+    "fp": 61,
+    "prev_week_fp": 0
+  },
+  "Jacob Misiorowski": {
+    "kev": 27.08,
+    "fp": 84,
+    "prev_week_fp": 14
+  },
+  "Will Smith": {
+    "kev": 26.97,
+    "fp": 33,
+    "prev_week_fp": 6
+  },
+  "Sandy Alcantara": {
+    "kev": 26.91,
+    "fp": 82,
+    "prev_week_fp": 14
+  },
+  "Brent Rooker": {
+    "kev": 26.89,
+    "fp": 11,
+    "prev_week_fp": 0
+  },
+  "Sonny Gray": {
+    "kev": 26.77,
+    "fp": 35,
+    "prev_week_fp": 0
+  },
+  "George Springer": {
+    "kev": 26.74,
+    "fp": 21,
+    "prev_week_fp": 0
+  },
+  "Ozzie Albies": {
+    "kev": 26.63,
+    "fp": 57,
+    "prev_week_fp": 18
+  },
+  "Pete Alonso": {
+    "kev": 26.4,
+    "fp": 31,
+    "prev_week_fp": 7
+  },
+  "Landen Roupp": {
+    "kev": 26.4,
+    "fp": 111,
+    "prev_week_fp": 43
+  },
+  "Alec Burleson": {
+    "kev": 25.56,
+    "fp": 50,
+    "prev_week_fp": 2
+  },
+  "Cade Smith": {
+    "kev": 25.51,
+    "fp": 63,
+    "prev_week_fp": 5
+  },
+  "Yandy D\u00edaz": {
+    "kev": 25.34,
+    "fp": 59,
+    "prev_week_fp": 12
+  },
+  "Hunter Brown": {
+    "kev": 25.16,
+    "fp": 41,
+    "prev_week_fp": 0
+  },
+  "Vinnie Pasquantino": {
+    "kev": 25.02,
+    "fp": 38,
+    "prev_week_fp": 22
+  },
+  "Zac Gallen": {
+    "kev": 24.95,
+    "fp": 44,
+    "prev_week_fp": 11
+  },
+  "Roman Anthony": {
+    "kev": 24.94,
+    "fp": 20,
+    "prev_week_fp": 3
+  },
+  "Chase Burns": {
+    "kev": 24.93,
+    "fp": 73,
+    "prev_week_fp": 20
+  },
+  "Oneil Cruz": {
+    "kev": 24.81,
+    "fp": 61,
+    "prev_week_fp": 6
+  },
+  "Luis Castillo": {
+    "kev": 24.47,
+    "fp": 22,
+    "prev_week_fp": 10
+  },
+  "Andy Pages": {
+    "kev": 24.45,
+    "fp": 60,
+    "prev_week_fp": 12
+  },
+  "Kevin McGonigle": {
+    "kev": 24.29,
+    "fp": 73,
+    "prev_week_fp": 25
+  },
+  "Bryce Elder": {
+    "kev": 24.12,
+    "fp": 100,
+    "prev_week_fp": 30
+  },
+  "Christian Walker": {
+    "kev": 23.81,
+    "fp": 76,
+    "prev_week_fp": 23
+  },
+  "Michael King": {
+    "kev": 23.72,
+    "fp": 92,
+    "prev_week_fp": 18
+  },
+  "Tanner Bibee": {
+    "kev": 23.64,
+    "fp": 28,
+    "prev_week_fp": 5
+  },
+  "Nick Kurtz": {
+    "kev": 23.59,
+    "fp": 48,
+    "prev_week_fp": 22
+  },
+  "Parker Messick": {
+    "kev": 23.56,
+    "fp": 97,
+    "prev_week_fp": 6
+  },
+  "Tyler Soderstrom": {
+    "kev": 23.56,
+    "fp": 59,
+    "prev_week_fp": 21
+  },
+  "Seiya Suzuki": {
+    "kev": 23.3,
+    "fp": 29,
+    "prev_week_fp": 23
+  },
+  "Brandon Nimmo": {
+    "kev": 23.27,
+    "fp": 45,
+    "prev_week_fp": 3
+  },
+  "Luis Arraez": {
+    "kev": 23.05,
+    "fp": 35,
+    "prev_week_fp": 8
+  },
+  "Dalton Rushing": {
+    "kev": 23.0,
+    "fp": 51,
+    "prev_week_fp": null
+  },
+  "CJ Abrams": {
+    "kev": 22.98,
+    "fp": 68,
+    "prev_week_fp": 5
+  },
+  "Payton Tolle": {
+    "kev": 22.95,
+    "fp": 23,
+    "prev_week_fp": null
+  },
+  "Ildemaro Vargas": {
+    "kev": 22.88,
+    "fp": 72,
+    "prev_week_fp": 38
+  },
+  "JR Ritchie": {
+    "kev": 22.84,
+    "fp": 22,
+    "prev_week_fp": null
+  },
+  "Spencer Arrighetti": {
+    "kev": 22.73,
+    "fp": 62,
+    "prev_week_fp": 38
+  },
+  "Riley Greene": {
+    "kev": 22.71,
+    "fp": 53,
+    "prev_week_fp": 21
+  },
+  "Randy Arozarena": {
+    "kev": 22.68,
+    "fp": 47,
+    "prev_week_fp": 2
   },
   "Shota Imanaga": {
     "kev": 22.57,
-    "fp": 68
+    "fp": 87,
+    "prev_week_fp": 19
   },
   "Jordan Walker": {
-    "kev": 22.57,
-    "fp": 57
-  },
-  "Michael King": {
-    "kev": 22.47,
-    "fp": 74
-  },
-  "Tanner Bibee": {
-    "kev": 22.44,
-    "fp": 23
-  },
-  "Austin Riley": {
-    "kev": 22.08,
-    "fp": 39
-  },
-  "Spencer Arrighetti": {
-    "kev": 21.95,
-    "fp": 24
-  },
-  "Parker Messick": {
-    "kev": 21.89,
-    "fp": 91
-  },
-  "Kevin McGonigle": {
-    "kev": 21.85,
-    "fp": 48
-  },
-  "Michael Wacha": {
-    "kev": 21.78,
-    "fp": 87
+    "kev": 22.38,
+    "fp": 57,
+    "prev_week_fp": 0
   },
   "Michael Soroka": {
-    "kev": 21.67,
-    "fp": 78
+    "kev": 22.34,
+    "fp": 89,
+    "prev_week_fp": 11
   },
-  "Chase DeLauter": {
-    "kev": 21.66,
-    "fp": 52
-  },
-  "Brandon Lowe": {
-    "kev": 21.63,
-    "fp": 60
-  },
-  "Brandon Young": {
-    "kev": 21.45,
-    "fp": 18
-  },
-  "Emerson Hancock": {
-    "kev": 21.39,
-    "fp": 71
-  },
-  "Christian V\u00e1zquez": {
-    "kev": 21.38,
-    "fp": 29
-  },
-  "Taj Bradley": {
-    "kev": 21.34,
-    "fp": 88
-  },
-  "Bryce Elder": {
-    "kev": 21.29,
-    "fp": 70
-  },
-  "Gary S\u00e1nchez": {
-    "kev": 21.13,
-    "fp": 41
-  },
-  "Christian Walker": {
-    "kev": 21.1,
-    "fp": 53
-  },
-  "Landen Roupp": {
-    "kev": 21.07,
-    "fp": 68
-  },
-  "Ryan O'Hearn": {
-    "kev": 21.04,
-    "fp": 46
-  },
-  "Mickey Moniak": {
-    "kev": 20.94,
-    "fp": 42
-  },
-  "Davis Martin": {
-    "kev": 20.9,
-    "fp": 67
-  },
-  "Jesse Scholtens": {
-    "kev": 20.84,
-    "fp": 33
-  },
-  "Liam Hicks": {
-    "kev": 20.82,
-    "fp": 54
-  },
-  "MacKenzie Gore": {
-    "kev": 20.77,
-    "fp": 58
-  },
-  "Seth Lugo": {
-    "kev": 20.73,
-    "fp": 62
-  },
-  "Cade Povich": {
-    "kev": 20.68,
-    "fp": 31
+  "Steven Kwan": {
+    "kev": 22.3,
+    "fp": 28,
+    "prev_week_fp": 3
   },
   "Justin Wrobleski": {
-    "kev": 20.57,
-    "fp": 46
-  },
-  "Dominic Smith": {
-    "kev": 20.51,
-    "fp": 41
-  },
-  "Munetaka Murakami": {
-    "kev": 20.45,
-    "fp": 53
-  },
-  "Robbie Ray": {
-    "kev": 20.43,
-    "fp": 62
-  },
-  "Jhoan Duran": {
-    "kev": 20.41,
-    "fp": 46
-  },
-  "Will Warren": {
-    "kev": 20.41,
-    "fp": 75
-  },
-  "Zach Neto": {
-    "kev": 20.39,
-    "fp": 48
-  },
-  "Dillon Dingler": {
-    "kev": 20.38,
-    "fp": 48
-  },
-  "Ryan Jeffers": {
-    "kev": 20.36,
-    "fp": 35
-  },
-  "Tyler Soderstrom": {
-    "kev": 20.33,
-    "fp": 38
-  },
-  "Jeffrey Springs": {
-    "kev": 20.3,
-    "fp": 75
-  },
-  "Brendan Donovan": {
-    "kev": 20.27,
-    "fp": 31
-  },
-  "Steven Matz": {
-    "kev": 20.24,
-    "fp": 60
-  },
-  "Luis Castillo": {
-    "kev": 20.2,
-    "fp": 12
-  },
-  "Jarren Duran": {
-    "kev": 20.11,
-    "fp": 20
-  },
-  "Braxton Ashcraft": {
-    "kev": 20.07,
-    "fp": 59
-  },
-  "Ildemaro Vargas": {
-    "kev": 20.01,
-    "fp": 34
-  },
-  "Bryan Reynolds": {
-    "kev": 19.87,
-    "fp": 39
-  },
-  "Randy V\u00e1squez": {
-    "kev": 19.8,
-    "fp": 55
-  },
-  "Dansby Swanson": {
-    "kev": 19.8,
-    "fp": 44
-  },
-  "Kris Bubic": {
-    "kev": 19.75,
-    "fp": 55
-  },
-  "Everson Pereira": {
-    "kev": 19.7,
-    "fp": 22
-  },
-  "Miguel Vargas": {
-    "kev": 19.64,
-    "fp": 46
-  },
-  "Edward Cabrera": {
-    "kev": 19.64,
-    "fp": 54
-  },
-  "Reynaldo L\u00f3pez": {
-    "kev": 19.58,
-    "fp": 53
-  },
-  "Mitch Keller": {
-    "kev": 19.54,
-    "fp": 61
-  },
-  "Jake Bauers": {
-    "kev": 19.45,
-    "fp": 43
-  },
-  "Ranger Suarez": {
-    "kev": 19.43,
-    "fp": 42
-  },
-  "JJ Wetherholt": {
-    "kev": 19.42,
-    "fp": 43
-  },
-  "Casey Mize": {
-    "kev": 19.41,
-    "fp": 52
-  },
-  "Otto Lopez": {
-    "kev": 19.39,
-    "fp": 45
-  },
-  "Trent Grisham": {
-    "kev": 19.36,
-    "fp": 43
-  },
-  "Reid Detmers": {
-    "kev": 19.36,
-    "fp": 52
-  },
-  "Carmen Mlodzinski": {
-    "kev": 19.3,
-    "fp": 51
-  },
-  "Foster Griffin": {
-    "kev": 19.25,
-    "fp": 51
-  },
-  "Adrian Del Castillo": {
-    "kev": 19.2,
-    "fp": 19
-  },
-  "Jack Kochanowicz": {
-    "kev": 19.2,
-    "fp": 51
-  },
-  "Ram\u00f3n Laureano": {
-    "kev": 19.14,
-    "fp": 42
-  },
-  "Colin Rea": {
-    "kev": 19.14,
-    "fp": 51
-  },
-  "Keider Montero": {
-    "kev": 19.09,
-    "fp": 38
-  },
-  "Clay Holmes": {
-    "kev": 18.98,
-    "fp": 50
-  },
-  "Eduardo Rodriguez": {
-    "kev": 18.92,
-    "fp": 50
-  },
-  "Josh Bell": {
-    "kev": 18.89,
-    "fp": 46
-  },
-  "Riley Greene": {
-    "kev": 18.82,
-    "fp": 32
-  },
-  "Connelly Early": {
-    "kev": 18.81,
-    "fp": 49
-  },
-  "Ryan Weathers": {
-    "kev": 18.7,
-    "fp": 61
-  },
-  "Xavier Edwards": {
-    "kev": 18.68,
-    "fp": 41
-  },
-  "Joey Cantillo": {
-    "kev": 18.64,
-    "fp": 60
-  },
-  "Dean Kremer": {
-    "kev": 18.59,
-    "fp": 24
-  },
-  "Aaron Nola": {
-    "kev": 18.55,
-    "fp": 42
-  },
-  "Michael McGreevy": {
-    "kev": 18.54,
-    "fp": 47
-  },
-  "Iv\u00e1n Herrera": {
-    "kev": 18.49,
-    "fp": 38
-  },
-  "Kyle Freeland": {
-    "kev": 18.48,
-    "fp": 35
-  },
-  "Jonny DeLuca": {
-    "kev": 18.46,
-    "fp": 32
-  },
-  "Nick Kurtz": {
-    "kev": 18.45,
-    "fp": 26
-  },
-  "Emmet Sheehan": {
-    "kev": 18.34,
-    "fp": 34
-  },
-  "Jorge Soler": {
-    "kev": 18.33,
-    "fp": 38
-  },
-  "Chad Patrick": {
-    "kev": 18.32,
-    "fp": 45
-  },
-  "Royce Lewis": {
-    "kev": 18.27,
-    "fp": 24
-  },
-  "Rhett Lowder": {
-    "kev": 18.26,
-    "fp": 45
-  },
-  "Bailey Ober": {
-    "kev": 18.2,
-    "fp": 56
-  },
-  "Matthew Boyd": {
-    "kev": 18.16,
-    "fp": 20
-  },
-  "Kyle Harrison": {
-    "kev": 18.15,
-    "fp": 33
-  },
-  "Coleman Crow": {
-    "kev": 18.09,
-    "fp": 11
-  },
-  "Merrill Kelly": {
-    "kev": 18.04,
-    "fp": 11
-  },
-  "Edwin D\u00edaz": {
-    "kev": 18.01,
-    "fp": 25
-  },
-  "Mart\u00edn P\u00e9rez": {
-    "kev": 17.98,
-    "fp": 42
-  },
-  "Kyle Bradish": {
-    "kev": 17.98,
-    "fp": 19
-  },
-  "Carlos Correa": {
-    "kev": 17.96,
-    "fp": 38
-  },
-  "Trevor Rogers": {
-    "kev": 17.94,
-    "fp": 47
-  },
-  "Cade Horton": {
-    "kev": 17.93,
-    "fp": 21
-  },
-  "Xander Bogaerts": {
-    "kev": 17.84,
-    "fp": 39
-  },
-  "Noah Schultz": {
-    "kev": 17.82,
-    "fp": 21
-  },
-  "Jonathan Aranda": {
-    "kev": 17.77,
-    "fp": 39
-  },
-  "Grant Holmes": {
-    "kev": 17.71,
-    "fp": 51
-  },
-  "Vinnie Pasquantino": {
-    "kev": 17.66,
-    "fp": 16
-  },
-  "Teoscar Hern\u00e1ndez": {
-    "kev": 17.66,
-    "fp": 29
-  },
-  "Carson Kelly": {
-    "kev": 17.65,
-    "fp": 32
-  },
-  "Daulton Varsho": {
-    "kev": 17.62,
-    "fp": 32
-  },
-  "Chase Dollander": {
-    "kev": 17.6,
-    "fp": 50
-  },
-  "Jameson Taillon": {
-    "kev": 17.55,
-    "fp": 40
-  },
-  "Andr\u00e9s Mu\u00f1oz": {
-    "kev": 17.54,
-    "fp": 26
-  },
-  "Brayan Rocchio": {
-    "kev": 17.46,
-    "fp": 39
-  },
-  "Max Meyer": {
-    "kev": 17.43,
-    "fp": 40
-  },
-  "Trevor Larnach": {
-    "kev": 17.34,
-    "fp": 28
-  },
-  "Matt Chapman": {
-    "kev": 17.32,
-    "fp": 28
-  },
-  "Paul Goldschmidt": {
-    "kev": 17.28,
-    "fp": 14
-  },
-  "Aaron Civale": {
-    "kev": 17.27,
-    "fp": 39
-  },
-  "Antonio Senzatela": {
-    "kev": 17.21,
-    "fp": 58
-  },
-  "Gleyber Torres": {
-    "kev": 17.11,
-    "fp": 26
-  },
-  "Andr\u00e9s Gim\u00e9nez": {
-    "kev": 17.09,
-    "fp": 36
-  },
-  "Anthony Kay": {
-    "kev": 17.05,
-    "fp": 37
-  },
-  "Wilyer Abreu": {
-    "kev": 17.0,
-    "fp": 34
-  },
-  "Bubba Chandler": {
-    "kev": 17.0,
-    "fp": 37
-  },
-  "Cam Smith": {
-    "kev": 16.97,
-    "fp": 39
-  },
-  "Nick Martinez": {
-    "kev": 16.94,
-    "fp": 36
-  },
-  "Byron Buxton": {
-    "kev": 16.92,
-    "fp": 26
-  },
-  "Curtis Mead": {
-    "kev": 16.9,
-    "fp": 27
-  },
-  "Raisel Iglesias": {
-    "kev": 16.89,
-    "fp": 56
-  },
-  "Tomoyuki Sugano": {
-    "kev": 16.89,
-    "fp": 35
-  },
-  "Germ\u00e1n M\u00e1rquez": {
-    "kev": 16.83,
-    "fp": 34
-  },
-  "Jack Leiter": {
-    "kev": 16.66,
-    "fp": 33
-  },
-  "Daniel Schneemann": {
-    "kev": 16.66,
-    "fp": 30
-  },
-  "Andrew Painter": {
-    "kev": 16.61,
-    "fp": 32
-  },
-  "Amed Rosario": {
-    "kev": 16.59,
-    "fp": 25
-  },
-  "Patrick Corbin": {
-    "kev": 16.55,
-    "fp": 16
-  },
-  "Michael Harris II": {
-    "kev": 16.54,
-    "fp": 28
-  },
-  "Dominic Canzone": {
-    "kev": 16.53,
-    "fp": 30
-  },
-  "Willy Adames": {
-    "kev": 16.48,
-    "fp": 28
-  },
-  "Griffin Conine": {
-    "kev": 16.47,
-    "fp": 18
-  },
-  "Brandon Williamson": {
-    "kev": 16.45,
-    "fp": 31
-  },
-  "Garrett Mitchell": {
-    "kev": 16.41,
-    "fp": 31
-  },
-  "Walker Buehler": {
-    "kev": 16.39,
-    "fp": 31
-  },
-  "Joe Boyle": {
-    "kev": 16.34,
-    "fp": 23
-  },
-  "Jack Flaherty": {
-    "kev": 16.29,
-    "fp": 32
-  },
-  "Luke Raley": {
-    "kev": 16.28,
-    "fp": 34
-  },
-  "Riley O'Brien": {
-    "kev": 16.28,
-    "fp": 91
-  },
-  "Andre Pallante": {
-    "kev": 16.23,
-    "fp": 30
-  },
-  "Mick Abel": {
-    "kev": 16.17,
-    "fp": 29
-  },
-  "Mauricio Dub\u00f3n": {
-    "kev": 16.16,
-    "fp": 34
-  },
-  "Austin Martin": {
-    "kev": 16.03,
-    "fp": 32
-  },
-  "Mitchell Parker": {
-    "kev": 16.0,
-    "fp": 14
-  },
-  "Oswald Peraza": {
-    "kev": 15.97,
-    "fp": 33
-  },
-  "Lance McCullers Jr.": {
-    "kev": 15.95,
-    "fp": 27
-  },
-  "Wyatt Langford": {
-    "kev": 15.91,
-    "fp": 16
-  },
-  "Jovani Mor\u00e1n": {
-    "kev": 15.89,
-    "fp": 40
-  },
-  "Jeremiah Jackson": {
-    "kev": 15.85,
-    "fp": 31
-  },
-  "Troy Johnston": {
-    "kev": 15.72,
-    "fp": 29
-  },
-  "Tyler Phillips": {
-    "kev": 15.68,
-    "fp": 39
-  },
-  "Josh Jung": {
-    "kev": 15.66,
-    "fp": 29
-  },
-  "J.T. Ginn": {
-    "kev": 15.62,
-    "fp": 32
-  },
-  "Matthew Liberatore": {
-    "kev": 15.56,
-    "fp": 32
-  },
-  "Carlos Cortes": {
-    "kev": 15.54,
-    "fp": 24
-  },
-  "Brandon Pfaadt": {
-    "kev": 15.46,
-    "fp": 25
-  },
-  "Aroldis Chapman": {
-    "kev": 15.43,
-    "fp": 29
-  },
-  "Kenley Jansen": {
-    "kev": 15.4,
-    "fp": 42
-  },
-  "J.P. Crawford": {
-    "kev": 15.35,
-    "fp": 22
-  },
-  "Jack Anderson": {
-    "kev": 15.35,
-    "fp": 12
-  },
-  "Noah Cameron": {
-    "kev": 15.29,
-    "fp": 24
-  },
-  "Hyeseong Kim": {
-    "kev": 15.29,
-    "fp": 16
-  },
-  "Agust\u00edn Ram\u00edrez": {
-    "kev": 15.24,
-    "fp": 24
-  },
-  "Shane McClanahan": {
-    "kev": 15.23,
-    "fp": 23
-  },
-  "Gavin Sheets": {
-    "kev": 15.23,
-    "fp": 29
-  },
-  "Carter Jensen": {
-    "kev": 15.2,
-    "fp": 27
-  },
-  "Joel Kuhnel": {
-    "kev": 15.18,
-    "fp": 34
-  },
-  "Matt Shaw": {
-    "kev": 15.16,
-    "fp": 27
-  },
-  "Gabriel Moreno": {
-    "kev": 15.14,
-    "fp": 16
-  },
-  "Garrett Acton": {
-    "kev": 15.12,
-    "fp": 17
-  },
-  "Daylen Lile": {
-    "kev": 15.11,
-    "fp": 27
+    "kev": 22.29,
+    "fp": 86,
+    "prev_week_fp": 40
+  },
+  "Davis Martin": {
+    "kev": 22.18,
+    "fp": 84,
+    "prev_week_fp": 17
   },
   "Luis Campusano": {
-    "kev": 15.1,
-    "fp": 17
-  },
-  "Kumar Rocker": {
-    "kev": 15.07,
-    "fp": 17
-  },
-  "Masyn Winn": {
-    "kev": 15.04,
-    "fp": 24
-  },
-  "David Bednar": {
-    "kev": 15.04,
-    "fp": 39
-  },
-  "Javier Assad": {
-    "kev": 15.02,
-    "fp": 17
-  },
-  "Sean Burke": {
-    "kev": 14.96,
-    "fp": 22
-  },
-  "Hunter Goodman": {
-    "kev": 14.96,
-    "fp": 25
-  },
-  "Jack Perkins": {
-    "kev": 14.9,
-    "fp": 22
-  },
-  "Leody Taveras": {
-    "kev": 14.85,
-    "fp": 25
-  },
-  "Aaron Ashby": {
-    "kev": 14.85,
-    "fp": 60
-  },
-  "Lake Bachar": {
-    "kev": 14.79,
-    "fp": 32
-  },
-  "Willson Contreras": {
-    "kev": 14.79,
-    "fp": 29
-  },
-  "Paul Sewald": {
-    "kev": 14.74,
-    "fp": 53
-  },
-  "Colson Montgomery": {
-    "kev": 14.73,
-    "fp": 30
-  },
-  "Ben Brown": {
-    "kev": 14.69,
-    "fp": 37
-  },
-  "Casey Schmitt": {
-    "kev": 14.67,
-    "fp": 23
-  },
-  "Luis Robert Jr.": {
-    "kev": 14.64,
-    "fp": 26
-  },
-  "Ram\u00f3n Ur\u00edas": {
-    "kev": 14.6,
-    "fp": 23
-  },
-  "Emilio Pag\u00e1n": {
-    "kev": 14.57,
-    "fp": 58
-  },
-  "Erick Fedde": {
-    "kev": 14.52,
-    "fp": 21
-  },
-  "Francisco Alvarez": {
-    "kev": 14.48,
-    "fp": 27
-  },
-  "Albert Su\u00e1rez": {
-    "kev": 14.46,
-    "fp": 21
-  },
-  "Rico Garcia": {
-    "kev": 14.41,
-    "fp": 52
-  },
-  "Nolan Schanuel": {
-    "kev": 14.36,
-    "fp": 27
-  },
-  "Andrew Hoffmann": {
-    "kev": 14.36,
-    "fp": 31
-  },
-  "Jazz Chisholm Jr.": {
-    "kev": 14.3,
-    "fp": 10
-  },
-  "Ryan Helsley": {
-    "kev": 14.3,
-    "fp": 46
-  },
-  "Mois\u00e9s Ballesteros": {
-    "kev": 14.29,
-    "fp": 24
-  },
-  "Daniel Palencia": {
-    "kev": 14.24,
-    "fp": 25
-  },
-  "Angel Mart\u00ednez": {
-    "kev": 14.23,
-    "fp": 28
-  },
-  "Janson Junk": {
-    "kev": 14.19,
-    "fp": 20
-  },
-  "Luis Garc\u00eda": {
-    "kev": 14.17,
-    "fp": 28
-  },
-  "Shane Baz": {
-    "kev": 14.14,
-    "fp": 17
-  },
-  "Kyle Leahy": {
-    "kev": 14.13,
-    "fp": 19
-  },
-  "Jake Burger": {
-    "kev": 14.11,
-    "fp": 29
-  },
-  "Luke Keaschall": {
-    "kev": 14.08,
-    "fp": 28
-  },
-  "Jake Irvin": {
-    "kev": 14.03,
-    "fp": 19
-  },
-  "Evan Carter": {
-    "kev": 13.98,
-    "fp": 29
-  },
-  "Yainer Diaz": {
-    "kev": 13.97,
-    "fp": 13
-  },
-  "Kai-Wei Teng": {
-    "kev": 13.97,
-    "fp": 42
-  },
-  "Cole Young": {
-    "kev": 13.92,
-    "fp": 30
-  },
-  "Gordon Graceffo": {
-    "kev": 13.91,
-    "fp": 37
-  },
-  "Ernie Clement": {
-    "kev": 13.83,
-    "fp": 26
-  },
-  "Enyel De Los Santos": {
-    "kev": 13.8,
-    "fp": 32
-  },
-  "Bryan Baker": {
-    "kev": 13.75,
-    "fp": 41
-  },
-  "Eugenio Su\u00e1rez": {
-    "kev": 13.75,
-    "fp": 22
-  },
-  "Robert Suarez": {
-    "kev": 13.7,
-    "fp": 45
-  },
-  "Richie Palacios": {
-    "kev": 13.67,
-    "fp": 18
-  },
-  "Connor Seabold": {
-    "kev": 13.64,
-    "fp": 27
-  },
-  "Masataka Yoshida": {
-    "kev": 13.61,
-    "fp": 18
-  },
-  "Slade Cecconi": {
-    "kev": 13.59,
-    "fp": 18
-  },
-  "Cooper Criswell": {
-    "kev": 13.53,
-    "fp": 26
-  },
-  "Tony Santillan": {
-    "kev": 13.42,
-    "fp": 43
-  },
-  "Ryan Feltner": {
-    "kev": 13.31,
-    "fp": 17
-  },
-  "Jung Hoo Lee": {
-    "kev": 13.27,
-    "fp": 26
-  },
-  "Cody Laweryson": {
-    "kev": 13.26,
-    "fp": 21
-  },
-  "Jeremy Pe\u00f1a": {
-    "kev": 13.24,
-    "fp": 11
-  },
-  "Keibert Ruiz": {
-    "kev": 13.24,
-    "fp": 19
-  },
-  "Pete Crow-Armstrong": {
-    "kev": 13.21,
-    "fp": 12
-  },
-  "Sean Manaea": {
-    "kev": 13.2,
-    "fp": 21
-  },
-  "Jes\u00fas S\u00e1nchez": {
-    "kev": 13.18,
-    "fp": 25
-  },
-  "Jakob Marsee": {
-    "kev": 13.15,
-    "fp": 26
-  },
-  "Blade Tidwell": {
-    "kev": 13.14,
-    "fp": 25
-  },
-  "Brooks Lee": {
-    "kev": 13.11,
-    "fp": 25
-  },
-  "Tatsuya Imai": {
-    "kev": 13.1,
-    "fp": 12
-  },
-  "Tobias Myers": {
-    "kev": 13.04,
-    "fp": 29
-  },
-  "Salvador Perez": {
-    "kev": 13.02,
-    "fp": 12
-  },
-  "Brad Lord": {
-    "kev": 12.98,
-    "fp": 29
-  },
-  "Rhys Hoskins": {
-    "kev": 12.93,
-    "fp": 21
-  },
-  "David Morgan": {
-    "kev": 12.93,
-    "fp": 33
-  },
-  "Jakob Junis": {
-    "kev": 12.87,
-    "fp": 37
-  },
-  "Jonathan India": {
-    "kev": 12.86,
-    "fp": 21
-  },
-  "Alex Vesia": {
-    "kev": 12.81,
-    "fp": 41
-  },
-  "Yohan Ram\u00edrez": {
-    "kev": 12.76,
-    "fp": 41
-  },
-  "Brandon Marsh": {
-    "kev": 12.74,
-    "fp": 23
-  },
-  "Dennis Santana": {
-    "kev": 12.71,
-    "fp": 44
-  },
-  "Jacob Young": {
-    "kev": 12.68,
-    "fp": 24
-  },
-  "Jo Adell": {
-    "kev": 12.65,
-    "fp": 26
-  },
-  "Tyler Kinley": {
-    "kev": 12.65,
-    "fp": 40
-  },
-  "Eli Morgan": {
-    "kev": 12.6,
-    "fp": 20
-  },
-  "Edmundo Sosa": {
-    "kev": 12.55,
-    "fp": 13
-  },
-  "Cade Cavalli": {
-    "kev": 12.54,
-    "fp": 20
-  },
-  "Brady Singer": {
-    "kev": 12.48,
-    "fp": 20
-  },
-  "Cody Bolton": {
-    "kev": 12.43,
-    "fp": 12
-  },
-  "Devin Williams": {
-    "kev": 12.43,
-    "fp": 17
-  },
-  "Yusei Kikuchi": {
-    "kev": 12.38,
-    "fp": 20
-  },
-  "Jacob Wilson": {
-    "kev": 12.28,
-    "fp": 23
-  },
-  "Caleb Kilian": {
-    "kev": 12.27,
-    "fp": 39
-  },
-  "Jake Meyers": {
-    "kev": 12.24,
-    "fp": 14
-  },
-  "Gregory Soto": {
-    "kev": 12.21,
-    "fp": 46
-  },
-  "Spencer Horwitz": {
-    "kev": 12.18,
-    "fp": 23
-  },
-  "Spencer Miles": {
-    "kev": 12.15,
-    "fp": 23
-  },
-  "Louis Varland": {
-    "kev": 12.1,
-    "fp": 38
-  },
-  "Brent Suter": {
-    "kev": 12.04,
-    "fp": 30
-  },
-  "Daniel Lynch IV": {
-    "kev": 11.94,
-    "fp": 26
-  },
-  "Adam Frazier": {
-    "kev": 11.93,
-    "fp": 17
-  },
-  "Riley Martin": {
-    "kev": 11.88,
-    "fp": 22
-  },
-  "Braydon Fisher": {
-    "kev": 11.82,
-    "fp": 36
-  },
-  "Jorge Barrosa": {
-    "kev": 11.81,
-    "fp": 18
-  },
-  "Ezequiel Duran": {
-    "kev": 11.75,
-    "fp": 19
-  },
-  "Jack Dreyer": {
-    "kev": 11.71,
-    "fp": 32
-  },
-  "Sam Bachman": {
-    "kev": 11.66,
-    "fp": 28
-  },
-  "Tyler O'Neill": {
-    "kev": 11.62,
-    "fp": 11
-  },
-  "Tyler Alexander": {
-    "kev": 11.61,
-    "fp": 38
-  },
-  "Chandler Simpson": {
-    "kev": 11.56,
-    "fp": 23
-  },
-  "Huascar Brazob\u00e1n": {
-    "kev": 11.55,
-    "fp": 31
-  },
-  "Kevin Kelly": {
-    "kev": 11.49,
-    "fp": 31
-  },
-  "Bradgley Rodriguez": {
-    "kev": 11.44,
-    "fp": 34
-  },
-  "Jos\u00e9 Caballero": {
-    "kev": 11.44,
-    "fp": 23
-  },
-  "Anthony Nunez": {
-    "kev": 11.38,
-    "fp": 30
-  },
-  "Grant Wolfram": {
-    "kev": 11.33,
-    "fp": 30
-  },
-  "Seiya Suzuki": {
-    "kev": 11.33,
-    "fp": 6
-  },
-  "Clayton Beeter": {
-    "kev": 11.28,
-    "fp": 30
-  },
-  "Davis Schneider": {
-    "kev": 11.25,
-    "fp": 16
-  },
-  "Shaun Anderson": {
-    "kev": 11.22,
-    "fp": 20
-  },
-  "Myles Straw": {
-    "kev": 11.19,
-    "fp": 17
-  },
-  "Osvaldo Bido": {
-    "kev": 11.16,
-    "fp": 20
-  },
-  "David Hamilton": {
-    "kev": 11.12,
-    "fp": 17
-  },
-  "Bryan King": {
-    "kev": 11.11,
-    "fp": 26
-  },
-  "Joey Wiemer": {
-    "kev": 11.06,
-    "fp": 18
-  },
-  "Connor Phillips": {
-    "kev": 11.05,
-    "fp": 39
-  },
-  "Lucas Erceg": {
-    "kev": 11.0,
-    "fp": 26
-  },
-  "Nick Fortes": {
-    "kev": 11.0,
-    "fp": 18
-  },
-  "John King": {
-    "kev": 10.95,
-    "fp": 32
-  },
-  "Javier B\u00e1ez": {
-    "kev": 10.94,
-    "fp": 18
-  },
-  "Jacob Latz": {
-    "kev": 10.89,
-    "fp": 32
-  },
-  "Victor Caratini": {
-    "kev": 10.88,
-    "fp": 19
-  },
-  "Abner Uribe": {
-    "kev": 10.84,
-    "fp": 32
-  },
-  "Jose Fernandez": {
-    "kev": 10.81,
-    "fp": 17
-  },
-  "Miguel Amaya": {
-    "kev": 10.75,
-    "fp": 14
-  },
-  "Bo Bichette": {
-    "kev": 10.75,
-    "fp": 9
-  },
-  "Joe Mantiply": {
-    "kev": 10.72,
-    "fp": 19
-  },
-  "Kyle Isbel": {
-    "kev": 10.69,
-    "fp": 18
-  },
-  "Gus Varland": {
-    "kev": 10.67,
-    "fp": 25
-  },
-  "Caleb Durbin": {
-    "kev": 10.66,
-    "fp": 19
-  },
-  "Ron Marinaccio": {
-    "kev": 10.62,
-    "fp": 25
-  },
-  "Chase Meidroth": {
-    "kev": 10.56,
-    "fp": 20
-  },
-  "Cole Winn": {
-    "kev": 10.56,
-    "fp": 31
-  },
-  "Brennan Bernardino": {
-    "kev": 10.51,
-    "fp": 34
-  },
-  "Ben Williamson": {
-    "kev": 10.5,
-    "fp": 19
-  },
-  "Graham Ashcraft": {
-    "kev": 10.45,
-    "fp": 37
-  },
-  "Luis Rengifo": {
-    "kev": 10.44,
-    "fp": 17
-  },
-  "Matt Brash": {
-    "kev": 10.39,
-    "fp": 24
-  },
-  "Alek Thomas": {
-    "kev": 10.38,
-    "fp": 17
-  },
-  "Brock Burke": {
-    "kev": 10.34,
-    "fp": 30
-  },
-  "Cedric Mullins": {
-    "kev": 10.32,
-    "fp": 19
-  },
-  "Sal Frelick": {
-    "kev": 10.29,
-    "fp": 18
-  },
-  "Sam Moll": {
-    "kev": 10.29,
-    "fp": 30
-  },
-  "TJ Rumfield": {
-    "kev": 10.25,
-    "fp": 21
-  },
-  "Caleb Thielbar": {
-    "kev": 10.23,
-    "fp": 27
-  },
-  "Casey Legumina": {
-    "kev": 10.18,
-    "fp": 21
-  },
-  "Max Muncy": {
-    "kev": 10.13,
-    "fp": 20
-  },
-  "Michael Petersen": {
-    "kev": 10.12,
-    "fp": 24
-  },
-  "Luis Severino": {
-    "kev": 10.01,
-    "fp": 15
-  },
-  "Kerry Carpenter": {
-    "kev": 10.01,
-    "fp": 19
-  },
-  "Ryne Nelson": {
-    "kev": 9.96,
-    "fp": 15
-  },
-  "Nasim Nu\u00f1ez": {
-    "kev": 9.94,
-    "fp": 19
-  },
-  "Dustin May": {
-    "kev": 9.9,
-    "fp": 12
-  },
-  "Pete Fairbanks": {
-    "kev": 9.85,
-    "fp": 21
-  },
-  "Javier Sanoja": {
-    "kev": 9.82,
-    "fp": 15
-  },
-  "Grant Taylor": {
-    "kev": 9.79,
-    "fp": 26
-  },
-  "Matt Vierling": {
-    "kev": 9.76,
-    "fp": 15
-  },
-  "Tristan Gray": {
-    "kev": 9.69,
-    "fp": 12
-  },
-  "Will Klein": {
-    "kev": 9.68,
-    "fp": 20
-  },
-  "Peyton Pallette": {
-    "kev": 9.62,
-    "fp": 17
-  },
-  "Nolan Gorman": {
-    "kev": 9.57,
-    "fp": 18
-  },
-  "Paxton Schultz": {
-    "kev": 9.57,
-    "fp": 14
-  },
-  "Seranthony Dom\u00ednguez": {
-    "kev": 9.52,
-    "fp": 25
-  },
-  "Garrett Whitlock": {
-    "kev": 9.46,
-    "fp": 22
-  },
-  "Nick Gonzales": {
-    "kev": 9.45,
-    "fp": 17
-  },
-  "Dylan Lee": {
-    "kev": 9.4,
-    "fp": 30
-  },
-  "Connor Wong": {
-    "kev": 9.38,
-    "fp": 8
-  },
-  "Juan Morillo": {
-    "kev": 9.35,
-    "fp": 30
-  },
-  "Samuel Basallo": {
-    "kev": 9.33,
-    "fp": 12
-  },
-  "Taylor Trammell": {
-    "kev": 9.32,
-    "fp": 8
-  },
-  "Jonathan Bowlan": {
-    "kev": 9.29,
-    "fp": 19
-  },
-  "Jorbit Vivas": {
-    "kev": 9.26,
-    "fp": 15
-  },
-  "Tanner Scott": {
-    "kev": 9.24,
-    "fp": 27
-  },
-  "Pedro Pag\u00e9s": {
-    "kev": 9.2,
-    "fp": 12
-  },
-  "Jimmy Herget": {
-    "kev": 9.19,
-    "fp": 27
-  },
-  "Tyrone Taylor": {
-    "kev": 9.14,
-    "fp": 12
-  },
-  "Matt Gage": {
-    "kev": 9.13,
-    "fp": 27
-  },
-  "J.T. Realmuto": {
-    "kev": 9.11,
-    "fp": 11
-  },
-  "Taylor Clarke": {
-    "kev": 9.07,
-    "fp": 27
-  },
-  "Lawrence Butler": {
-    "kev": 9.07,
-    "fp": 18
-  },
-  "Tyler Holton": {
-    "kev": 9.02,
-    "fp": 24
-  },
-  "Colt Keith": {
-    "kev": 9.01,
-    "fp": 17
-  },
-  "Kyle Finnegan": {
-    "kev": 8.96,
-    "fp": 26
-  },
-  "Edouard Julien": {
-    "kev": 8.95,
-    "fp": 17
-  },
-  "Mason Montgomery": {
-    "kev": 8.91,
-    "fp": 26
-  },
-  "Hogan Harris": {
-    "kev": 8.86,
-    "fp": 31
-  },
-  "Yo\u00e1n Moncada": {
-    "kev": 8.82,
-    "fp": 16
-  },
-  "Zach Agnos": {
-    "kev": 8.8,
-    "fp": 18
-  },
-  "Jake Mangum": {
-    "kev": 8.76,
-    "fp": 14
-  },
-  "Tim Hill": {
-    "kev": 8.74,
-    "fp": 23
-  },
-  "Nick Yorke": {
-    "kev": 8.7,
-    "fp": 14
-  },
-  "Ryan Thompson": {
-    "kev": 8.69,
-    "fp": 30
-  },
-  "Jeff McNeil": {
-    "kev": 8.67,
-    "fp": 16
-  },
-  "Mark Vientos": {
-    "kev": 8.64,
-    "fp": 14
-  },
-  "Tim Mayza": {
-    "kev": 8.63,
-    "fp": 25
-  },
-  "Konnor Griffin": {
-    "kev": 8.61,
-    "fp": 12
-  },
-  "Edgardo Henriquez": {
-    "kev": 8.58,
-    "fp": 15
-  },
-  "Kyle Karros": {
-    "kev": 8.58,
-    "fp": 18
-  },
-  "Josh Naylor": {
-    "kev": 8.5,
-    "fp": 11
-  },
-  "Enmanuel De Jesus": {
-    "kev": 8.47,
-    "fp": 12
-  },
-  "Brent Headrick": {
-    "kev": 8.41,
-    "fp": 31
-  },
-  "Miguel Andujar": {
-    "kev": 8.39,
-    "fp": 12
-  },
-  "Marcus Semien": {
-    "kev": 8.37,
-    "fp": 11
-  },
-  "Erik Miller": {
-    "kev": 8.36,
-    "fp": 19
-  },
-  "Connor Norby": {
-    "kev": 8.33,
-    "fp": 16
-  },
-  "Matt Festa": {
-    "kev": 8.3,
-    "fp": 19
-  },
-  "Kyle Higashioka": {
-    "kev": 8.27,
-    "fp": 8
-  },
-  "Tyler Rogers": {
-    "kev": 8.25,
-    "fp": 23
-  },
-  "Nolan Arenado": {
-    "kev": 8.2,
-    "fp": 16
-  },
-  "Eduard Bazardo": {
-    "kev": 8.2,
-    "fp": 23
-  },
-  "Jordan Beck": {
-    "kev": 8.14,
-    "fp": 11
-  },
-  "Jalen Beeks": {
-    "kev": 8.14,
-    "fp": 23
-  },
-  "Keaton Winn": {
-    "kev": 8.09,
-    "fp": 23
-  },
-  "Austin Hedges": {
-    "kev": 8.08,
-    "fp": 7
-  },
-  "Heliot Ramos": {
-    "kev": 8.05,
-    "fp": 15
-  },
-  "Brant Hurter": {
-    "kev": 8.03,
-    "fp": 16
-  },
-  "Dylan Beavers": {
-    "kev": 8.02,
-    "fp": 13
-  },
-  "Carter Baumler": {
-    "kev": 7.97,
-    "fp": 9
-  },
-  "Marcell Ozuna": {
-    "kev": 7.95,
-    "fp": 13
-  },
-  "Erik Sabrowski": {
-    "kev": 7.92,
-    "fp": 27
-  },
-  "Chris Paddack": {
-    "kev": 7.87,
-    "fp": 9
-  },
-  "Jacob Lopez": {
-    "kev": 7.81,
-    "fp": 9
-  },
-  "Isaac Mattson": {
-    "kev": 7.75,
-    "fp": 29
-  },
-  "Wenceel P\u00e9rez": {
-    "kev": 7.71,
-    "fp": 6
-  },
-  "Victor Vodnik": {
-    "kev": 7.7,
-    "fp": 20
-  },
-  "Ryan Walker": {
-    "kev": 7.64,
-    "fp": 20
-  },
-  "Ty France": {
-    "kev": 7.64,
-    "fp": 8
-  },
-  "George Soriano": {
-    "kev": 7.59,
-    "fp": 20
-  },
-  "Taylor Walls": {
-    "kev": 7.58,
-    "fp": 8
-  },
-  "Bryan Hudson": {
-    "kev": 7.54,
-    "fp": 22
-  },
-  "Fernando Cruz": {
-    "kev": 7.48,
-    "fp": 22
-  },
-  "Jake McCarthy": {
-    "kev": 7.46,
-    "fp": 13
-  },
-  "Tyler Wells": {
-    "kev": 7.42,
-    "fp": 22
-  },
-  "Isaac Paredes": {
-    "kev": 7.4,
-    "fp": 13
-  },
-  "Jordan Leasure": {
-    "kev": 7.37,
-    "fp": 24
-  },
-  "Austin Wells": {
-    "kev": 7.33,
-    "fp": 13
-  },
-  "Hunter Bigge": {
-    "kev": 7.32,
-    "fp": 13
-  },
-  "Jake Woodford": {
-    "kev": 7.26,
-    "fp": 13
-  },
-  "Jonah Heim": {
-    "kev": 7.21,
-    "fp": 5
-  },
-  "Luis Medina": {
-    "kev": 7.21,
-    "fp": 15
-  },
-  "Ryan Zeferjahn": {
-    "kev": 7.15,
-    "fp": 15
-  },
-  "Freddy Fermin": {
-    "kev": 7.15,
-    "fp": 12
-  },
-  "Connor Brogdon": {
-    "kev": 7.09,
-    "fp": 17
-  },
-  "Heriberto Hern\u00e1ndez": {
-    "kev": 7.08,
-    "fp": 12
-  },
-  "Adrian Morejon": {
-    "kev": 7.04,
-    "fp": 19
-  },
-  "Owen Caissie": {
-    "kev": 7.02,
-    "fp": 14
-  },
-  "Yennier Cano": {
-    "kev": 6.99,
-    "fp": 21
-  },
-  "Josh Lowe": {
-    "kev": 6.96,
-    "fp": 14
-  },
-  "Wandy Peralta": {
-    "kev": 6.93,
-    "fp": 21
-  },
-  "Michael Conforto": {
-    "kev": 6.9,
-    "fp": 9
-  },
-  "JoJo Romero": {
-    "kev": 6.88,
-    "fp": 23
-  },
-  "Nathaniel Lowe": {
-    "kev": 6.84,
-    "fp": 9
-  },
-  "PJ Poulin": {
-    "kev": 6.82,
-    "fp": 27
-  },
-  "JT Brubaker": {
-    "kev": 6.76,
-    "fp": 18
-  },
-  "Marcelo Mayer": {
-    "kev": 6.71,
-    "fp": 13
-  },
-  "Steven Okert": {
-    "kev": 6.71,
-    "fp": 22
-  },
-  "Zach Pop": {
-    "kev": 6.66,
-    "fp": 14
-  },
-  "Eric Orze": {
-    "kev": 6.6,
-    "fp": 16
-  },
-  "Jake Fraley": {
-    "kev": 6.59,
-    "fp": 10
-  },
-  "Cole Sulser": {
-    "kev": 6.54,
-    "fp": 16
-  },
-  "Logan O'Hoppe": {
-    "kev": 6.53,
-    "fp": 14
-  },
-  "Jeff Hoffman": {
-    "kev": 6.5,
-    "fp": 18
-  },
-  "Sean Newcomb": {
-    "kev": 6.49,
-    "fp": 20
-  },
-  "CJ Kayfus": {
-    "kev": 6.46,
-    "fp": 6
-  },
-  "Shawn Armstrong": {
-    "kev": 6.43,
-    "fp": 22
-  },
-  "Ceddanne Rafaela": {
-    "kev": 6.4,
-    "fp": 13
-  },
-  "Kyle Nicolas": {
-    "kev": 6.38,
-    "fp": 10
-  },
-  "Alec Bohm": {
-    "kev": 6.37,
-    "fp": 12
-  },
-  "Giancarlo Stanton": {
-    "kev": 6.34,
-    "fp": 13
-  },
-  "Kyle Hart": {
-    "kev": 6.33,
-    "fp": 16
-  },
-  "Henry Davis": {
-    "kev": 6.28,
-    "fp": 11
-  },
-  "David Peterson": {
-    "kev": 6.27,
-    "fp": 10
-  },
-  "Mike Burrows": {
-    "kev": 6.21,
-    "fp": 10
-  },
-  "Graham Pauley": {
-    "kev": 6.21,
-    "fp": 11
-  },
-  "Jordan Romano": {
-    "kev": 6.16,
-    "fp": 18
-  },
-  "Jorge Polanco": {
-    "kev": 6.15,
-    "fp": 9
-  },
-  "Drew Anderson": {
-    "kev": 6.11,
-    "fp": 12
-  },
-  "Ezequiel Tovar": {
-    "kev": 6.09,
-    "fp": 14
-  },
-  "Adolis Garc\u00eda": {
-    "kev": 6.06,
-    "fp": 12
+    "kev": 22.1,
+    "fp": 37,
+    "prev_week_fp": 20
+  },
+  "Chase DeLauter": {
+    "kev": 22.09,
+    "fp": 62,
+    "prev_week_fp": 10
+  },
+  "Randy V\u00e1squez": {
+    "kev": 22.07,
+    "fp": 83,
+    "prev_week_fp": 28
+  },
+  "Michael Wacha": {
+    "kev": 21.96,
+    "fp": 82,
+    "prev_week_fp": -5
+  },
+  "Miguel Vargas": {
+    "kev": 21.86,
+    "fp": 70,
+    "prev_week_fp": 24
+  },
+  "Mickey Moniak": {
+    "kev": 21.8,
+    "fp": 57,
+    "prev_week_fp": 15
+  },
+  "Dansby Swanson": {
+    "kev": 21.79,
+    "fp": 64,
+    "prev_week_fp": 20
+  },
+  "Robbie Ray": {
+    "kev": 21.69,
+    "fp": 72,
+    "prev_week_fp": 10
+  },
+  "Gary S\u00e1nchez": {
+    "kev": 21.68,
+    "fp": 48,
+    "prev_week_fp": 7
+  },
+  "Andr\u00e9s Mu\u00f1oz": {
+    "kev": 21.66,
+    "fp": 49,
+    "prev_week_fp": 23
+  },
+  "MacKenzie Gore": {
+    "kev": 21.64,
+    "fp": 65,
+    "prev_week_fp": 7
+  },
+  "Brandon Lowe": {
+    "kev": 21.62,
+    "fp": 57,
+    "prev_week_fp": -3
+  },
+  "Liam Hicks": {
+    "kev": 21.56,
+    "fp": 66,
+    "prev_week_fp": 12
+  },
+  "Ryan Jeffers": {
+    "kev": 21.55,
+    "fp": 46,
+    "prev_week_fp": 11
+  },
+  "Christian Yelich": {
+    "kev": 21.54,
+    "fp": 25,
+    "prev_week_fp": 0
+  },
+  "Cade Povich": {
+    "kev": 21.52,
+    "fp": 31,
+    "prev_week_fp": 0
+  },
+  "Nick Loftin": {
+    "kev": 21.5,
+    "fp": 22,
+    "prev_week_fp": null
+  },
+  "Michael Harris II": {
+    "kev": 21.48,
+    "fp": 54,
+    "prev_week_fp": 26
+  },
+  "Brandon Young": {
+    "kev": 21.47,
+    "fp": 31,
+    "prev_week_fp": 13
+  },
+  "Will Warren": {
+    "kev": 21.36,
+    "fp": 92,
+    "prev_week_fp": 17
+  },
+  "Braxton Ashcraft": {
+    "kev": 21.3,
+    "fp": 75,
+    "prev_week_fp": 16
+  },
+  "Carlos Cortes": {
+    "kev": 21.26,
+    "fp": 52,
+    "prev_week_fp": 28
+  },
+  "Foster Griffin": {
+    "kev": 21.25,
+    "fp": 90,
+    "prev_week_fp": 39
+  },
+  "Munetaka Murakami": {
+    "kev": 21.2,
+    "fp": 65,
+    "prev_week_fp": 12
+  },
+  "Zach Neto": {
+    "kev": 21.18,
+    "fp": 57,
+    "prev_week_fp": 9
+  },
+  "Jonathan Aranda": {
+    "kev": 21.14,
+    "fp": 62,
+    "prev_week_fp": 23
+  },
+  "Casey Mize": {
+    "kev": 21.14,
+    "fp": 74,
+    "prev_week_fp": 22
+  },
+  "Austin Riley": {
+    "kev": 21.13,
+    "fp": 45,
+    "prev_week_fp": 6
+  },
+  "Emmet Sheehan": {
+    "kev": 21.04,
+    "fp": 56,
+    "prev_week_fp": 22
+  },
+  "Emerson Hancock": {
+    "kev": 20.97,
+    "fp": 85,
+    "prev_week_fp": 14
+  },
+  "Josh Jung": {
+    "kev": 20.9,
+    "fp": 55,
+    "prev_week_fp": 26
+  },
+  "Taj Bradley": {
+    "kev": 20.86,
+    "fp": 83,
+    "prev_week_fp": -5
+  },
+  "Kyle Harrison": {
+    "kev": 20.81,
+    "fp": 69,
+    "prev_week_fp": 36
+  },
+  "Edward Cabrera": {
+    "kev": 20.7,
+    "fp": 68,
+    "prev_week_fp": 14
   },
   "Peter Lambert": {
-    "kev": 6.05,
-    "fp": 2
-  },
-  "Justin Crawford": {
-    "kev": 6.03,
-    "fp": 12
-  },
-  "DL Hall": {
-    "kev": 6.0,
-    "fp": 19
-  },
-  "Brady House": {
-    "kev": 5.97,
-    "fp": 13
-  },
-  "Hoby Milner": {
-    "kev": 5.94,
-    "fp": 17
-  },
-  "Brandon Lockridge": {
-    "kev": 5.9,
-    "fp": 11
-  },
-  "Richard Lovelady": {
-    "kev": 5.88,
-    "fp": 15
-  },
-  "Jos\u00e9 Tena": {
-    "kev": 5.84,
-    "fp": 9
-  },
-  "Kody Funderburk": {
-    "kev": 5.83,
-    "fp": 22
-  },
-  "Mike Yastrzemski": {
-    "kev": 5.78,
-    "fp": 12
-  },
-  "Pierce Johnson": {
-    "kev": 5.78,
-    "fp": 18
-  },
-  "Spencer Steer": {
-    "kev": 5.72,
-    "fp": 12
-  },
-  "Brooks Raley": {
-    "kev": 5.67,
-    "fp": 16
-  },
-  "Gabriel Arias": {
-    "kev": 5.66,
-    "fp": 6
-  },
-  "Brad Keller": {
-    "kev": 5.61,
-    "fp": 16
-  },
-  "Tanner Banks": {
-    "kev": 5.55,
-    "fp": 14
-  },
-  "Matt McLain": {
-    "kev": 5.53,
-    "fp": 13
-  },
-  "Brandon Sproat": {
-    "kev": 5.5,
-    "fp": 7
-  },
-  "Willi Castro": {
-    "kev": 5.47,
-    "fp": 10
-  },
-  "Max Scherzer": {
-    "kev": 5.45,
-    "fp": 7
-  },
-  "Matt Strahm": {
-    "kev": 5.39,
-    "fp": 12
-  },
-  "Zach McKinstry": {
-    "kev": 5.34,
-    "fp": 8
-  },
-  "Yoendrys G\u00f3mez": {
-    "kev": 5.33,
-    "fp": 12
-  },
-  "Walbert Urena": {
-    "kev": 5.28,
-    "fp": 5
-  },
-  "Jose Franco": {
-    "kev": 5.22,
-    "fp": 5
-  },
-  "Kyle Backhus": {
-    "kev": 5.17,
-    "fp": 10
-  },
-  "Jake Cronenworth": {
-    "kev": 5.16,
-    "fp": 12
-  },
-  "Grant Anderson": {
-    "kev": 5.12,
-    "fp": 18
-  },
-  "Kazuma Okamoto": {
-    "kev": 5.07,
-    "fp": 10
-  },
-  "Nick Mears": {
-    "kev": 5.06,
-    "fp": 13
-  },
-  "Joey Loperfido": {
-    "kev": 5.03,
-    "fp": 11
-  },
-  "Jaden Hill": {
-    "kev": 5.0,
-    "fp": 16
-  },
-  "Trevor Story": {
-    "kev": 4.97,
-    "fp": 12
-  },
-  "Gabe Speier": {
-    "kev": 4.95,
-    "fp": 16
-  },
-  "Rafael Devers": {
-    "kev": 4.92,
-    "fp": 4
-  },
-  "Darell Hernaiz": {
-    "kev": 4.91,
-    "fp": 7
-  },
-  "Scott Barlow": {
-    "kev": 4.89,
-    "fp": 16
-  },
-  "Kody Clemens": {
-    "kev": 4.85,
-    "fp": 7
-  },
-  "Ryan Yarbrough": {
-    "kev": 4.84,
-    "fp": 8
-  },
-  "Joey Ortiz": {
-    "kev": 4.79,
-    "fp": 9
-  },
-  "Jos\u00e9 Suarez": {
-    "kev": 4.79,
-    "fp": 8
-  },
-  "Ken Waldichuk": {
-    "kev": 4.73,
-    "fp": 8
-  },
-  "Nathan Church": {
-    "kev": 4.72,
-    "fp": 10
-  },
-  "Bryson Stott": {
-    "kev": 4.7,
-    "fp": 7
-  },
-  "Jeremiah Estrada": {
-    "kev": 4.67,
-    "fp": 11
-  },
-  "Luisangel Acu\u00f1a": {
-    "kev": 4.66,
-    "fp": 10
-  },
-  "Alex Lange": {
-    "kev": 4.62,
-    "fp": 11
-  },
-  "Luke Weaver": {
-    "kev": 4.57,
-    "fp": 14
-  },
-  "Chase Silseth": {
-    "kev": 4.51,
-    "fp": 17
-  },
-  "Orion Kerkering": {
-    "kev": 4.46,
-    "fp": 9
-  },
-  "Lenyn Sosa": {
-    "kev": 4.41,
-    "fp": 8
-  },
-  "Jonathan Lo\u00e1isiga": {
-    "kev": 4.4,
-    "fp": 15
-  },
-  "Andruw Monasterio": {
-    "kev": 4.35,
-    "fp": 5
-  },
-  "Adrian Houser": {
-    "kev": 4.34,
-    "fp": 6
-  },
-  "Andrew Abbott": {
-    "kev": 4.31,
-    "fp": 4
-  },
-  "Taylor Rogers": {
-    "kev": 4.29,
-    "fp": 13
-  },
-  "Anthony Bender": {
-    "kev": 4.24,
-    "fp": 13
-  },
-  "Nathan Lukes": {
-    "kev": 4.23,
-    "fp": 8
-  },
-  "Camilo Doval": {
-    "kev": 4.18,
-    "fp": 14
-  },
-  "Ryne Stanek": {
-    "kev": 4.12,
-    "fp": 14
-  },
-  "Tyler Stephenson": {
-    "kev": 4.1,
-    "fp": 8
-  },
-  "Trevor Megill": {
-    "kev": 4.07,
-    "fp": 11
-  },
-  "Joc Pederson": {
-    "kev": 4.04,
-    "fp": 9
-  },
-  "Eric Lauer": {
-    "kev": 4.01,
-    "fp": 5
-  },
-  "Michael Busch": {
-    "kev": 3.98,
-    "fp": 9
-  },
-  "Cole Sands": {
-    "kev": 3.96,
-    "fp": 11
-  },
-  "Greg Weissert": {
-    "kev": 3.9,
-    "fp": 11
-  },
-  "Carson Benge": {
-    "kev": 3.85,
-    "fp": 8
-  },
-  "Elvis Alvarado": {
-    "kev": 3.85,
-    "fp": 12
-  },
-  "Cole Wilcox": {
-    "kev": 3.79,
-    "fp": 8
-  },
-  "Parker Meadows": {
-    "kev": 3.79,
-    "fp": 5
-  },
-  "Danny Coulombe": {
-    "kev": 3.74,
-    "fp": 9
-  },
-  "Andrew Nardi": {
-    "kev": 3.69,
-    "fp": 9
-  },
-  "Danny Jansen": {
-    "kev": 3.67,
-    "fp": 6
-  },
-  "Blake Treinen": {
-    "kev": 3.63,
-    "fp": 10
-  },
-  "Andrew Benintendi": {
-    "kev": 3.6,
-    "fp": 8
-  },
-  "Kevin Ginkel": {
-    "kev": 3.58,
-    "fp": 10
-  },
-  "Drew Millas": {
-    "kev": 3.54,
-    "fp": 6
-  },
-  "Jose A. Ferrer": {
-    "kev": 3.52,
-    "fp": 11
-  },
-  "Rob Refsnyder": {
-    "kev": 3.48,
-    "fp": 4
-  },
-  "Justin Sterner": {
-    "kev": 3.46,
-    "fp": 10
-  },
-  "Lane Thomas": {
-    "kev": 3.42,
-    "fp": 7
-  },
-  "Paul Blackburn": {
-    "kev": 3.41,
-    "fp": 6
-  },
-  "TJ Friedl": {
-    "kev": 3.39,
-    "fp": 6
-  },
-  "Miguel Rojas": {
-    "kev": 3.36,
-    "fp": 5
-  },
-  "Luis Curvelo": {
-    "kev": 3.35,
-    "fp": 4
-  },
-  "Angel Zerpa": {
-    "kev": 3.3,
-    "fp": 10
-  },
-  "Spencer Torkelson": {
-    "kev": 3.29,
-    "fp": 8
-  },
-  "Luis Gil": {
-    "kev": 3.25,
-    "fp": 2
-  },
-  "Tyler Freeman": {
-    "kev": 3.23,
-    "fp": 4
-  },
-  "AJ Blubaugh": {
-    "kev": 3.19,
-    "fp": 9
-  },
-  "Juan Brito": {
-    "kev": 3.17,
-    "fp": 4
-  },
-  "Jake Bird": {
-    "kev": 3.13,
-    "fp": 8
-  },
-  "Tim Tawa": {
-    "kev": 3.11,
-    "fp": 5
-  },
-  "Ian Seymour": {
-    "kev": 3.08,
-    "fp": 9
-  },
-  "Derek Hill": {
-    "kev": 3.05,
-    "fp": 6
-  },
-  "Colton Gordon": {
-    "kev": 3.02,
-    "fp": 2
-  },
-  "Austin Hays": {
-    "kev": 2.98,
-    "fp": 3
-  },
-  "Chris Murphy": {
-    "kev": 2.97,
-    "fp": 6
-  },
-  "Jared Triolo": {
-    "kev": 2.92,
-    "fp": 2
-  },
-  "Mason Fluharty": {
-    "kev": 2.92,
-    "fp": 10
-  },
-  "Drew Pomeranz": {
-    "kev": 2.86,
-    "fp": 7
-  },
-  "Ryan Vilade": {
-    "kev": 2.86,
-    "fp": 4
-  },
-  "Justin Topa": {
-    "kev": 2.81,
-    "fp": 11
-  },
-  "Will Benson": {
-    "kev": 2.8,
-    "fp": 6
-  },
-  "Andrew McCutchen": {
-    "kev": 2.73,
-    "fp": 4
-  },
-  "Robert Garcia": {
-    "kev": 2.69,
-    "fp": 7
-  },
-  "Josh Smith": {
-    "kev": 2.67,
-    "fp": 6
-  },
-  "Calvin Faucher": {
-    "kev": 2.64,
-    "fp": 7
-  },
-  "Roki Sasaki": {
-    "kev": 2.58,
-    "fp": 3
-  },
-  "James McCann": {
-    "kev": 2.55,
-    "fp": 3
-  },
-  "Chris Martin": {
-    "kev": 2.53,
-    "fp": 5
-  },
-  "Bo Naylor": {
-    "kev": 2.49,
-    "fp": 4
-  },
-  "Will Vest": {
-    "kev": 2.48,
-    "fp": 6
-  },
-  "Matt Wallner": {
-    "kev": 2.42,
-    "fp": 5
-  },
-  "Justin Lawrence": {
-    "kev": 2.42,
-    "fp": 6
-  },
-  "Mark Leiter Jr.": {
-    "kev": 2.37,
-    "fp": 6
-  },
-  "Blake Perkins": {
-    "kev": 2.36,
-    "fp": 3
-  },
-  "Mason Englert": {
-    "kev": 2.31,
-    "fp": 5
-  },
-  "Brenton Doyle": {
-    "kev": 2.3,
-    "fp": 5
-  },
-  "Anthony Banda": {
-    "kev": 2.25,
-    "fp": 5
-  },
-  "Coby Mayo": {
-    "kev": 2.24,
-    "fp": 4
-  },
-  "Jac Caglianone": {
-    "kev": 2.21,
-    "fp": 2
-  },
-  "Jordan Hicks": {
-    "kev": 2.2,
-    "fp": 6
-  },
-  "Brett Sullivan": {
-    "kev": 2.18,
-    "fp": 3
-  },
-  "Jacob Webb": {
-    "kev": 2.15,
-    "fp": 5
-  },
-  "Alex Freeland": {
-    "kev": 2.11,
-    "fp": 4
-  },
-  "Zack Kelly": {
-    "kev": 2.09,
-    "fp": 3
-  },
-  "Nick Castellanos": {
-    "kev": 2.05,
-    "fp": 3
-  },
-  "Tommy Nance": {
-    "kev": 2.04,
-    "fp": 4
-  },
-  "Brett Baty": {
-    "kev": 1.99,
-    "fp": 4
-  },
-  "Ryan Watson": {
-    "kev": 1.98,
-    "fp": 4
-  },
-  "Ryan McMahon": {
-    "kev": 1.93,
-    "fp": 4
-  },
-  "Lucas Sims": {
-    "kev": 1.93,
-    "fp": 3
-  },
-  "Justin Bruihl": {
-    "kev": 1.87,
-    "fp": 5
-  },
-  "Victor Scott II": {
-    "kev": 1.86,
-    "fp": 4
-  },
-  "J.P. France": {
-    "kev": 1.76,
-    "fp": 1
-  },
-  "Hunter Feduccia": {
-    "kev": 1.74,
-    "fp": 2
-  },
-  "Cionel P\u00e9rez": {
-    "kev": 1.71,
-    "fp": 3
-  },
-  "Isaac Collins": {
-    "kev": 1.68,
-    "fp": 3
-  },
-  "Aaron Bummer": {
-    "kev": 1.65,
-    "fp": 1
-  },
-  "Dane Myers": {
-    "kev": 1.62,
-    "fp": 3
-  },
-  "Ryan Borucki": {
-    "kev": 1.59,
-    "fp": 1
-  },
-  "Carson Williams": {
-    "kev": 1.55,
-    "fp": 1
-  },
-  "Christian Roa": {
-    "kev": 1.54,
-    "fp": 0
-  },
-  "Rafael March\u00e1n": {
-    "kev": 1.49,
-    "fp": 1
-  },
-  "Brayan Bello": {
-    "kev": 1.49,
-    "fp": 0
-  },
-  "Ryan Weiss": {
-    "kev": 1.43,
-    "fp": 0
-  },
-  "Isiah Kiner-Falefa": {
-    "kev": 1.37,
-    "fp": 1
-  },
-  "Valente Bellozo": {
-    "kev": 1.32,
-    "fp": 0
-  },
-  "Joey Bart": {
-    "kev": 1.31,
-    "fp": 1
-  },
-  "Griffin Jax": {
-    "kev": 1.26,
-    "fp": -2
-  },
-  "David Fry": {
-    "kev": 1.24,
-    "fp": 1
-  },
-  "Jos\u00e9 Alvarado": {
-    "kev": 1.21,
-    "fp": -2
-  },
-  "Thomas Saggese": {
-    "kev": 1.18,
-    "fp": 1
-  },
-  "John Schreiber": {
-    "kev": 1.16,
-    "fp": -2
-  },
-  "Tyler Heineman": {
-    "kev": 1.12,
-    "fp": 0
-  },
-  "Juan Mejia": {
-    "kev": 1.1,
-    "fp": -3
-  },
-  "Blaze Alexander": {
-    "kev": 1.06,
-    "fp": 0
-  },
-  "Cole Henry": {
-    "kev": 1.04,
-    "fp": -3
-  },
-  "Colton Cowser": {
-    "kev": 0.99,
-    "fp": 0
-  },
-  "Zack Littell": {
-    "kev": 0.99,
-    "fp": -2
-  },
-  "Simeon Woods Richardson": {
-    "kev": 0.94,
-    "fp": -3
-  },
-  "Leo Rivas": {
-    "kev": 0.93,
-    "fp": 0
-  },
-  "Jos\u00e9 Urquidy": {
-    "kev": 0.88,
-    "fp": -4
-  },
-  "Ke'Bryan Hayes": {
-    "kev": 0.87,
-    "fp": 0
-  },
-  "Michael Lorenzen": {
-    "kev": 0.82,
-    "fp": -5
-  },
-  "Edgar Quero": {
-    "kev": 0.81,
-    "fp": -1
-  },
-  "Hunter Barco": {
-    "kev": 0.77,
-    "fp": -4
-  },
-  "Patrick Bailey": {
-    "kev": 0.75,
-    "fp": -2
-  },
-  "Tyler Mahle": {
-    "kev": 0.71,
-    "fp": -4
-  },
-  "Harrison Bader": {
-    "kev": 0.68,
-    "fp": -2
-  },
-  "Kolby Allard": {
-    "kev": 0.66,
-    "fp": -4
-  },
-  "Austin Slater": {
-    "kev": 0.62,
-    "fp": -2
-  },
-  "Steven Cruz": {
-    "kev": 0.6,
-    "fp": -5
-  },
-  "Jerar Encarnacion": {
-    "kev": 0.56,
-    "fp": -2
-  },
-  "Jose Quintana": {
-    "kev": 0.55,
-    "fp": -3
-  },
-  "Bryan Abreu": {
-    "kev": 0.49,
-    "fp": -17
-  },
-  "Kodai Senga": {
-    "kev": 0.44,
-    "fp": -8
-  },
-  "Chris Bassitt": {
-    "kev": 0.33,
-    "fp": -11
-  },
-  "Noelvi Marte": {
-    "kev": 0.06,
-    "fp": -5
-  },
-  "Carlos Narv\u00e1ez": {
-    "kev": 0.0,
-    "fp": -8
+    "kev": 20.65,
+    "fp": 27,
+    "prev_week_fp": 25
+  },
+  "Chase Dollander": {
+    "kev": 20.59,
+    "fp": 92,
+    "prev_week_fp": 42
+  },
+  "Seth Lugo": {
+    "kev": 20.54,
+    "fp": 78,
+    "prev_week_fp": 16
+  },
+  "JJ Wetherholt": {
+    "kev": 20.53,
+    "fp": 54,
+    "prev_week_fp": 11
+  },
+  "Daylen Lile": {
+    "kev": 20.52,
+    "fp": 52,
+    "prev_week_fp": 25
+  },
+  "Mitch Keller": {
+    "kev": 20.48,
+    "fp": 69,
+    "prev_week_fp": 8
+  },
+  "Jeffrey Springs": {
+    "kev": 20.48,
+    "fp": 77,
+    "prev_week_fp": 2
+  },
+  "Clay Holmes": {
+    "kev": 20.43,
+    "fp": 64,
+    "prev_week_fp": 14
+  },
+  "Carlos Correa": {
+    "kev": 20.42,
+    "fp": 54,
+    "prev_week_fp": 16
+  },
+  "Nick Martinez": {
+    "kev": 20.37,
+    "fp": 63,
+    "prev_week_fp": 27
+  },
+  "Xavier Edwards": {
+    "kev": 20.35,
+    "fp": 55,
+    "prev_week_fp": 14
+  },
+  "Kris Bubic": {
+    "kev": 20.32,
+    "fp": 62,
+    "prev_week_fp": 7
+  },
+  "Christian V\u00e1zquez": {
+    "kev": 20.3,
+    "fp": 29,
+    "prev_week_fp": 0
+  },
+  "Rhett Lowder": {
+    "kev": 20.21,
+    "fp": 73,
+    "prev_week_fp": 28
+  },
+  "Nathaniel Lowe": {
+    "kev": 20.18,
+    "fp": 35,
+    "prev_week_fp": 26
+  },
+  "Jack Kochanowicz": {
+    "kev": 20.1,
+    "fp": 60,
+    "prev_week_fp": 9
+  },
+  "Iv\u00e1n Herrera": {
+    "kev": 20.05,
+    "fp": 51,
+    "prev_week_fp": 13
+  },
+  "Dominic Smith": {
+    "kev": 20.0,
+    "fp": 42,
+    "prev_week_fp": 1
+  },
+  "Gleyber Torres": {
+    "kev": 19.99,
+    "fp": 39,
+    "prev_week_fp": 13
+  },
+  "Ryan Weathers": {
+    "kev": 19.99,
+    "fp": 71,
+    "prev_week_fp": 10
+  },
+  "Trent Grisham": {
+    "kev": 19.99,
+    "fp": 51,
+    "prev_week_fp": 8
+  },
+  "Jazz Chisholm Jr.": {
+    "kev": 19.98,
+    "fp": 26,
+    "prev_week_fp": 16
+  },
+  "Ryan O'Hearn": {
+    "kev": 19.93,
+    "fp": 49,
+    "prev_week_fp": 3
+  },
+  "Connelly Early": {
+    "kev": 19.88,
+    "fp": 70,
+    "prev_week_fp": 21
+  },
+  "Max Meyer": {
+    "kev": 19.82,
+    "fp": 70,
+    "prev_week_fp": 30
+  },
+  "Dillon Dingler": {
+    "kev": 19.82,
+    "fp": 48,
+    "prev_week_fp": 0
+  },
+  "Kyle Bradish": {
+    "kev": 19.79,
+    "fp": 31,
+    "prev_week_fp": 12
+  },
+  "Jarren Duran": {
+    "kev": 19.77,
+    "fp": 26,
+    "prev_week_fp": 6
+  },
+  "Noah Schultz": {
+    "kev": 19.77,
+    "fp": 35,
+    "prev_week_fp": 14
+  },
+  "Eduardo Rodriguez": {
+    "kev": 19.6,
+    "fp": 57,
+    "prev_week_fp": 7
+  },
+  "Jake Bauers": {
+    "kev": 19.52,
+    "fp": 49,
+    "prev_week_fp": 6
+  },
+  "Coleman Crow": {
+    "kev": 19.44,
+    "fp": 11,
+    "prev_week_fp": 0
+  },
+  "Matthew Boyd": {
+    "kev": 19.39,
+    "fp": 30,
+    "prev_week_fp": 10
+  },
+  "Jesse Scholtens": {
+    "kev": 19.28,
+    "fp": 43,
+    "prev_week_fp": 10
+  },
+  "Michael McGreevy": {
+    "kev": 19.22,
+    "fp": 64,
+    "prev_week_fp": 17
+  },
+  "Ranger Suarez": {
+    "kev": 19.17,
+    "fp": 40,
+    "prev_week_fp": -2
+  },
+  "Tomoyuki Sugano": {
+    "kev": 19.17,
+    "fp": 53,
+    "prev_week_fp": 18
+  },
+  "Brendan Donovan": {
+    "kev": 19.09,
+    "fp": 31,
+    "prev_week_fp": 0
+  },
+  "Joey Cantillo": {
+    "kev": 19.06,
+    "fp": 63,
+    "prev_week_fp": 3
+  },
+  "Casey Schmitt": {
+    "kev": 19.04,
+    "fp": 41,
+    "prev_week_fp": 18
+  },
+  "Bailey Ober": {
+    "kev": 19.0,
+    "fp": 63,
+    "prev_week_fp": 7
+  },
+  "Reid Detmers": {
+    "kev": 18.95,
+    "fp": 63,
+    "prev_week_fp": 11
+  },
+  "Angel Mart\u00ednez": {
+    "kev": 18.92,
+    "fp": 48,
+    "prev_week_fp": 20
+  },
+  "Steven Matz": {
+    "kev": 18.89,
+    "fp": 52,
+    "prev_week_fp": -8
+  },
+  "Grant Holmes": {
+    "kev": 18.84,
+    "fp": 62,
+    "prev_week_fp": 11
+  },
+  "Otto Lopez": {
+    "kev": 18.8,
+    "fp": 49,
+    "prev_week_fp": 4
+  },
+  "Sean Burke": {
+    "kev": 18.78,
+    "fp": 61,
+    "prev_week_fp": 39
+  },
+  "Josh Bell": {
+    "kev": 18.74,
+    "fp": 49,
+    "prev_week_fp": 3
+  },
+  "Jonny DeLuca": {
+    "kev": 18.62,
+    "fp": 38,
+    "prev_week_fp": 6
+  },
+  "Colin Rea": {
+    "kev": 18.56,
+    "fp": 58,
+    "prev_week_fp": 7
+  },
+  "Xander Bogaerts": {
+    "kev": 18.56,
+    "fp": 47,
+    "prev_week_fp": 8
+  },
+  "Bryan Reynolds": {
+    "kev": 18.52,
+    "fp": 43,
+    "prev_week_fp": 4
+  },
+  "Mart\u00edn P\u00e9rez": {
+    "kev": 18.51,
+    "fp": 48,
+    "prev_week_fp": 6
+  },
+  "Wilyer Abreu": {
+    "kev": 18.49,
+    "fp": 45,
+    "prev_week_fp": 11
+  },
+  "Keider Montero": {
+    "kev": 18.45,
+    "fp": 48,
+    "prev_week_fp": 10
+  },
+  "Aaron Civale": {
+    "kev": 18.4,
+    "fp": 47,
+    "prev_week_fp": 8
+  },
+  "Paul Goldschmidt": {
+    "kev": 18.38,
+    "fp": 18,
+    "prev_week_fp": 4
+  },
+  "Hunter Goodman": {
+    "kev": 18.34,
+    "fp": 39,
+    "prev_week_fp": 14
+  },
+  "Mois\u00e9s Ballesteros": {
+    "kev": 18.32,
+    "fp": 43,
+    "prev_week_fp": 19
+  },
+  "Antonio Senzatela": {
+    "kev": 18.29,
+    "fp": 73,
+    "prev_week_fp": 15
+  },
+  "Aroldis Chapman": {
+    "kev": 18.19,
+    "fp": 46,
+    "prev_week_fp": 17
+  },
+  "Shane McClanahan": {
+    "kev": 18.18,
+    "fp": 45,
+    "prev_week_fp": 22
+  },
+  "Jhoan Duran": {
+    "kev": 18.17,
+    "fp": 46,
+    "prev_week_fp": 0
+  },
+  "Germ\u00e1n M\u00e1rquez": {
+    "kev": 18.13,
+    "fp": 44,
+    "prev_week_fp": 10
+  },
+  "Jameson Taillon": {
+    "kev": 18.07,
+    "fp": 44,
+    "prev_week_fp": 4
+  },
+  "Patrick Corbin": {
+    "kev": 18.02,
+    "fp": 34,
+    "prev_week_fp": 18
+  },
+  "Vaughn Grissom": {
+    "kev": 17.96,
+    "fp": 17,
+    "prev_week_fp": null
+  },
+  "Carter Jensen": {
+    "kev": 17.94,
+    "fp": 42,
+    "prev_week_fp": 15
+  },
+  "Kumar Rocker": {
+    "kev": 17.91,
+    "fp": 42,
+    "prev_week_fp": 25
+  },
+  "Amed Rosario": {
+    "kev": 17.9,
+    "fp": 34,
+    "prev_week_fp": 9
+  },
+  "Ram\u00f3n Laureano": {
+    "kev": 17.84,
+    "fp": 42,
+    "prev_week_fp": 0
+  },
+  "Jack Perkins": {
+    "kev": 17.74,
+    "fp": 48,
+    "prev_week_fp": 26
+  },
+  "Janson Junk": {
+    "kev": 17.69,
+    "fp": 40,
+    "prev_week_fp": 20
   },
   "Kyle Stowers": {
-    "kev": 0.0,
-    "fp": 1
+    "kev": 17.66,
+    "fp": 10,
+    "prev_week_fp": 9
+  },
+  "Alek Thomas": {
+    "kev": 17.6,
+    "fp": 35,
+    "prev_week_fp": 18
+  },
+  "Jack Leiter": {
+    "kev": 17.58,
+    "fp": 40,
+    "prev_week_fp": 7
+  },
+  "Andr\u00e9s Gim\u00e9nez": {
+    "kev": 17.54,
+    "fp": 43,
+    "prev_week_fp": 7
+  },
+  "Jung Hoo Lee": {
+    "kev": 17.52,
+    "fp": 44,
+    "prev_week_fp": 18
+  },
+  "Chad Patrick": {
+    "kev": 17.47,
+    "fp": 39,
+    "prev_week_fp": -6
+  },
+  "Brayan Rocchio": {
+    "kev": 17.42,
+    "fp": 46,
+    "prev_week_fp": 7
+  },
+  "Jake Irvin": {
+    "kev": 17.41,
+    "fp": 46,
+    "prev_week_fp": 27
+  },
+  "Trevor Rogers": {
+    "kev": 17.36,
+    "fp": 37,
+    "prev_week_fp": -10
+  },
+  "Noah Cameron": {
+    "kev": 17.3,
+    "fp": 37,
+    "prev_week_fp": 13
+  },
+  "Curtis Mead": {
+    "kev": 17.23,
+    "fp": 34,
+    "prev_week_fp": 7
+  },
+  "Samuel Basallo": {
+    "kev": 17.15,
+    "fp": 31,
+    "prev_week_fp": 19
+  },
+  "Reynaldo L\u00f3pez": {
+    "kev": 17.14,
+    "fp": 36,
+    "prev_week_fp": -17
+  },
+  "Andre Pallante": {
+    "kev": 17.09,
+    "fp": 36,
+    "prev_week_fp": 6
+  },
+  "Colson Montgomery": {
+    "kev": 17.05,
+    "fp": 45,
+    "prev_week_fp": 15
+  },
+  "Dean Kremer": {
+    "kev": 17.04,
+    "fp": 24,
+    "prev_week_fp": 0
+  },
+  "Carmen Mlodzinski": {
+    "kev": 17.03,
+    "fp": 43,
+    "prev_week_fp": -8
+  },
+  "Jorge Soler": {
+    "kev": 16.99,
+    "fp": 40,
+    "prev_week_fp": 2
+  },
+  "Yainer Diaz": {
+    "kev": 16.98,
+    "fp": 22,
+    "prev_week_fp": 9
+  },
+  "Kyle Freeland": {
+    "kev": 16.94,
+    "fp": 35,
+    "prev_week_fp": 0
+  },
+  "J.T. Ginn": {
+    "kev": 16.92,
+    "fp": 49,
+    "prev_week_fp": 17
+  },
+  "Carson Kelly": {
+    "kev": 16.87,
+    "fp": 35,
+    "prev_week_fp": 3
+  },
+  "Dominic Canzone": {
+    "kev": 16.81,
+    "fp": 38,
+    "prev_week_fp": 8
+  },
+  "Ben Brown": {
+    "kev": 16.7,
+    "fp": 51,
+    "prev_week_fp": 14
+  },
+  "Andruw Monasterio": {
+    "kev": 16.69,
+    "fp": 22,
+    "prev_week_fp": 17
+  },
+  "Riley O'Brien": {
+    "kev": 16.65,
+    "fp": 89,
+    "prev_week_fp": -2
+  },
+  "Daniel Schneemann": {
+    "kev": 16.63,
+    "fp": 36,
+    "prev_week_fp": 6
+  },
+  "Agust\u00edn Ram\u00edrez": {
+    "kev": 16.59,
+    "fp": 33,
+    "prev_week_fp": 9
+  },
+  "Leody Taveras": {
+    "kev": 16.57,
+    "fp": 36,
+    "prev_week_fp": 11
+  },
+  "Erick Fedde": {
+    "kev": 16.54,
+    "fp": 30,
+    "prev_week_fp": 9
+  },
+  "Matt Chapman": {
+    "kev": 16.52,
+    "fp": 33,
+    "prev_week_fp": 5
+  },
+  "Albert Su\u00e1rez": {
+    "kev": 16.48,
+    "fp": 30,
+    "prev_week_fp": 9
+  },
+  "Sam Antonacci": {
+    "kev": 16.45,
+    "fp": 17,
+    "prev_week_fp": null
+  },
+  "David Bednar": {
+    "kev": 16.44,
+    "fp": 50,
+    "prev_week_fp": 11
+  },
+  "Luis Severino": {
+    "kev": 16.43,
+    "fp": 36,
+    "prev_week_fp": 21
+  },
+  "Nathan Church": {
+    "kev": 16.39,
+    "fp": 37,
+    "prev_week_fp": 27
+  },
+  "Dustin May": {
+    "kev": 16.37,
+    "fp": 29,
+    "prev_week_fp": 17
+  },
+  "Isaac Paredes": {
+    "kev": 16.33,
+    "fp": 37,
+    "prev_week_fp": 24
+  },
+  "Cade Cavalli": {
+    "kev": 16.32,
+    "fp": 34,
+    "prev_week_fp": 14
+  },
+  "Brooks Lee": {
+    "kev": 16.27,
+    "fp": 40,
+    "prev_week_fp": 15
+  },
+  "Tyler Phillips": {
+    "kev": 16.26,
+    "fp": 45,
+    "prev_week_fp": 6
+  },
+  "Byron Buxton": {
+    "kev": 16.23,
+    "fp": 31,
+    "prev_week_fp": 5
+  },
+  "Didier Fuentes": {
+    "kev": 16.21,
+    "fp": 11,
+    "prev_week_fp": null
+  },
+  "Bryan Baker": {
+    "kev": 16.15,
+    "fp": 59,
+    "prev_week_fp": 18
+  },
+  "Alex Call": {
+    "kev": 16.15,
+    "fp": 15,
+    "prev_week_fp": null
+  },
+  "Teoscar Hern\u00e1ndez": {
+    "kev": 16.13,
+    "fp": 34,
+    "prev_week_fp": 5
+  },
+  "Brady Singer": {
+    "kev": 16.1,
+    "fp": 32,
+    "prev_week_fp": 12
+  },
+  "Masyn Winn": {
+    "kev": 16.09,
+    "fp": 33,
+    "prev_week_fp": 9
+  },
+  "Bubba Chandler": {
+    "kev": 16.05,
+    "fp": 26,
+    "prev_week_fp": -11
+  },
+  "Brandon Pfaadt": {
+    "kev": 15.99,
+    "fp": 26,
+    "prev_week_fp": 1
+  },
+  "Edwin D\u00edaz": {
+    "kev": 15.99,
+    "fp": 25,
+    "prev_week_fp": 0
+  },
+  "Spencer Torkelson": {
+    "kev": 15.91,
+    "fp": 42,
+    "prev_week_fp": 34
+  },
+  "Aaron Nola": {
+    "kev": 15.88,
+    "fp": 28,
+    "prev_week_fp": -14
+  },
+  "Mauricio Dub\u00f3n": {
+    "kev": 15.79,
+    "fp": 40,
+    "prev_week_fp": 6
+  },
+  "Emilio Pag\u00e1n": {
+    "kev": 15.77,
+    "fp": 60,
+    "prev_week_fp": 2
+  },
+  "Willson Contreras": {
+    "kev": 15.73,
+    "fp": 40,
+    "prev_week_fp": 11
+  },
+  "Sean Manaea": {
+    "kev": 15.72,
+    "fp": 30,
+    "prev_week_fp": 9
+  },
+  "Brandon Marsh": {
+    "kev": 15.67,
+    "fp": 37,
+    "prev_week_fp": 14
+  },
+  "Griffin Conine": {
+    "kev": 15.62,
+    "fp": 18,
+    "prev_week_fp": 0
+  },
+  "Aaron Ashby": {
+    "kev": 15.61,
+    "fp": 74,
+    "prev_week_fp": 14
+  },
+  "Jakob Marsee": {
+    "kev": 15.6,
+    "fp": 39,
+    "prev_week_fp": 13
+  },
+  "Nolan Schanuel": {
+    "kev": 15.55,
+    "fp": 38,
+    "prev_week_fp": 11
+  },
+  "Robert Suarez": {
+    "kev": 15.55,
+    "fp": 63,
+    "prev_week_fp": 18
+  },
+  "Jose Fernandez": {
+    "kev": 15.49,
+    "fp": 32,
+    "prev_week_fp": 15
+  },
+  "Andrew Painter": {
+    "kev": 15.39,
+    "fp": 24,
+    "prev_week_fp": -8
+  },
+  "Jovani Mor\u00e1n": {
+    "kev": 15.33,
+    "fp": 38,
+    "prev_week_fp": -2
+  },
+  "Austin Martin": {
+    "kev": 15.31,
+    "fp": 36,
+    "prev_week_fp": 4
+  },
+  "Rico Garcia": {
+    "kev": 15.28,
+    "fp": 61,
+    "prev_week_fp": 9
+  },
+  "Josh Naylor": {
+    "kev": 15.26,
+    "fp": 28,
+    "prev_week_fp": 17
+  },
+  "Gavin Sheets": {
+    "kev": 15.25,
+    "fp": 36,
+    "prev_week_fp": 7
+  },
+  "Jack Anderson": {
+    "kev": 15.22,
+    "fp": 14,
+    "prev_week_fp": 2
+  },
+  "Ty France": {
+    "kev": 15.19,
+    "fp": 20,
+    "prev_week_fp": 12
+  },
+  "Caleb Durbin": {
+    "kev": 15.18,
+    "fp": 35,
+    "prev_week_fp": 16
+  },
+  "Shane Baz": {
+    "kev": 15.17,
+    "fp": 22,
+    "prev_week_fp": 5
+  },
+  "Raisel Iglesias": {
+    "kev": 15.08,
+    "fp": 56,
+    "prev_week_fp": 0
+  },
+  "TJ Rumfield": {
+    "kev": 15.07,
+    "fp": 41,
+    "prev_week_fp": 20
+  },
+  "Cal Quantrill": {
+    "kev": 15.06,
+    "fp": 14,
+    "prev_week_fp": null
+  },
+  "Louis Varland": {
+    "kev": 15.0,
+    "fp": 65,
+    "prev_week_fp": 27
+  },
+  "Garrett Mitchell": {
+    "kev": 14.95,
+    "fp": 35,
+    "prev_week_fp": 4
+  },
+  "Tobias Myers": {
+    "kev": 14.95,
+    "fp": 37,
+    "prev_week_fp": 8
+  },
+  "Yohan Ram\u00edrez": {
+    "kev": 14.84,
+    "fp": 54,
+    "prev_week_fp": 13
+  },
+  "Salvador Perez": {
+    "kev": 14.79,
+    "fp": 19,
+    "prev_week_fp": 7
+  },
+  "Garrett Acton": {
+    "kev": 14.79,
+    "fp": 18,
+    "prev_week_fp": 1
+  },
+  "Jes\u00fas S\u00e1nchez": {
+    "kev": 14.77,
+    "fp": 36,
+    "prev_week_fp": 11
+  },
+  "Joe Boyle": {
+    "kev": 14.76,
+    "fp": 23,
+    "prev_week_fp": 0
+  },
+  "Mitchell Parker": {
+    "kev": 14.73,
+    "fp": 18,
+    "prev_week_fp": 4
+  },
+  "Trevor Larnach": {
+    "kev": 14.71,
+    "fp": 29,
+    "prev_week_fp": 1
+  },
+  "Tanner Gordon": {
+    "kev": 14.68,
+    "fp": 9,
+    "prev_week_fp": null
+  },
+  "Ernie Clement": {
+    "kev": 14.64,
+    "fp": 35,
+    "prev_week_fp": 9
+  },
+  "Kenley Jansen": {
+    "kev": 14.62,
+    "fp": 40,
+    "prev_week_fp": -2
+  },
+  "Mick Abel": {
+    "kev": 14.62,
+    "fp": 29,
+    "prev_week_fp": 0
+  },
+  "Blade Tidwell": {
+    "kev": 14.57,
+    "fp": 31,
+    "prev_week_fp": 6
+  },
+  "Luis Garc\u00eda": {
+    "kev": 14.53,
+    "fp": 38,
+    "prev_week_fp": 10
+  },
+  "Anthony Nunez": {
+    "kev": 14.51,
+    "fp": 53,
+    "prev_week_fp": 23
+  },
+  "Royce Lewis": {
+    "kev": 14.47,
+    "fp": 23,
+    "prev_week_fp": -1
+  },
+  "Daulton Varsho": {
+    "kev": 14.4,
+    "fp": 32,
+    "prev_week_fp": 0
+  },
+  "Cole Young": {
+    "kev": 14.35,
+    "fp": 39,
+    "prev_week_fp": 9
+  },
+  "Tyler Mahle": {
+    "kev": 14.35,
+    "fp": 22,
+    "prev_week_fp": 26
+  },
+  "Brandon Williamson": {
+    "kev": 14.29,
+    "fp": 22,
+    "prev_week_fp": -9
+  },
+  "Connor Wong": {
+    "kev": 14.29,
+    "fp": 16,
+    "prev_week_fp": 8
+  },
+  "Matthew Liberatore": {
+    "kev": 14.24,
+    "fp": 26,
+    "prev_week_fp": -6
+  },
+  "Jos\u00e9 Caballero": {
+    "kev": 14.23,
+    "fp": 36,
+    "prev_week_fp": 13
+  },
+  "Jacob Wilson": {
+    "kev": 14.22,
+    "fp": 34,
+    "prev_week_fp": 11
+  },
+  "Andrew Hoffmann": {
+    "kev": 14.18,
+    "fp": 30,
+    "prev_week_fp": -1
+  },
+  "Nolan Arenado": {
+    "kev": 14.17,
+    "fp": 33,
+    "prev_week_fp": 17
+  },
+  "Gregory Soto": {
+    "kev": 14.13,
+    "fp": 59,
+    "prev_week_fp": 13
+  },
+  "Luis Robert Jr.": {
+    "kev": 14.1,
+    "fp": 30,
+    "prev_week_fp": 4
+  },
+  "Jeremiah Jackson": {
+    "kev": 13.99,
+    "fp": 34,
+    "prev_week_fp": 3
+  },
+  "Kerry Carpenter": {
+    "kev": 13.93,
+    "fp": 34,
+    "prev_week_fp": 15
+  },
+  "Wyatt Langford": {
+    "kev": 13.91,
+    "fp": 17,
+    "prev_week_fp": 1
+  },
+  "Tyler Samaniego": {
+    "kev": 13.91,
+    "fp": 24,
+    "prev_week_fp": null
+  },
+  "Gordon Graceffo": {
+    "kev": 13.85,
+    "fp": 44,
+    "prev_week_fp": 7
+  },
+  "Ryan Helsley": {
+    "kev": 13.8,
+    "fp": 44,
+    "prev_week_fp": -2
+  },
+  "Gabriel Moreno": {
+    "kev": 13.75,
+    "fp": 16,
+    "prev_week_fp": 0
+  },
+  "Lake Bachar": {
+    "kev": 13.75,
+    "fp": 32,
+    "prev_week_fp": 0
+  },
+  "Evan Carter": {
+    "kev": 13.69,
+    "fp": 36,
+    "prev_week_fp": 7
+  },
+  "Brad Lord": {
+    "kev": 13.69,
+    "fp": 36,
+    "prev_week_fp": 7
+  },
+  "Lucas Erceg": {
+    "kev": 13.64,
+    "fp": 48,
+    "prev_week_fp": 22
+  },
+  "Oswald Peraza": {
+    "kev": 13.57,
+    "fp": 33,
+    "prev_week_fp": 0
+  },
+  "Pete Fairbanks": {
+    "kev": 13.53,
+    "fp": 36,
+    "prev_week_fp": 15
+  },
+  "Daniel Palencia": {
+    "kev": 13.45,
+    "fp": 25,
+    "prev_week_fp": 0
+  },
+  "Dennis Santana": {
+    "kev": 13.42,
+    "fp": 51,
+    "prev_week_fp": 7
+  },
+  "Everson Pereira": {
+    "kev": 13.39,
+    "fp": 20,
+    "prev_week_fp": -2
+  },
+  "Kai-Wei Teng": {
+    "kev": 13.36,
+    "fp": 43,
+    "prev_week_fp": 1
+  },
+  "Spencer Miles": {
+    "kev": 13.31,
+    "fp": 31,
+    "prev_week_fp": 8
+  },
+  "Matt McLain": {
+    "kev": 13.27,
+    "fp": 35,
+    "prev_week_fp": 22
+  },
+  "Jacob Latz": {
+    "kev": 13.25,
+    "fp": 46,
+    "prev_week_fp": 14
+  },
+  "Cam Smith": {
+    "kev": 13.21,
+    "fp": 36,
+    "prev_week_fp": -3
+  },
+  "Paxton Schultz": {
+    "kev": 13.2,
+    "fp": 23,
+    "prev_week_fp": 9
+  },
+  "Grant Taylor": {
+    "kev": 13.14,
+    "fp": 42,
+    "prev_week_fp": 16
+  },
+  "Lance McCullers Jr.": {
+    "kev": 13.03,
+    "fp": 19,
+    "prev_week_fp": -8
+  },
+  "Troy Johnston": {
+    "kev": 13.03,
+    "fp": 32,
+    "prev_week_fp": 3
+  },
+  "Cooper Criswell": {
+    "kev": 12.98,
+    "fp": 34,
+    "prev_week_fp": 8
+  },
+  "Bo Bichette": {
+    "kev": 12.94,
+    "fp": 18,
+    "prev_week_fp": 9
+  },
+  "Kevin Kelly": {
+    "kev": 12.92,
+    "fp": 41,
+    "prev_week_fp": 10
+  },
+  "Richie Palacios": {
+    "kev": 12.91,
+    "fp": 22,
+    "prev_week_fp": 4
+  },
+  "Daniel Lynch IV": {
+    "kev": 12.87,
+    "fp": 37,
+    "prev_week_fp": 11
+  },
+  "Jakob Junis": {
+    "kev": 12.81,
+    "fp": 44,
+    "prev_week_fp": 7
+  },
+  "J.P. Crawford": {
+    "kev": 12.79,
+    "fp": 25,
+    "prev_week_fp": 3
+  },
+  "Brent Suter": {
+    "kev": 12.76,
+    "fp": 36,
+    "prev_week_fp": 6
+  },
+  "Matt Vierling": {
+    "kev": 12.73,
+    "fp": 26,
+    "prev_week_fp": 11
+  },
+  "Paul Sewald": {
+    "kev": 12.7,
+    "fp": 43,
+    "prev_week_fp": -10
+  },
+  "Masataka Yoshida": {
+    "kev": 12.61,
+    "fp": 20,
+    "prev_week_fp": 2
+  },
+  "Tyler Alexander": {
+    "kev": 12.6,
+    "fp": 46,
+    "prev_week_fp": 8
+  },
+  "Kyle Isbel": {
+    "kev": 12.55,
+    "fp": 27,
+    "prev_week_fp": 9
+  },
+  "Jack Flaherty": {
+    "kev": 12.54,
+    "fp": 20,
+    "prev_week_fp": -12
+  },
+  "Matt Brash": {
+    "kev": 12.54,
+    "fp": 42,
+    "prev_week_fp": 18
+  },
+  "Ben Williamson": {
+    "kev": 12.49,
+    "fp": 28,
+    "prev_week_fp": 9
+  },
+  "Caleb Kilian": {
+    "kev": 12.49,
+    "fp": 42,
+    "prev_week_fp": 3
+  },
+  "Evan Sisk": {
+    "kev": 12.43,
+    "fp": 21,
+    "prev_week_fp": null
+  },
+  "Mike Burrows": {
+    "kev": 12.38,
+    "fp": 21,
+    "prev_week_fp": 11
+  },
+  "Spencer Horwitz": {
+    "kev": 12.37,
+    "fp": 29,
+    "prev_week_fp": 6
+  },
+  "Brant Hurter": {
+    "kev": 12.32,
+    "fp": 38,
+    "prev_week_fp": 22
+  },
+  "Chandler Simpson": {
+    "kev": 12.31,
+    "fp": 31,
+    "prev_week_fp": 8
+  },
+  "Joel Kuhnel": {
+    "kev": 12.27,
+    "fp": 31,
+    "prev_week_fp": -3
+  },
+  "Myles Straw": {
+    "kev": 12.25,
+    "fp": 24,
+    "prev_week_fp": 7
+  },
+  "John King": {
+    "kev": 12.21,
+    "fp": 41,
+    "prev_week_fp": 9
+  },
+  "Joey Wiemer": {
+    "kev": 12.19,
+    "fp": 25,
+    "prev_week_fp": 7
+  },
+  "Tristan Gray": {
+    "kev": 12.13,
+    "fp": 17,
+    "prev_week_fp": 5
+  },
+  "Tatsuya Imai": {
+    "kev": 12.11,
+    "fp": 12,
+    "prev_week_fp": 0
+  },
+  "Anthony Kay": {
+    "kev": 12.1,
+    "fp": 17,
+    "prev_week_fp": -20
+  },
+  "Walker Buehler": {
+    "kev": 12.05,
+    "fp": 17,
+    "prev_week_fp": -14
+  },
+  "Coby Mayo": {
+    "kev": 12.01,
+    "fp": 26,
+    "prev_week_fp": 22
+  },
+  "Luke Keaschall": {
+    "kev": 12.0,
+    "fp": 29,
+    "prev_week_fp": 1
+  },
+  "Joe Mantiply": {
+    "kev": 11.99,
+    "fp": 27,
+    "prev_week_fp": 8
+  },
+  "Cody Laweryson": {
+    "kev": 11.96,
+    "fp": 21,
+    "prev_week_fp": 0
+  },
+  "Matt Shaw": {
+    "kev": 11.95,
+    "fp": 28,
+    "prev_week_fp": 1
+  },
+  "Jo Adell": {
+    "kev": 11.94,
+    "fp": 31,
+    "prev_week_fp": 5
+  },
+  "Alex Vesia": {
+    "kev": 11.94,
+    "fp": 37,
+    "prev_week_fp": -4
+  },
+  "Hyeseong Kim": {
+    "kev": 11.89,
+    "fp": 20,
+    "prev_week_fp": 4
+  },
+  "Tony Santillan": {
+    "kev": 11.88,
+    "fp": 40,
+    "prev_week_fp": -3
+  },
+  "Jeremy Pe\u00f1a": {
+    "kev": 11.87,
+    "fp": 11,
+    "prev_week_fp": 0
+  },
+  "Pete Crow-Armstrong": {
+    "kev": 11.84,
+    "fp": 14,
+    "prev_week_fp": 2
+  },
+  "Jacob Young": {
+    "kev": 11.83,
+    "fp": 30,
+    "prev_week_fp": 6
+  },
+  "Michael Petersen": {
+    "kev": 11.83,
+    "fp": 30,
+    "prev_week_fp": 6
+  },
+  "Jonathan India": {
+    "kev": 11.78,
+    "fp": 21,
+    "prev_week_fp": 0
+  },
+  "Graham Ashcraft": {
+    "kev": 11.72,
+    "fp": 46,
+    "prev_week_fp": 9
+  },
+  "Ezequiel Duran": {
+    "kev": 11.71,
+    "fp": 22,
+    "prev_week_fp": 3
+  },
+  "Ryan Walker": {
+    "kev": 11.66,
+    "fp": 39,
+    "prev_week_fp": 19
+  },
+  "Seranthony Dom\u00ednguez": {
+    "kev": 11.61,
+    "fp": 39,
+    "prev_week_fp": 14
+  },
+  "Tyler Kinley": {
+    "kev": 11.55,
+    "fp": 42,
+    "prev_week_fp": 2
+  },
+  "Cody Bolton": {
+    "kev": 11.54,
+    "fp": 12,
+    "prev_week_fp": 0
+  },
+  "Dylan Beavers": {
+    "kev": 11.53,
+    "fp": 23,
+    "prev_week_fp": 10
+  },
+  "Dylan Lee": {
+    "kev": 11.5,
+    "fp": 45,
+    "prev_week_fp": 15
+  },
+  "Rhys Hoskins": {
+    "kev": 11.47,
+    "fp": 24,
+    "prev_week_fp": 3
+  },
+  "Kyle Hurt": {
+    "kev": 11.45,
+    "fp": 16,
+    "prev_week_fp": null
+  },
+  "Erik Miller": {
+    "kev": 11.39,
+    "fp": 35,
+    "prev_week_fp": 16
+  },
+  "Nasim Nu\u00f1ez": {
+    "kev": 11.35,
+    "fp": 28,
+    "prev_week_fp": 9
+  },
+  "Huascar Brazob\u00e1n": {
+    "kev": 11.34,
+    "fp": 38,
+    "prev_week_fp": 7
+  },
+  "Luke Raley": {
+    "kev": 11.29,
+    "fp": 29,
+    "prev_week_fp": -5
+  },
+  "Juan Morillo": {
+    "kev": 11.28,
+    "fp": 44,
+    "prev_week_fp": 14
+  },
+  "Will Klein": {
+    "kev": 11.23,
+    "fp": 25,
+    "prev_week_fp": 5
+  },
+  "Jake Meyers": {
+    "kev": 11.19,
+    "fp": 14,
+    "prev_week_fp": 0
+  },
+  "Zach Agnos": {
+    "kev": 11.17,
+    "fp": 28,
+    "prev_week_fp": 10
+  },
+  "Ryan Feltner": {
+    "kev": 11.12,
+    "fp": 19,
+    "prev_week_fp": 2
+  },
+  "Brock Burke": {
+    "kev": 11.12,
+    "fp": 43,
+    "prev_week_fp": 13
+  },
+  "Edmundo Sosa": {
+    "kev": 11.11,
+    "fp": 16,
+    "prev_week_fp": 3
+  },
+  "Braydon Fisher": {
+    "kev": 11.06,
+    "fp": 43,
+    "prev_week_fp": 7
+  },
+  "Pedro Pag\u00e9s": {
+    "kev": 11.05,
+    "fp": 18,
+    "prev_week_fp": 6
+  },
+  "Sal Frelick": {
+    "kev": 11.04,
+    "fp": 26,
+    "prev_week_fp": 8
+  },
+  "Hogan Harris": {
+    "kev": 11.01,
+    "fp": 49,
+    "prev_week_fp": 18
+  },
+  "Keibert Ruiz": {
+    "kev": 10.99,
+    "fp": 19,
+    "prev_week_fp": 0
+  },
+  "Brennan Bernardino": {
+    "kev": 10.95,
+    "fp": 39,
+    "prev_week_fp": 5
+  },
+  "Jake Fraley": {
+    "kev": 10.93,
+    "fp": 20,
+    "prev_week_fp": 10
+  },
+  "Jimmy Herget": {
+    "kev": 10.9,
+    "fp": 33,
+    "prev_week_fp": 6
+  },
+  "Luis Rengifo": {
+    "kev": 10.87,
+    "fp": 24,
+    "prev_week_fp": 7
+  },
+  "Edouard Julien": {
+    "kev": 10.81,
+    "fp": 26,
+    "prev_week_fp": 9
+  },
+  "Connor Phillips": {
+    "kev": 10.79,
+    "fp": 45,
+    "prev_week_fp": 6
+  },
+  "Garrett Whitlock": {
+    "kev": 10.73,
+    "fp": 30,
+    "prev_week_fp": 8
+  },
+  "Ceddanne Rafaela": {
+    "kev": 10.69,
+    "fp": 27,
+    "prev_week_fp": 14
+  },
+  "Yusei Kikuchi": {
+    "kev": 10.68,
+    "fp": 18,
+    "prev_week_fp": -2
+  },
+  "Drew Gilbert": {
+    "kev": 10.63,
+    "fp": 11,
+    "prev_week_fp": null
+  },
+  "Brandon Sproat": {
+    "kev": 10.62,
+    "fp": 15,
+    "prev_week_fp": 8
+  },
+  "Giancarlo Stanton": {
+    "kev": 10.57,
+    "fp": 24,
+    "prev_week_fp": 11
+  },
+  "Kyle Finnegan": {
+    "kev": 10.57,
+    "fp": 38,
+    "prev_week_fp": 12
+  },
+  "Matt Festa": {
+    "kev": 10.51,
+    "fp": 32,
+    "prev_week_fp": 13
+  },
+  "Francisco Alvarez": {
+    "kev": 10.51,
+    "fp": 26,
+    "prev_week_fp": -1
+  },
+  "Eli Morgan": {
+    "kev": 10.46,
+    "fp": 20,
+    "prev_week_fp": 0
+  },
+  "Miguel Amaya": {
+    "kev": 10.45,
+    "fp": 18,
+    "prev_week_fp": 4
+  },
+  "Matt Gage": {
+    "kev": 10.4,
+    "fp": 34,
+    "prev_week_fp": 7
+  },
+  "Jonah Heim": {
+    "kev": 10.39,
+    "fp": 9,
+    "prev_week_fp": 4
+  },
+  "Jacob Lopez": {
+    "kev": 10.35,
+    "fp": 17,
+    "prev_week_fp": 8
+  },
+  "Clayton Beeter": {
+    "kev": 10.33,
+    "fp": 34,
+    "prev_week_fp": 4
+  },
+  "Michael Busch": {
+    "kev": 10.33,
+    "fp": 27,
+    "prev_week_fp": 18
+  },
+  "Jeff McNeil": {
+    "kev": 10.32,
+    "fp": 25,
+    "prev_week_fp": 9
+  },
+  "Gus Varland": {
+    "kev": 10.3,
+    "fp": 33,
+    "prev_week_fp": 8
+  },
+  "Peyton Pallette": {
+    "kev": 10.24,
+    "fp": 22,
+    "prev_week_fp": 5
+  },
+  "Willy Adames": {
+    "kev": 10.23,
+    "fp": 19,
+    "prev_week_fp": -9
+  },
+  "Eli White": {
+    "kev": 10.21,
+    "fp": 16,
+    "prev_week_fp": null
+  },
+  "Mason Montgomery": {
+    "kev": 10.19,
+    "fp": 33,
+    "prev_week_fp": 7
+  },
+  "Ram\u00f3n Ur\u00edas": {
+    "kev": 10.15,
+    "fp": 21,
+    "prev_week_fp": -2
+  },
+  "Kazuma Okamoto": {
+    "kev": 10.14,
+    "fp": 24,
+    "prev_week_fp": 14
+  },
+  "Connor Seabold": {
+    "kev": 10.13,
+    "fp": 22,
+    "prev_week_fp": -5
+  },
+  "Lourdes Gurriel Jr.": {
+    "kev": 10.09,
+    "fp": 6,
+    "prev_week_fp": null
+  },
+  "Jose Quintana": {
+    "kev": 10.08,
+    "fp": 11,
+    "prev_week_fp": 14
+  },
+  "Dustin Harris": {
+    "kev": 10.03,
+    "fp": 11,
+    "prev_week_fp": null
+  },
+  "Adrian Morejon": {
+    "kev": 10.02,
+    "fp": 33,
+    "prev_week_fp": 14
+  },
+  "Chase Shugart": {
+    "kev": 9.91,
+    "fp": 19,
+    "prev_week_fp": null
+  },
+  "Marcelo Mayer": {
+    "kev": 9.91,
+    "fp": 23,
+    "prev_week_fp": 10
+  },
+  "Jake McCarthy": {
+    "kev": 9.85,
+    "fp": 21,
+    "prev_week_fp": 8
+  },
+  "Ryan Yarbrough": {
+    "kev": 9.8,
+    "fp": 19,
+    "prev_week_fp": 11
+  },
+  "David Hamilton": {
+    "kev": 9.79,
+    "fp": 21,
+    "prev_week_fp": 4
+  },
+  "Sam Bachman": {
+    "kev": 9.75,
+    "fp": 27,
+    "prev_week_fp": -1
+  },
+  "Miguel Rojas": {
+    "kev": 9.73,
+    "fp": 16,
+    "prev_week_fp": 11
+  },
+  "Abner Uribe": {
+    "kev": 9.69,
+    "fp": 35,
+    "prev_week_fp": 3
+  },
+  "Michael Massey": {
+    "kev": 9.67,
+    "fp": 16,
+    "prev_week_fp": null
+  },
+  "Drew Anderson": {
+    "kev": 9.64,
+    "fp": 24,
+    "prev_week_fp": 12
+  },
+  "Jake Burger": {
+    "kev": 9.61,
+    "fp": 26,
+    "prev_week_fp": -3
+  },
+  "Eric Orze": {
+    "kev": 9.58,
+    "fp": 29,
+    "prev_week_fp": 13
+  },
+  "Hunter Gaddis": {
+    "kev": 9.53,
+    "fp": 13,
+    "prev_week_fp": null
+  },
+  "Chase Meidroth": {
+    "kev": 9.49,
+    "fp": 24,
+    "prev_week_fp": 4
+  },
+  "Javier Assad": {
+    "kev": 9.47,
+    "fp": 13,
+    "prev_week_fp": -4
+  },
+  "Adrian Del Castillo": {
+    "kev": 9.43,
+    "fp": 12,
+    "prev_week_fp": -7
+  },
+  "Eugenio Su\u00e1rez": {
+    "kev": 9.42,
+    "fp": 18,
+    "prev_week_fp": -4
+  },
+  "Tyler Rogers": {
+    "kev": 9.42,
+    "fp": 36,
+    "prev_week_fp": 13
+  },
+  "Cole Winn": {
+    "kev": 9.36,
+    "fp": 33,
+    "prev_week_fp": 2
+  },
+  "Tyler Wells": {
+    "kev": 9.31,
+    "fp": 30,
+    "prev_week_fp": 8
+  },
+  "Spencer Steer": {
+    "kev": 9.31,
+    "fp": 24,
+    "prev_week_fp": 12
+  },
+  "David Peterson": {
+    "kev": 9.25,
+    "fp": 15,
+    "prev_week_fp": 5
+  },
+  "Cedric Mullins": {
+    "kev": 9.25,
+    "fp": 22,
+    "prev_week_fp": 3
+  },
+  "Riley Martin": {
+    "kev": 9.22,
+    "fp": 24,
+    "prev_week_fp": 2
+  },
+  "Luis Gil": {
+    "kev": 9.2,
+    "fp": 10,
+    "prev_week_fp": 8
+  },
+  "Javier B\u00e1ez": {
+    "kev": 9.19,
+    "fp": 21,
+    "prev_week_fp": 3
+  },
+  "Jalen Beeks": {
+    "kev": 9.15,
+    "fp": 32,
+    "prev_week_fp": 9
+  },
+  "Nick Fortes": {
+    "kev": 9.13,
+    "fp": 20,
+    "prev_week_fp": 2
+  },
+  "Tim Hill": {
+    "kev": 9.09,
+    "fp": 27,
+    "prev_week_fp": 4
+  },
+  "Austin Wells": {
+    "kev": 9.07,
+    "fp": 20,
+    "prev_week_fp": 7
+  },
+  "Cole Sands": {
+    "kev": 9.04,
+    "fp": 27,
+    "prev_week_fp": 16
+  },
+  "Adam Frazier": {
+    "kev": 9.01,
+    "fp": 19,
+    "prev_week_fp": 2
+  },
+  "Jason Adam": {
+    "kev": 8.98,
+    "fp": 17,
+    "prev_week_fp": null
+  },
+  "Erik Sabrowski": {
+    "kev": 8.93,
+    "fp": 34,
+    "prev_week_fp": 7
+  },
+  "Javier Sanoja": {
+    "kev": 8.89,
+    "fp": 18,
+    "prev_week_fp": 3
+  },
+  "Fernando Cruz": {
+    "kev": 8.87,
+    "fp": 29,
+    "prev_week_fp": 7
+  },
+  "Kyle Karros": {
+    "kev": 8.83,
+    "fp": 26,
+    "prev_week_fp": 8
+  },
+  "JT Brubaker": {
+    "kev": 8.82,
+    "fp": 24,
+    "prev_week_fp": 6
+  },
+  "Kyle Leahy": {
+    "kev": 8.76,
+    "fp": 12,
+    "prev_week_fp": -7
+  },
+  "Heliot Ramos": {
+    "kev": 8.76,
+    "fp": 21,
+    "prev_week_fp": 6
+  },
+  "Lane Thomas": {
+    "kev": 8.71,
+    "fp": 19,
+    "prev_week_fp": 12
+  },
+  "Ryan Zeferjahn": {
+    "kev": 8.71,
+    "fp": 24,
+    "prev_week_fp": 9
+  },
+  "Roki Sasaki": {
+    "kev": 8.65,
+    "fp": 12,
+    "prev_week_fp": 9
+  },
+  "Graham Pauley": {
+    "kev": 8.65,
+    "fp": 19,
+    "prev_week_fp": 8
+  },
+  "Jeff Hoffman": {
+    "kev": 8.6,
+    "fp": 29,
+    "prev_week_fp": 11
+  },
+  "Bryan Hudson": {
+    "kev": 8.6,
+    "fp": 31,
+    "prev_week_fp": 9
+  },
+  "Davis Schneider": {
+    "kev": 8.59,
+    "fp": 18,
+    "prev_week_fp": 2
+  },
+  "Richard Lovelady": {
+    "kev": 8.54,
+    "fp": 26,
+    "prev_week_fp": 11
+  },
+  "Devin Williams": {
+    "kev": 8.5,
+    "fp": 13,
+    "prev_week_fp": -4
+  },
+  "Cole Sulser": {
+    "kev": 8.49,
+    "fp": 26,
+    "prev_week_fp": 10
+  },
+  "Caleb Thielbar": {
+    "kev": 8.47,
+    "fp": 30,
+    "prev_week_fp": 3
+  },
+  "Nolan Gorman": {
+    "kev": 8.47,
+    "fp": 22,
+    "prev_week_fp": 4
+  },
+  "Luke Weaver": {
+    "kev": 8.43,
+    "fp": 26,
+    "prev_week_fp": 12
+  },
+  "Isaac Mattson": {
+    "kev": 8.38,
+    "fp": 35,
+    "prev_week_fp": 6
+  },
+  "Jonathan Bowlan": {
+    "kev": 8.38,
+    "fp": 19,
+    "prev_week_fp": 0
+  },
+  "Nick Gonzales": {
+    "kev": 8.35,
+    "fp": 21,
+    "prev_week_fp": 4
+  },
+  "Keaton Winn": {
+    "kev": 8.32,
+    "fp": 28,
+    "prev_week_fp": 5
+  },
+  "Marcus Semien": {
+    "kev": 8.29,
+    "fp": 15,
+    "prev_week_fp": 4
+  },
+  "Connor Norby": {
+    "kev": 8.29,
+    "fp": 21,
+    "prev_week_fp": 5
+  },
+  "Jack Dreyer": {
+    "kev": 8.27,
+    "fp": 28,
+    "prev_week_fp": -4
+  },
+  "Miguel Andujar": {
+    "kev": 8.23,
+    "fp": 15,
+    "prev_week_fp": 3
+  },
+  "Konnor Griffin": {
+    "kev": 8.22,
+    "fp": 16,
+    "prev_week_fp": 4
+  },
+  "Brad Keller": {
+    "kev": 8.21,
+    "fp": 28,
+    "prev_week_fp": 12
+  },
+  "Victor Caratini": {
+    "kev": 8.17,
+    "fp": 17,
+    "prev_week_fp": -2
+  },
+  "Eduard Bazardo": {
+    "kev": 8.16,
+    "fp": 30,
+    "prev_week_fp": 7
+  },
+  "Jorge Barrosa": {
+    "kev": 8.11,
+    "fp": 16,
+    "prev_week_fp": -2
+  },
+  "DL Hall": {
+    "kev": 8.1,
+    "fp": 25,
+    "prev_week_fp": 6
+  },
+  "Taylor Trammell": {
+    "kev": 8.05,
+    "fp": 9,
+    "prev_week_fp": 1
+  },
+  "Luis Medina": {
+    "kev": 8.05,
+    "fp": 18,
+    "prev_week_fp": 3
+  },
+  "Jorbit Vivas": {
+    "kev": 8.05,
+    "fp": 18,
+    "prev_week_fp": 3
+  },
+  "Jac Caglianone": {
+    "kev": 7.98,
+    "fp": 17,
+    "prev_week_fp": 15
+  },
+  "Sam Moll": {
+    "kev": 7.94,
+    "fp": 29,
+    "prev_week_fp": -1
+  },
+  "Tanner Scott": {
+    "kev": 7.89,
+    "fp": 29,
+    "prev_week_fp": 2
+  },
+  "J.C. Escarra": {
+    "kev": 7.87,
+    "fp": 7,
+    "prev_week_fp": null
+  },
+  "Shaun Anderson": {
+    "kev": 7.78,
+    "fp": 20,
+    "prev_week_fp": 0
+  },
+  "Grant Anderson": {
+    "kev": 7.72,
+    "fp": 31,
+    "prev_week_fp": 13
+  },
+  "Tim Tawa": {
+    "kev": 7.69,
+    "fp": 12,
+    "prev_week_fp": 7
+  },
+  "Bryan King": {
+    "kev": 7.67,
+    "fp": 22,
+    "prev_week_fp": -4
+  },
+  "Cade Horton": {
+    "kev": 7.64,
+    "fp": 21,
+    "prev_week_fp": 0
+  },
+  "Michael Conforto": {
+    "kev": 7.63,
+    "fp": 11,
+    "prev_week_fp": 2
+  },
+  "Bradgley Rodriguez": {
+    "kev": 7.61,
+    "fp": 24,
+    "prev_week_fp": -10
+  },
+  "J.T. Realmuto": {
+    "kev": 7.59,
+    "fp": 11,
+    "prev_week_fp": 0
+  },
+  "Colt Keith": {
+    "kev": 7.57,
+    "fp": 19,
+    "prev_week_fp": 2
+  },
+  "Grant Wolfram": {
+    "kev": 7.56,
+    "fp": 26,
+    "prev_week_fp": -4
+  },
+  "George Valera": {
+    "kev": 7.51,
+    "fp": 8,
+    "prev_week_fp": null
+  },
+  "Ryne Nelson": {
+    "kev": 7.5,
+    "fp": 13,
+    "prev_week_fp": -2
+  },
+  "Jos\u00e9 Suarez": {
+    "kev": 7.45,
+    "fp": 15,
+    "prev_week_fp": 7
+  },
+  "Brent Headrick": {
+    "kev": 7.39,
+    "fp": 32,
+    "prev_week_fp": 1
+  },
+  "Edgardo Henriquez": {
+    "kev": 7.34,
+    "fp": 19,
+    "prev_week_fp": 4
+  },
+  "Yo\u00e1n Moncada": {
+    "kev": 7.33,
+    "fp": 18,
+    "prev_week_fp": 2
+  },
+  "Kyle Hart": {
+    "kev": 7.28,
+    "fp": 19,
+    "prev_week_fp": 3
+  },
+  "Carson Benge": {
+    "kev": 7.27,
+    "fp": 18,
+    "prev_week_fp": 10
+  },
+  "Connor Brogdon": {
+    "kev": 7.23,
+    "fp": 23,
+    "prev_week_fp": 6
+  },
+  "Yennier Cano": {
+    "kev": 7.12,
+    "fp": 28,
+    "prev_week_fp": 7
+  },
+  "TJ Friedl": {
+    "kev": 7.08,
+    "fp": 17,
+    "prev_week_fp": 11
+  },
+  "Wandy Peralta": {
+    "kev": 7.06,
+    "fp": 24,
+    "prev_week_fp": 3
+  },
+  "Tyrone Taylor": {
+    "kev": 7.03,
+    "fp": 14,
+    "prev_week_fp": 2
+  },
+  "Steven Okert": {
+    "kev": 7.01,
+    "fp": 28,
+    "prev_week_fp": 6
+  },
+  "Nathan Lukes": {
+    "kev": 6.97,
+    "fp": 15,
+    "prev_week_fp": 7
+  },
+  "Zack Gelof": {
+    "kev": 6.97,
+    "fp": 9,
+    "prev_week_fp": null
+  },
+  "Taylor Clarke": {
+    "kev": 6.95,
+    "fp": 26,
+    "prev_week_fp": -1
+  },
+  "Jake Cronenworth": {
+    "kev": 6.91,
+    "fp": 18,
+    "prev_week_fp": 6
+  },
+  "Jordan Beck": {
+    "kev": 6.85,
+    "fp": 13,
+    "prev_week_fp": 2
+  },
+  "George Soriano": {
+    "kev": 6.85,
+    "fp": 24,
+    "prev_week_fp": 4
+  },
+  "Carter Baumler": {
+    "kev": 6.8,
+    "fp": 9,
+    "prev_week_fp": 0
+  },
+  "David Morgan": {
+    "kev": 6.79,
+    "fp": 20,
+    "prev_week_fp": -13
+  },
+  "Heriberto Hern\u00e1ndez": {
+    "kev": 6.79,
+    "fp": 15,
+    "prev_week_fp": 3
+  },
+  "Michael Lorenzen": {
+    "kev": 6.74,
+    "fp": 14,
+    "prev_week_fp": 19
+  },
+  "Brett Baty": {
+    "kev": 6.73,
+    "fp": 17,
+    "prev_week_fp": 13
+  },
+  "Enyel De Los Santos": {
+    "kev": 6.68,
+    "fp": 20,
+    "prev_week_fp": -12
+  },
+  "Jorge Mateo": {
+    "kev": 6.67,
+    "fp": 10,
+    "prev_week_fp": null
+  },
+  "Osvaldo Bido": {
+    "kev": 6.63,
+    "fp": 16,
+    "prev_week_fp": -4
+  },
+  "Kyle Higashioka": {
+    "kev": 6.61,
+    "fp": 8,
+    "prev_week_fp": 0
+  },
+  "Jose A. Ferrer": {
+    "kev": 6.57,
+    "fp": 29,
+    "prev_week_fp": 18
+  },
+  "Tyler O'Neill": {
+    "kev": 6.55,
+    "fp": 8,
+    "prev_week_fp": -3
+  },
+  "Kody Funderburk": {
+    "kev": 6.52,
+    "fp": 25,
+    "prev_week_fp": 3
+  },
+  "Freddy Fermin": {
+    "kev": 6.49,
+    "fp": 14,
+    "prev_week_fp": 2
+  },
+  "Justin Sterner": {
+    "kev": 6.46,
+    "fp": 25,
+    "prev_week_fp": 15
+  },
+  "CJ Kayfus": {
+    "kev": 6.43,
+    "fp": 6,
+    "prev_week_fp": 0
+  },
+  "Scott Barlow": {
+    "kev": 6.41,
+    "fp": 23,
+    "prev_week_fp": 7
+  },
+  "Max Muncy": {
+    "kev": 6.37,
+    "fp": 17,
+    "prev_week_fp": -3
+  },
+  "Brooks Raley": {
+    "kev": 6.35,
+    "fp": 21,
+    "prev_week_fp": 5
+  },
+  "Trevor Megill": {
+    "kev": 6.3,
+    "fp": 21,
+    "prev_week_fp": 10
+  },
+  "Lawrence Butler": {
+    "kev": 6.25,
+    "fp": 17,
+    "prev_week_fp": -1
+  },
+  "Jonathan Lo\u00e1isiga": {
+    "kev": 6.24,
+    "fp": 26,
+    "prev_week_fp": 11
+  },
+  "Paul Blackburn": {
+    "kev": 6.19,
+    "fp": 13,
+    "prev_week_fp": 7
+  },
+  "Nick Yorke": {
+    "kev": 6.19,
+    "fp": 13,
+    "prev_week_fp": -1
+  },
+  "Tim Mayza": {
+    "kev": 6.13,
+    "fp": 24,
+    "prev_week_fp": -1
+  },
+  "Shawn Armstrong": {
+    "kev": 6.1,
+    "fp": 25,
+    "prev_week_fp": 3
+  },
+  "Anthony Bender": {
+    "kev": 6.08,
+    "fp": 24,
+    "prev_week_fp": 11
+  },
+  "Ryan Vilade": {
+    "kev": 6.07,
+    "fp": 9,
+    "prev_week_fp": 5
+  },
+  "PJ Poulin": {
+    "kev": 6.02,
+    "fp": 27,
+    "prev_week_fp": 0
+  },
+  "Ron Marinaccio": {
+    "kev": 5.97,
+    "fp": 18,
+    "prev_week_fp": -7
+  },
+  "Mason Fluharty": {
+    "kev": 5.91,
+    "fp": 25,
+    "prev_week_fp": 15
+  },
+  "Dane Myers": {
+    "kev": 5.89,
+    "fp": 16,
+    "prev_week_fp": 13
+  },
+  "Zach Pop": {
+    "kev": 5.87,
+    "fp": 14,
+    "prev_week_fp": 0
+  },
+  "Nick Mears": {
+    "kev": 5.86,
+    "fp": 19,
+    "prev_week_fp": 6
+  },
+  "Austin Hedges": {
+    "kev": 5.83,
+    "fp": 7,
+    "prev_week_fp": 0
+  },
+  "Pierce Johnson": {
+    "kev": 5.8,
+    "fp": 24,
+    "prev_week_fp": 6
+  },
+  "Brady House": {
+    "kev": 5.76,
+    "fp": 17,
+    "prev_week_fp": 4
+  },
+  "Kyle Backhus": {
+    "kev": 5.75,
+    "fp": 17,
+    "prev_week_fp": 7
+  },
+  "Trevor Story": {
+    "kev": 5.71,
+    "fp": 17,
+    "prev_week_fp": 5
+  },
+  "Matt Strahm": {
+    "kev": 5.7,
+    "fp": 17,
+    "prev_week_fp": 5
+  },
+  "Justin Crawford": {
+    "kev": 5.64,
+    "fp": 15,
+    "prev_week_fp": 3
+  },
+  "Sean Newcomb": {
+    "kev": 5.64,
+    "fp": 22,
+    "prev_week_fp": 2
+  },
+  "Ryan Thompson": {
+    "kev": 5.59,
+    "fp": 25,
+    "prev_week_fp": -5
+  },
+  "Rob Refsnyder": {
+    "kev": 5.58,
+    "fp": 10,
+    "prev_week_fp": 6
+  },
+  "Kevin Ginkel": {
+    "kev": 5.53,
+    "fp": 20,
+    "prev_week_fp": 10
+  },
+  "Hoby Milner": {
+    "kev": 5.48,
+    "fp": 21,
+    "prev_week_fp": 4
+  },
+  "Darell Hernaiz": {
+    "kev": 5.46,
+    "fp": 9,
+    "prev_week_fp": 2
+  },
+  "Eric Lauer": {
+    "kev": 5.42,
+    "fp": 8,
+    "prev_week_fp": 3
+  },
+  "Jorge Polanco": {
+    "kev": 5.35,
+    "fp": 9,
+    "prev_week_fp": 0
+  },
+  "Blake Perkins": {
+    "kev": 5.34,
+    "fp": 9,
+    "prev_week_fp": 6
+  },
+  "Jahmai Jones": {
+    "kev": 5.28,
+    "fp": 10,
+    "prev_week_fp": null
+  },
+  "Adolis Garc\u00eda": {
+    "kev": 5.27,
+    "fp": 15,
+    "prev_week_fp": 3
+  },
+  "Jake Woodford": {
+    "kev": 5.26,
+    "fp": 11,
+    "prev_week_fp": -2
+  },
+  "Santiago Espinal": {
+    "kev": 5.22,
+    "fp": 7,
+    "prev_week_fp": null
+  },
+  "Orion Kerkering": {
+    "kev": 5.2,
+    "fp": 14,
+    "prev_week_fp": 5
+  },
+  "Josh Smith": {
+    "kev": 5.16,
+    "fp": 15,
+    "prev_week_fp": 9
+  },
+  "Zack Kelly": {
+    "kev": 5.15,
+    "fp": 14,
+    "prev_week_fp": 11
+  },
+  "Andrew Benintendi": {
+    "kev": 5.1,
+    "fp": 15,
+    "prev_week_fp": 7
+  },
+  "Alec Bohm": {
+    "kev": 5.09,
+    "fp": 14,
+    "prev_week_fp": 2
+  },
+  "Camilo Doval": {
+    "kev": 5.09,
+    "fp": 17,
+    "prev_week_fp": 3
+  },
+  "Willi Castro": {
+    "kev": 5.04,
+    "fp": 12,
+    "prev_week_fp": 2
+  },
+  "Greg Weissert": {
+    "kev": 5.04,
+    "fp": 18,
+    "prev_week_fp": 7
+  },
+  "Rafael Devers": {
+    "kev": 5.0,
+    "fp": 4,
+    "prev_week_fp": 0
+  },
+  "Yoendrys G\u00f3mez": {
+    "kev": 4.98,
+    "fp": 12,
+    "prev_week_fp": 0
+  },
+  "Joey Loperfido": {
+    "kev": 4.97,
+    "fp": 12,
+    "prev_week_fp": 1
+  },
+  "Jordan Leasure": {
+    "kev": 4.93,
+    "fp": 18,
+    "prev_week_fp": -6
+  },
+  "Henry Davis": {
+    "kev": 4.92,
+    "fp": 12,
+    "prev_week_fp": 1
+  },
+  "Hunter Bigge": {
+    "kev": 4.87,
+    "fp": 11,
+    "prev_week_fp": -2
+  },
+  "Gabriel Arias": {
+    "kev": 4.86,
+    "fp": 6,
+    "prev_week_fp": 0
+  },
+  "Isaac Collins": {
+    "kev": 4.86,
+    "fp": 13,
+    "prev_week_fp": 10
+  },
+  "Slade Cecconi": {
+    "kev": 4.82,
+    "fp": 8,
+    "prev_week_fp": -10
+  },
+  "Luisangel Acu\u00f1a": {
+    "kev": 4.8,
+    "fp": 13,
+    "prev_week_fp": 3
+  },
+  "Bryson Stott": {
+    "kev": 4.79,
+    "fp": 11,
+    "prev_week_fp": 4
+  },
+  "Jake Bird": {
+    "kev": 4.76,
+    "fp": 12,
+    "prev_week_fp": 4
+  },
+  "Tyler Freeman": {
+    "kev": 4.74,
+    "fp": 9,
+    "prev_week_fp": 5
+  },
+  "Ryne Stanek": {
+    "kev": 4.71,
+    "fp": 17,
+    "prev_week_fp": 3
+  },
+  "Randal Grichuk": {
+    "kev": 4.68,
+    "fp": 9,
+    "prev_week_fp": null
+  },
+  "Mark Vientos": {
+    "kev": 4.62,
+    "fp": 12,
+    "prev_week_fp": -2
+  },
+  "Chase Silseth": {
+    "kev": 4.6,
+    "fp": 18,
+    "prev_week_fp": 1
+  },
+  "Owen Caissie": {
+    "kev": 4.56,
+    "fp": 14,
+    "prev_week_fp": 0
+  },
+  "Victor Vodnik": {
+    "kev": 4.55,
+    "fp": 14,
+    "prev_week_fp": -6
+  },
+  "Jeremiah Estrada": {
+    "kev": 4.52,
+    "fp": 11,
+    "prev_week_fp": 0
+  },
+  "Jose Franco": {
+    "kev": 4.49,
+    "fp": 5,
+    "prev_week_fp": 0
+  },
+  "Zach McKinstry": {
+    "kev": 4.49,
+    "fp": 8,
+    "prev_week_fp": 0
+  },
+  "AJ Blubaugh": {
+    "kev": 4.44,
+    "fp": 15,
+    "prev_week_fp": 6
+  },
+  "Josh Lowe": {
+    "kev": 4.38,
+    "fp": 13,
+    "prev_week_fp": -1
+  },
+  "Gabe Speier": {
+    "kev": 4.38,
+    "fp": 16,
+    "prev_week_fp": 0
+  },
+  "JoJo Romero": {
+    "kev": 4.33,
+    "fp": 16,
+    "prev_week_fp": -7
+  },
+  "Justin Lawrence": {
+    "kev": 4.27,
+    "fp": 16,
+    "prev_week_fp": 10
+  },
+  "Brandon Lockridge": {
+    "kev": 4.26,
+    "fp": 11,
+    "prev_week_fp": 0
+  },
+  "Chris Paddack": {
+    "kev": 4.22,
+    "fp": 6,
+    "prev_week_fp": -3
+  },
+  "Jake Mangum": {
+    "kev": 4.2,
+    "fp": 11,
+    "prev_week_fp": -3
+  },
+  "Ian Seymour": {
+    "kev": 4.16,
+    "fp": 12,
+    "prev_week_fp": 3
+  },
+  "Elvis Alvarado": {
+    "kev": 4.11,
+    "fp": 12,
+    "prev_week_fp": 0
+  },
+  "Jos\u00e9 Ferm\u00edn": {
+    "kev": 4.08,
+    "fp": 6,
+    "prev_week_fp": null
+  },
+  "Casey Legumina": {
+    "kev": 4.05,
+    "fp": 9,
+    "prev_week_fp": -12
+  },
+  "Cole Wilcox": {
+    "kev": 4.0,
+    "fp": 9,
+    "prev_week_fp": 1
+  },
+  "Kody Clemens": {
+    "kev": 3.96,
+    "fp": 9,
+    "prev_week_fp": 2
+  },
+  "Justin Topa": {
+    "kev": 3.94,
+    "fp": 17,
+    "prev_week_fp": 6
+  },
+  "Ke'Bryan Hayes": {
+    "kev": 3.9,
+    "fp": 12,
+    "prev_week_fp": 12
+  },
+  "Jaden Hill": {
+    "kev": 3.89,
+    "fp": 13,
+    "prev_week_fp": -3
+  },
+  "Joc Pederson": {
+    "kev": 3.84,
+    "fp": 12,
+    "prev_week_fp": 3
+  },
+  "Andrew Abbott": {
+    "kev": 3.84,
+    "fp": 2,
+    "prev_week_fp": -2
+  },
+  "Blake Treinen": {
+    "kev": 3.83,
+    "fp": 10,
+    "prev_week_fp": 0
+  },
+  "Luis Torrens": {
+    "kev": 3.78,
+    "fp": 5,
+    "prev_week_fp": null
+  },
+  "Jordan Romano": {
+    "kev": 3.72,
+    "fp": 11,
+    "prev_week_fp": -7
+  },
+  "Taylor Walls": {
+    "kev": 3.72,
+    "fp": 7,
+    "prev_week_fp": -1
+  },
+  "Joey Ortiz": {
+    "kev": 3.66,
+    "fp": 10,
+    "prev_week_fp": 1
+  },
+  "Justin Bruihl": {
+    "kev": 3.61,
+    "fp": 14,
+    "prev_week_fp": 9
+  },
+  "Lenyn Sosa": {
+    "kev": 3.6,
+    "fp": 9,
+    "prev_week_fp": 1
+  },
+  "Mark Leiter Jr.": {
+    "kev": 3.56,
+    "fp": 12,
+    "prev_week_fp": 6
+  },
+  "Wenceel P\u00e9rez": {
+    "kev": 3.54,
+    "fp": 6,
+    "prev_week_fp": 0
+  },
+  "Anthony Banda": {
+    "kev": 3.5,
+    "fp": 12,
+    "prev_week_fp": 7
+  },
+  "Aaron Bummer": {
+    "kev": 3.45,
+    "fp": 11,
+    "prev_week_fp": 10
+  },
+  "Calvin Faucher": {
+    "kev": 3.4,
+    "fp": 10,
+    "prev_week_fp": 3
+  },
+  "Eloy Jim\u00e9nez": {
+    "kev": 3.36,
+    "fp": 4,
+    "prev_week_fp": null
+  },
+  "Tim Herrin": {
+    "kev": 3.34,
+    "fp": 9,
+    "prev_week_fp": null
+  },
+  "Isiah Kiner-Falefa": {
+    "kev": 3.3,
+    "fp": 5,
+    "prev_week_fp": 4
+  },
+  "Juan Mejia": {
+    "kev": 3.29,
+    "fp": 9,
+    "prev_week_fp": 12
+  },
+  "Jos\u00e9 Tena": {
+    "kev": 3.24,
+    "fp": 8,
+    "prev_week_fp": -1
+  },
+  "Nick Sandlin": {
+    "kev": 3.23,
+    "fp": 4,
+    "prev_week_fp": null
+  },
+  "Luis Curvelo": {
+    "kev": 3.21,
+    "fp": 4,
+    "prev_week_fp": 0
+  },
+  "David Fry": {
+    "kev": 3.18,
+    "fp": 6,
+    "prev_week_fp": 5
+  },
+  "Logan O'Hoppe": {
+    "kev": 3.13,
+    "fp": 11,
+    "prev_week_fp": -3
+  },
+  "Alex Freeland": {
+    "kev": 3.12,
+    "fp": 8,
+    "prev_week_fp": 4
+  },
+  "Jayden Murray": {
+    "kev": 3.12,
+    "fp": 3,
+    "prev_week_fp": null
+  },
+  "Chris Murphy": {
+    "kev": 3.12,
+    "fp": 6,
+    "prev_week_fp": 0
+  },
+  "Mike Yastrzemski": {
+    "kev": 3.06,
+    "fp": 9,
+    "prev_week_fp": -3
+  },
+  "Ryan McMahon": {
+    "kev": 3.0,
+    "fp": 9,
+    "prev_week_fp": 5
+  },
+  "Andrew Nardi": {
+    "kev": 2.96,
+    "fp": 6,
+    "prev_week_fp": -3
+  },
+  "Austin Hays": {
+    "kev": 2.94,
+    "fp": 3,
+    "prev_week_fp": 0
+  },
+  "Jordan Hicks": {
+    "kev": 2.9,
+    "fp": 7,
+    "prev_week_fp": 1
+  },
+  "Tyler Holton": {
+    "kev": 2.85,
+    "fp": 6,
+    "prev_week_fp": -18
+  },
+  "Juan Brito": {
+    "kev": 2.82,
+    "fp": 5,
+    "prev_week_fp": 1
+  },
+  "Ryan Borucki": {
+    "kev": 2.79,
+    "fp": 5,
+    "prev_week_fp": 4
+  },
+  "Tyler Stephenson": {
+    "kev": 2.76,
+    "fp": 7,
+    "prev_week_fp": -1
+  },
+  "Cameron Foster": {
+    "kev": 2.74,
+    "fp": 2,
+    "prev_week_fp": null
+  },
+  "Patrick Bailey": {
+    "kev": 2.7,
+    "fp": 7,
+    "prev_week_fp": 9
+  },
+  "Robert Garcia": {
+    "kev": 2.7,
+    "fp": 7,
+    "prev_week_fp": 0
+  },
+  "Griffin Jax": {
+    "kev": 2.68,
+    "fp": 6,
+    "prev_week_fp": 8
+  },
+  "Brett Sullivan": {
+    "kev": 2.64,
+    "fp": 5,
+    "prev_week_fp": 2
+  },
+  "Angel Zerpa": {
+    "kev": 2.63,
+    "fp": 6,
+    "prev_week_fp": -4
+  },
+  "Chris Martin": {
+    "kev": 2.61,
+    "fp": 5,
+    "prev_week_fp": 0
+  },
+  "Jared Triolo": {
+    "kev": 2.59,
+    "fp": 2,
+    "prev_week_fp": 0
+  },
+  "Tanner Murray": {
+    "kev": 2.58,
+    "fp": 4,
+    "prev_week_fp": null
+  },
+  "Joel Payamps": {
+    "kev": 2.57,
+    "fp": 5,
+    "prev_week_fp": null
+  },
+  "Mason Englert": {
+    "kev": 2.56,
+    "fp": 5,
+    "prev_week_fp": 0
+  },
+  "Marcell Ozuna": {
+    "kev": 2.52,
+    "fp": 7,
+    "prev_week_fp": -6
+  },
+  "Tommy Nance": {
+    "kev": 2.52,
+    "fp": 5,
+    "prev_week_fp": 1
+  },
+  "Lucas Sims": {
+    "kev": 2.46,
+    "fp": 4,
+    "prev_week_fp": 1
+  },
+  "Jake Rogers": {
+    "kev": 2.46,
+    "fp": 3,
+    "prev_week_fp": null
+  },
+  "Will Vest": {
+    "kev": 2.41,
+    "fp": 5,
+    "prev_week_fp": -1
+  },
+  "Matt Wallner": {
+    "kev": 2.4,
+    "fp": 7,
+    "prev_week_fp": 2
+  },
+  "Jacob Webb": {
+    "kev": 2.35,
+    "fp": 4,
+    "prev_week_fp": -1
+  },
+  "Derek Hill": {
+    "kev": 2.34,
+    "fp": 6,
+    "prev_week_fp": 0
+  },
+  "Will Benson": {
+    "kev": 2.28,
+    "fp": 6,
+    "prev_week_fp": 0
+  },
+  "Ryan Watson": {
+    "kev": 2.25,
+    "fp": 4,
+    "prev_week_fp": 0
+  },
+  "Danny Jansen": {
+    "kev": 2.22,
+    "fp": 4,
+    "prev_week_fp": -2
+  },
+  "J.P. France": {
+    "kev": 2.19,
+    "fp": 1,
+    "prev_week_fp": 0
+  },
+  "Ezequiel Tovar": {
+    "kev": 2.16,
+    "fp": 6,
+    "prev_week_fp": -8
+  },
+  "Ken Waldichuk": {
+    "kev": 2.15,
+    "fp": 8,
+    "prev_week_fp": 0
+  },
+  "Alex Lange": {
+    "kev": 2.14,
+    "fp": 2,
+    "prev_week_fp": -9
+  },
+  "Brice Matthews": {
+    "kev": 2.1,
+    "fp": 4,
+    "prev_week_fp": null
+  },
+  "John Schreiber": {
+    "kev": 2.08,
+    "fp": 2,
+    "prev_week_fp": 4
+  },
+  "Andrew McCutchen": {
+    "kev": 2.04,
+    "fp": 3,
+    "prev_week_fp": -1
+  },
+  "Ryan Weiss": {
+    "kev": 2.03,
+    "fp": 1,
+    "prev_week_fp": 1
+  },
+  "Hunter Feduccia": {
+    "kev": 1.98,
+    "fp": 2,
+    "prev_week_fp": 0
+  },
+  "Danny Coulombe": {
+    "kev": 1.97,
+    "fp": 1,
+    "prev_week_fp": -8
+  },
+  "Christian Roa": {
+    "kev": 1.92,
+    "fp": 0,
+    "prev_week_fp": 0
+  },
+  "Brenton Doyle": {
+    "kev": 1.86,
+    "fp": 4,
+    "prev_week_fp": -1
+  },
+  "Jos\u00e9 Alvarado": {
+    "kev": 1.81,
+    "fp": 0,
+    "prev_week_fp": 2
+  },
+  "Drew Millas": {
+    "kev": 1.8,
+    "fp": 3,
+    "prev_week_fp": -3
+  },
+  "Valente Bellozo": {
+    "kev": 1.75,
+    "fp": 0,
+    "prev_week_fp": 0
+  },
+  "Carson Williams": {
+    "kev": 1.74,
+    "fp": 1,
+    "prev_week_fp": 0
+  },
+  "Kyle Nicolas": {
+    "kev": 1.7,
+    "fp": -1,
+    "prev_week_fp": -11
+  },
+  "James Outman": {
+    "kev": 1.68,
+    "fp": 3,
+    "prev_week_fp": null
+  },
+  "Taylor Rogers": {
+    "kev": 1.64,
+    "fp": -3,
+    "prev_week_fp": -16
+  },
+  "Edgar Quero": {
+    "kev": 1.62,
+    "fp": 3,
+    "prev_week_fp": 4
+  },
+  "Cionel P\u00e9rez": {
+    "kev": 1.59,
+    "fp": -4,
+    "prev_week_fp": -7
+  },
+  "Leo Rivas": {
+    "kev": 1.56,
+    "fp": 2,
+    "prev_week_fp": 2
+  },
+  "Andrew Morris": {
+    "kev": 1.53,
+    "fp": -1,
+    "prev_week_fp": null
+  },
+  "James McCann": {
+    "kev": 1.5,
+    "fp": 1,
+    "prev_week_fp": -2
+  },
+  "Enmanuel De Jesus": {
+    "kev": 1.48,
+    "fp": -2,
+    "prev_week_fp": -14
+  },
+  "Nick Castellanos": {
+    "kev": 1.44,
+    "fp": 1,
+    "prev_week_fp": -2
+  },
+  "Carlos Narv\u00e1ez": {
+    "kev": 1.38,
+    "fp": 1,
+    "prev_week_fp": 9
+  },
+  "Parker Meadows": {
+    "kev": 1.37,
+    "fp": 5,
+    "prev_week_fp": 0
+  },
+  "Shane Drohan": {
+    "kev": 1.37,
+    "fp": -1,
+    "prev_week_fp": null
+  },
+  "Colton Cowser": {
+    "kev": 1.32,
+    "fp": 0,
+    "prev_week_fp": 0
+  },
+  "Drew Pomeranz": {
+    "kev": 1.31,
+    "fp": -7,
+    "prev_week_fp": -14
+  },
+  "Mitch Garver": {
+    "kev": 1.26,
+    "fp": 0,
+    "prev_week_fp": null
+  },
+  "Jos\u00e9 Urquidy": {
+    "kev": 1.26,
+    "fp": -4,
+    "prev_week_fp": 0
+  },
+  "Cole Henry": {
+    "kev": 1.21,
+    "fp": -3,
+    "prev_week_fp": 0
+  },
+  "Tanner Banks": {
+    "kev": 1.2,
+    "fp": -9,
+    "prev_week_fp": -23
+  },
+  "Victor Scott II": {
+    "kev": 1.2,
+    "fp": 0,
+    "prev_week_fp": -4
+  },
+  "Hunter Barco": {
+    "kev": 1.15,
+    "fp": -4,
+    "prev_week_fp": 0
+  },
+  "Rece Hinds": {
+    "kev": 1.14,
+    "fp": 0,
+    "prev_week_fp": null
+  },
+  "Kolby Allard": {
+    "kev": 1.1,
+    "fp": -4,
+    "prev_week_fp": 0
+  },
+  "Bo Naylor": {
+    "kev": 1.08,
+    "fp": -1,
+    "prev_week_fp": -5
+  },
+  "Steven Cruz": {
+    "kev": 1.04,
+    "fp": -5,
+    "prev_week_fp": 0
+  },
+  "Jerar Encarnacion": {
+    "kev": 1.02,
+    "fp": -1,
+    "prev_week_fp": 1
+  },
+  "Matt Svanson": {
+    "kev": 0.99,
+    "fp": -14,
+    "prev_week_fp": null
+  },
+  "Rafael March\u00e1n": {
+    "kev": 0.96,
+    "fp": -1,
+    "prev_week_fp": -2
+  },
+  "Walbert Urena": {
+    "kev": 0.93,
+    "fp": -5,
+    "prev_week_fp": -10
+  },
+  "Tristan Peters": {
+    "kev": 0.9,
+    "fp": -2,
+    "prev_week_fp": null
+  },
+  "Bryan Abreu": {
+    "kev": 0.88,
+    "fp": -13,
+    "prev_week_fp": 4
+  },
+  "Starling Marte": {
+    "kev": 0.84,
+    "fp": -1,
+    "prev_week_fp": null
+  },
+  "Simeon Woods Richardson": {
+    "kev": 0.82,
+    "fp": -8,
+    "prev_week_fp": -5
+  },
+  "Austin Wynns": {
+    "kev": 0.78,
+    "fp": -1,
+    "prev_week_fp": null
+  },
+  "Chris Bassitt": {
+    "kev": 0.77,
+    "fp": -7,
+    "prev_week_fp": 4
+  },
+  "Thomas Saggese": {
+    "kev": 0.72,
+    "fp": -2,
+    "prev_week_fp": -3
+  },
+  "Zack Littell": {
+    "kev": 0.71,
+    "fp": -9,
+    "prev_week_fp": -7
+  },
+  "Joey Bart": {
+    "kev": 0.66,
+    "fp": -2,
+    "prev_week_fp": -3
+  },
+  "Colton Gordon": {
+    "kev": 0.66,
+    "fp": -9,
+    "prev_week_fp": -11
+  },
+  "Adrian Houser": {
+    "kev": 0.6,
+    "fp": -12,
+    "prev_week_fp": -18
+  },
+  "Merrill Kelly": {
+    "kev": 0.55,
+    "fp": -5,
+    "prev_week_fp": -16
+  },
+  "Blaze Alexander": {
+    "kev": 0.54,
+    "fp": -3,
+    "prev_week_fp": -3
+  },
+  "Harrison Bader": {
+    "kev": 0.54,
+    "fp": -2,
+    "prev_week_fp": 0
+  },
+  "Kodai Senga": {
+    "kev": 0.38,
+    "fp": -16,
+    "prev_week_fp": -8
+  },
+  "Brayan Bello": {
+    "kev": 0.33,
+    "fp": -23,
+    "prev_week_fp": -23
   },
   "Alejandro Kirk": {
     "kev": 0.0,
-    "fp": 10
+    "fp": 10,
+    "prev_week_fp": 0
   },
-  "_saved_on": "2026-04-20"
+  "Noelvi Marte": {
+    "kev": 0.0,
+    "fp": -5,
+    "prev_week_fp": 0
+  },
+  "_saved_on": "2026-04-27"
 }
