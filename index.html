@@ -1134,10 +1134,19 @@ function renderOverall() {
   let rows = [...OVERALL];
 
   if (overallTypeFilter !== 'all') rows = rows.filter(p => p.type === overallTypeFilter);
-  if (overallPositionFilter) rows = rows.filter(p => {
-    const posRank = (p.kevRating || '').toUpperCase();
-    return posRank.includes(overallPositionFilter.toUpperCase());
-  });
+  if (overallPositionFilter) {
+    const target = overallPositionFilter.toUpperCase();
+    // OF filter also matches LF/CF/RF in case eligibility strings split outfielders
+    const ofAliases = new Set(['OF', 'LF', 'CF', 'RF']);
+    rows = rows.filter(p => {
+      const eligibility = (p.pos || p.kevRating || '').toUpperCase();
+      if (!eligibility) return false;
+      // Split on '/' (and a few other reasonable separators) so '1B/3B' becomes ['1B','3B']
+      const tokens = eligibility.split(/[\/,|\s]+/).map(t => t.trim()).filter(Boolean);
+      if (target === 'OF') return tokens.some(t => ofAliases.has(t));
+      return tokens.includes(target);
+    });
+  }
   if (query) rows = rows.filter(p => p.name.toLowerCase().includes(query) || p.mlbTeam.toLowerCase().includes(query));
 
   const key = overallSort.key;
