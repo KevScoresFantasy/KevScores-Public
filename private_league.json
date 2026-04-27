@@ -1,7 +1,7 @@
 {
   "leagueCode": "ank",
   "leagueName": "P00-Fantasy",
-  "lastUpdated": "2026-04-27T06:07:54Z",
+  "lastUpdated": "2026-04-27T06:34:09Z",
   "totalPlayers": 543,
   "teamNames": [
     "James",
@@ -16,7 +16,7 @@
   "teams": [
     {
       "code": "James",
-      "displayName": "James: Mune Moves",
+      "displayName": "James: Sweet's Spectacular Squad",
       "record": "0-4"
     },
     {
@@ -31,7 +31,7 @@
     },
     {
       "code": "Luke",
-      "displayName": "Luke: BIBI",
+      "displayName": "Luke: Franco Files",
       "record": "1-3"
     },
     {
