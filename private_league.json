@@ -1,7 +1,7 @@
 {
   "leagueCode": "ank",
   "leagueName": "P00-Fantasy",
-  "lastUpdated": "2026-04-27T05:51:07Z",
+  "lastUpdated": "2026-04-27T06:07:54Z",
   "totalPlayers": 543,
   "teamNames": [
     "James",
@@ -12,6 +12,48 @@
     "Rob",
     "Sam",
     "Shane"
+  ],
+  "teams": [
+    {
+      "code": "James",
+      "displayName": "James: Mune Moves",
+      "record": "0-4"
+    },
+    {
+      "code": "Joe",
+      "displayName": "Joe: Joe's Scary Team",
+      "record": "1-3"
+    },
+    {
+      "code": "Kevin",
+      "displayName": "Kevin: Love the Mets Baby",
+      "record": "2-2"
+    },
+    {
+      "code": "Luke",
+      "displayName": "Luke: BIBI",
+      "record": "1-3"
+    },
+    {
+      "code": "Potts",
+      "displayName": "Potts: CJ Abrams Whale Lock",
+      "record": "4-0"
+    },
+    {
+      "code": "Rob",
+      "displayName": "Rob: Master Bader",
+      "record": "4-0"
+    },
+    {
+      "code": "Sam",
+      "displayName": "Sam: Ippei's Accountancy",
+      "record": "1-3"
+    },
+    {
+      "code": "Shane",
+      "displayName": "Shane: Shane's Ball Club",
+      "record": "2-2"
+    }
   ],
   "assignments": {
     "Shohei Ohtani": "Potts",
