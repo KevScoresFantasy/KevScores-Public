@@ -1,8 +1,8 @@
 {
   "leagueCode": "ank",
   "leagueName": "P00-Fantasy",
-  "lastUpdated": "2026-04-27T06:39:48Z",
-  "totalPlayers": 544,
+  "lastUpdated": "2026-04-27T06:46:47Z",
+  "totalPlayers": 545,
   "teamNames": [
     "James",
     "Joe",
@@ -261,7 +261,7 @@
     "Parker Messick": "Kevin",
     "Nick Pivetta": "Shane",
     "Michael Wacha": "Rob",
-    "Agustin Ramirez": "FA",
+    "Agustin Ramirez": "Joe",
     "Spencer Steer": "FA",
     "Trevor Megill": "FA",
     "Marcell Ozuna": "FA",
@@ -340,7 +340,7 @@
     "Kazuma Okamoto": "FA",
     "Bo Bichette": "Kevin",
     "Samuel Basallo": "FA",
-    "Tanner Bibee": "Joe",
+    "Tanner Bibee": "FA",
     "Hunter Brown": "Rob",
     "Brandon Woodruff": "Sam",
     "Nick Kurtz": "Sam",
@@ -355,7 +355,7 @@
     "Seiya Suzuki": "Sam",
     "Blake Snell": "James",
     "Rafael Devers": "Rob",
-    "Ryan Pepiot": "Joe",
+    "Ryan Pepiot": "FA",
     "Liam Hicks": "Shane",
     "Mauricio Dubón": "James",
     "Cam Smith": "FA",
@@ -378,7 +378,7 @@
     "Connor Norby": "FA",
     "Luisangel Acuña": "FA",
     "Brett Baty": "FA",
-    "Justin Crawford": "FA",
+    "Justin Crawford": "Luke",
     "Mike Yastrzemski": "FA",
     "Carson Benge": "FA",
     "Kyle Karros": "FA",
@@ -599,6 +599,7 @@
     "Zach Agnos": "FA",
     "Adrian Morejon": "FA",
     "Cionel Pérez": "FA",
-    "Ildemayo Vargas": "Shane"
+    "Ildemayo Vargas": "Shane",
+    "Andrew Painter": "Luke"
   }
 }
