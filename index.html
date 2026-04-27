@@ -326,6 +326,12 @@ table.pr-table td.num{text-align:right;font-family:var(--font-display);font-size
 .pr-team-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.2;}
 .pr-team-owner{font-size:11px;color:var(--text-muted);margin-top:2px;}
 
+/* W-L record badge under team name */
+.pr-record{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.04em;padding:1px 7px;border-radius:999px;display:inline-block;}
+.pr-record-win{color:#4ade80;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);}
+.pr-record-loss{color:#f87171;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);}
+.pr-record-neutral{color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);}
+
 .pr-change-pos{color:var(--green);}
 .pr-change-neg{color:var(--red);}
 .pr-change-neutral{color:var(--text-muted);}
@@ -728,7 +734,8 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
             <tr>
               <th style="text-align:center;">#</th>
               <th>Player</th>
-              <th>Pos</th>
+              <th title="Position rank — e.g. OF12 means 12th-best outfielder">Pos Rank</th>
+              <th>Eligible</th>
               <th>Type</th>
               <th class="num">Kev Score</th>
               <th class="num" title="Score change over the last 7 days">7&#8209;Day Δ</th>
@@ -1836,6 +1843,15 @@ async function loadESPNLeague(leagueId) {
       .filter(Boolean);
 
     const teamData = aggregateTeam(teamName, ownerName, rosterNames);
+    // Pull record from ESPN. Shape: t.record.overall = {wins, losses, ties, ...}
+    if (t.record && t.record.overall) {
+      const w = Number(t.record.overall.wins  || 0);
+      const l = Number(t.record.overall.losses || 0);
+      const tie = Number(t.record.overall.ties || 0);
+      teamData.record = (w + l + tie > 0) ? (tie > 0 ? `${w}-${l}-${tie}` : `${w}-${l}`) : '';
+    } else {
+      teamData.record = '';
+    }
     totalMatched   += teamData.matchedCount;
     totalUnmatched += teamData.players.length - teamData.matchedCount;
     for (const p of teamData.players) {
@@ -1914,6 +1930,19 @@ async function loadPrivateLeague(code) {
     }
   }
 
+  // Build a code → {displayName, record} map from the JSON's teams[] block.
+  // Match case-insensitively because team codes can be mixed case.
+  const teamMeta = {};
+  if (Array.isArray(data.teams)) {
+    for (const t of data.teams) {
+      if (!t || !t.code) continue;
+      teamMeta[String(t.code).toLowerCase()] = {
+        displayName: t.displayName || t.code,
+        record:      t.record || '',
+      };
+    }
+  }
+
   // Build uniform team objects
   const teams = [];
   let totalMatched = 0;
@@ -1921,6 +1950,9 @@ async function loadPrivateLeague(code) {
 
   for (const [teamCode, names] of Object.entries(teamRosters)) {
     const teamData = aggregateTeam(teamCode, '', names);
+    const meta = teamMeta[teamCode.toLowerCase()] || {};
+    if (meta.displayName) teamData.teamName = meta.displayName;
+    teamData.record = meta.record || '';
     totalMatched   += teamData.matchedCount;
     totalUnmatched += teamData.players.length - teamData.matchedCount;
     teams.push(teamData);
@@ -2052,12 +2084,31 @@ function renderTeamRankings(teams, totalMatched, totalUnmatched) {
       return `<span class="player-link" onclick="event.stopPropagation();openPlayerModalByName('${safeName}')">${escapeHtml(p.name)}</span><span class="pr-best-score">${Number(p.kevScore).toFixed(1)}</span>`;
     };
 
+    // Subhead under the team name: prefer record (W-L), fall back to owner name.
+    // Record gets colored: winning record green, losing red, even neutral.
+    let subhead = '';
+    if (t.record) {
+      const m = String(t.record).match(/^(\d+)-(\d+)(?:-(\d+))?$/);
+      let cls = 'pr-record-neutral';
+      if (m) {
+        const w = parseInt(m[1], 10);
+        const l = parseInt(m[2], 10);
+        if (w > l) cls = 'pr-record-win';
+        else if (l > w) cls = 'pr-record-loss';
+      }
+      subhead = `<span class="pr-record ${cls}">${escapeHtml(t.record)}</span>`;
+    } else if (t.ownerName) {
+      subhead = escapeHtml(t.ownerName);
+    } else {
+      subhead = '<em>—</em>';
+    }
+
     return `
       <tr class="pr-team-row" data-team-idx="${i}" onclick="togglePRRoster(${i})">
         <td><div class="pr-rank-cell ${rankClass}">${t.rank}</div></td>
         <td class="pr-team-cell">
           <div class="pr-team-name"><span class="pr-expand-icon">▶</span>${escapeHtml(t.teamName)}</div>
-          <div class="pr-team-owner">${t.ownerName ? escapeHtml(t.ownerName) : '<em>—</em>'}</div>
+          <div class="pr-team-owner">${subhead}</div>
         </td>
         <td class="num">${t.totalKev.toFixed(1)}</td>
         <td class="num ${chgClass}" style="font-size:13px;">${chgSym}${chgVal ? ' ' + chgVal : ''}</td>
@@ -2161,7 +2212,7 @@ function renderFreeAgents() {
   pool = pool.slice(0, 10);
 
   if (!pool.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--text-muted);font-style:italic;">No free agents match this filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:18px;color:var(--text-muted);font-style:italic;">No free agents match this filter.</td></tr>`;
     return;
   }
 
@@ -2179,10 +2230,17 @@ function renderFreeAgents() {
     const chg = Number(p.kevChange7d || 0);
     const chgClass = chg > 0.05 ? 'val-pos' : chg < -0.05 ? 'val-neg' : '';
     const chgDisplay = Math.abs(chg) < 0.05 ? '<span style="color:var(--text-muted);">—</span>' : `${chg > 0 ? '+' : ''}${chg.toFixed(1)}`;
+    // Eligibility: split p.pos into individual position badges. ESPN uses
+    // commas, slashes, or spaces as separators.
+    const eligList = String(p.pos || '').split(/[,/]/).map(s => s.trim()).filter(Boolean);
+    const eligHtml = eligList.length
+      ? eligList.map(e => `<span class="pos-badge" style="margin-right:3px;">${escapeHtml(e)}</span>`).join('')
+      : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
     return `<tr>
       <td style="text-align:center;font-family:var(--font-display);font-weight:700;color:var(--text-dim);width:36px;">${idx + 1}</td>
       <td style="white-space:nowrap;">${avatar}<span class="player-link" onclick="openPlayerModalByName('${safeName}')">${escapeHtml(p.name)}</span></td>
       <td><span class="pos-badge">${escapeHtml(p.kevRating || '')}</span></td>
+      <td style="white-space:nowrap;">${eligHtml}</td>
       <td class="${typeClass}" style="font-size:12px;font-weight:500;">${escapeHtml(p.type || '')}</td>
       <td class="num">${Number(p.kevScore).toFixed(1)}</td>
       <td class="num ${chgClass}" style="font-size:12px;">${chgDisplay}</td>
