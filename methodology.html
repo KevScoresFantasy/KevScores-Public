@@ -175,12 +175,19 @@ footer a{color:var(--accent);}
       <div class="formula">
         Adjusted FP/G = <span class="accent">(n &times; actual)</span> + <span class="accent">(k &times; league average)</span> &divide; (n + k)
       </div>
-      <p>Where <strong>n</strong> is how much the player has played (games for batters, innings pitched for pitchers) and <strong>k</strong> is how stubborn the smoothing is. We use <strong>k = 12</strong> for batters and <strong>k = 25</strong> for pitchers &mdash; equivalent to about 12 games of league-average performance for hitters and 25 innings for pitchers, baked in as a starting prior.</p>
+      <p>Where <strong>n</strong> is how much the player has played and <strong>k</strong> is how stubborn the smoothing is. The values for <strong>k</strong> vary by role &mdash; not because the math changes, but because each role accumulates playing time at a different rate:</p>
+      <ul>
+        <li><strong>Batters: k = 20 games</strong> &mdash; about 3 weeks of regular play</li>
+        <li><strong>Starting pitchers: k = 30 IP</strong> &mdash; about 6 starts, or 1 month</li>
+        <li><strong>Relief pitchers: k = 10 IP</strong> &mdash; about 10-12 outings, or 1 month</li>
+      </ul>
+      <p>The common thread: <strong>every role normalizes after roughly one month of play.</strong> At the 50/50 trust point &mdash; where a player&rsquo;s own rate is weighted equally with the league prior &mdash; a batter has 20 games, a starter has 30 IP, a reliever has 10 IP. All three reach that point on the same calendar timeline.</p>
       <p>What this looks like in practice:</p>
       <ul>
-        <li>A batter with <strong>3 games at 15 FP/G</strong> (red-hot start) gets pulled down to roughly 9 FP/G &mdash; visible, but no longer outranking proven players.</li>
-        <li>A batter with <strong>50 games at 8 FP/G</strong> (steady producer) barely moves &mdash; their own rate is weighted around 80%, league average just 20%.</li>
+        <li>A batter with <strong>3 games at 15 FP/G</strong> (red-hot start) gets pulled down toward roughly 8.5 FP/G &mdash; visible on the rankings, but no longer outranking proven players.</li>
+        <li>A batter with <strong>50 games at 8 FP/G</strong> (steady producer) barely moves &mdash; their own rate is weighted around 70%, league average just 30%.</li>
         <li>A batter with <strong>140 games at 7 FP/G</strong> (full-season vet) is essentially unaffected.</li>
+        <li>A reliever with <strong>5 IP and one dominant outing</strong> gets heavily smoothed &mdash; closer to 50% prior than to their actual rate &mdash; until they&rsquo;ve built up at least a couple weeks of work.</li>
       </ul>
       <p>The smoothing is symmetric. A cold start gets pulled <em>up</em> toward average just as a hot start gets pulled <em>down</em>. We&rsquo;re not punishing slumps any more than we&rsquo;re rewarding flukes &mdash; we&rsquo;re acknowledging that with limited data, our best guess is closer to &ldquo;average MLB player&rdquo; than whatever the small sample suggests.</p>
       <p>Importantly, the FP/G we <em>display</em> on player cards stays raw &mdash; that&rsquo;s the actual stat. The smoothed value is only used internally for ranking. So a player&rsquo;s displayed FP/G times their games will always equal their total FP, even though their Kev Score reflects the smoother view.</p>
