@@ -397,14 +397,41 @@ MLB_TEAM_IDS = [
     139, 140, 141, 142, 143, 144, 145, 146, 147, 158,
 ]
 
+def _normalize_mlb_position(abbr):
+    """Map MLB depthChart position abbreviations to our conventions.
+
+    MLB returns specific outfield positions (CF/LF/RF) and a generic pitcher
+    abbreviation (P). We collapse outfield to 'OF' since the downstream rating
+    code (assign_ratings) just substring-matches 'OF'. Pitcher 'P' becomes 'SP'
+    as a placeholder — the role-inference block in build_players() will refine
+    it to RP if the player has saves and no starts.
+    """
+    if not abbr:
+        return ""
+    a = str(abbr).upper().strip()
+    if a in ("CF", "LF", "RF"):
+        return "OF"
+    if a == "P":
+        return "SP"
+    return a  # C, 1B, 2B, 3B, SS, OF, DH, SP, RP all pass through
+
+
 def fetch_il_statuses():
     """
-    Fetch current MLB IL / roster status for every player on every team.
-    Returns {mlbId(str): status_code(str)}. Missing players are assumed active.
+    Fetch current MLB IL / roster status for every player on every team, plus
+    each player's primary position (catcher, first base, outfield, etc.).
 
-    The endpoint returns a roster per team with a `status` block for each
-    player; we extract status.code (e.g. "A", "D10", "D60") and key it off
-    the player's mlbId (person.id) for downstream lookup.
+    Returns:
+      (statuses, positions)
+        statuses  : {mlbId(str): status_code(str)}     e.g. "A", "D10", "D60"
+        positions : {mlbId(str): position_abbr(str)}   e.g. "C", "1B", "OF"
+
+    The position map is used as a fallback in build_players() when ESPN's
+    preseason baseline file doesn't include a position for a player —
+    historically that caused every unknown batter to default to "OF", which
+    then propagated to wrong kevRatings ("OF38" for catchers, etc.). Pulling
+    position from MLB's depthChart fixes that without extra API calls
+    (we're already hitting this endpoint for IL statuses).
 
     rosterType=depthChart is used (not fullRoster) because 60-day IL players
     are removed from the 40-man roster by MLB rules — that's literally the
@@ -413,6 +440,7 @@ def fetch_il_statuses():
     including long-term injured players.
     """
     statuses = {}
+    positions = {}
     ok_count = 0
     err_count = 0
     for team_id in MLB_TEAM_IDS:
@@ -429,6 +457,10 @@ def fetch_il_statuses():
                 code = str(st.get("code", "A")).strip().upper()
                 if pid:
                     statuses[pid] = code
+                    pos_obj = p.get("position", {}) or {}
+                    pos_norm = _normalize_mlb_position(pos_obj.get("abbreviation", ""))
+                    if pos_norm:
+                        positions[pid] = pos_norm
             ok_count += 1
             time.sleep(0.05)  # be nice to the API
         except Exception as e:
@@ -447,7 +479,8 @@ def fetch_il_statuses():
             code_counts[v] = code_counts.get(v, 0) + 1
         summary = ", ".join(f"{c}={n}" for c, n in sorted(code_counts.items()))
         print(f"  Non-active: {len(non_active)} players ({summary})")
-    return statuses
+    print(f"  MLB positions captured for {len(positions)} players")
+    return statuses, positions
 
 def convert_ip(ip):
     """
@@ -656,9 +689,11 @@ def build_players(batting_rows, pitching_rows,
                   pit_fp_total, pit_fp_pg, pit_rs,
                   bat_sr_total, bat_sr_pg,
                   pit_sr_total, pit_sr_pg,
-                  espn_baseline, il_statuses=None):
+                  espn_baseline, il_statuses=None, mlb_positions=None):
     if il_statuses is None:
         il_statuses = {}
+    if mlb_positions is None:
+        mlb_positions = {}
     rows = []
     all_norms = set(batting_rows.keys()) | set(pitching_rows.keys())
 
@@ -715,7 +750,26 @@ def build_players(batting_rows, pitching_rows,
         espn_value = espn_data.get("value", 0)
         pos_raw = espn_data.get("pos")
         pos_explicit = pos_raw is not None and str(pos_raw).strip() != ""
-        pos = pos_raw if pos_explicit else ("SP" if is_pitcher else "OF")
+
+        # When ESPN baseline is missing a position, fall back to MLB's
+        # depth-chart primary position (captured during fetch_il_statuses).
+        # This catches catchers, corner infielders, and other non-OF batters
+        # that ESPN's preseason file doesn't classify — historically they
+        # all defaulted to "OF" which polluted position rankings and free
+        # agent filters.
+        if pos_explicit:
+            pos = pos_raw
+        else:
+            mlb_pos = mlb_positions.get(str(mlb_id), "") if mlb_id else ""
+            if mlb_pos and (mlb_pos != "SP" or is_pitcher) and (mlb_pos != "DH" or not is_pitcher):
+                # MLB's position is trustworthy for batters and most pitchers.
+                # Guard against MLB labeling a known-batter as "P" (rare/stale)
+                # or a known-pitcher as "DH" (also rare).
+                pos = mlb_pos
+                pos_explicit = True
+            else:
+                # Final fallback: same default as before.
+                pos = "SP" if is_pitcher else "OF"
 
         # Role inference for pitchers: when ESPN baseline is missing OR clearly
         # stale (e.g. listed as SP but actually closing games), use in-season
@@ -1157,7 +1211,7 @@ def main():
     print(f"  Daily history dates loaded: {len(daily_history)}")
 
     print("\nFetching IL statuses from MLB Stats API...")
-    il_statuses = fetch_il_statuses()
+    il_statuses, mlb_positions = fetch_il_statuses()
 
     print("\nComputing Kev Scores...")
     rows = build_players(
@@ -1168,6 +1222,7 @@ def main():
         pit_sr_total, pit_sr_pg,
         espn_baseline,
         il_statuses=il_statuses,
+        mlb_positions=mlb_positions,
     )
     rows = assign_ratings(rows)
     players, overall = build_json(rows, weekly_prev, il_statuses)
