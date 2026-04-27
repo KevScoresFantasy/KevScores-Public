@@ -776,7 +776,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 </div>
 
 <script>
-const LAST_UPDATED = "Apr 27, 2026 11:41 AM ET";
+const LAST_UPDATED = "Apr 26, 2026 10:30 AM ET";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
 
 // IL status code → human-readable label (used in the badge tooltip)
@@ -1914,14 +1914,17 @@ async function loadPrivateLeague(code) {
     return;
   }
 
-  // Group player names by team code (skip FA — they're handled separately)
+  // Group player names by team code (skip FA — they're handled separately).
+  // Only add to rosteredNorms when the player is actually on a team; players
+  // assigned to "FA" (or blank) are NOT rostered, so they should be eligible
+  // for the free agents list downstream.
   const teamRosters = {}; // teamCode -> [playerName, ...]
   const rosteredNorms = new Set();
   for (const [name, teamCode] of Object.entries(assignments)) {
+    const code = String(teamCode || '').trim();
+    if (!code || code.toUpperCase() === 'FA') continue; // free agent — skip
     const norm = prNormalize(name);
     if (norm) rosteredNorms.add(norm);
-    const code = String(teamCode || '').trim();
-    if (!code || code.toUpperCase() === 'FA') continue; // free agent
     if (!teamRosters[code]) teamRosters[code] = [];
     teamRosters[code].push(name);
   }
