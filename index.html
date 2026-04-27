@@ -315,6 +315,10 @@ table.pr-table tbody tr{border-bottom:1px solid var(--border);transition:backgro
 table.pr-table tbody tr:hover{background:rgba(255,255,255,0.025);}
 table.pr-table td{padding:12px 10px;vertical-align:middle;}
 table.pr-table td.num{text-align:right;font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text);}
+/* Win over td.num's white color when a Δ cell is colored. Same specificity
+   as td.num (one element + one class) but later in the cascade. */
+table.pr-table td.val-pos{color:var(--green);}
+table.pr-table td.val-neg{color:var(--red);}
 
 .pr-rank-cell{font-family:var(--font-display);font-size:22px;font-weight:800;width:50px;text-align:center;}
 .pr-rank-1{color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,0.3);}
@@ -2217,8 +2221,14 @@ function renderFreeAgents() {
   if (PR_FA_FILTER === 'Batter' || PR_FA_FILTER === 'Pitcher') {
     pool = pool.filter(p => p.type === PR_FA_FILTER);
   } else if (PR_FA_FILTER && PR_FA_FILTER !== 'all') {
-    // Position filter — match against kevRating prefix (e.g. "OF12" → "OF")
-    pool = pool.filter(p => prPrimaryPosition(p) === PR_FA_FILTER);
+    // Position filter — check the player's full eligibility list (p.pos),
+    // not just their primary position. A player listed as "OF, 1B" should
+    // appear in BOTH the OF and 1B filters.
+    const target = PR_FA_FILTER.toUpperCase();
+    pool = pool.filter(p => {
+      const eligList = String(p.pos || '').toUpperCase().split(/[,/\s]+/).map(s => s.trim()).filter(Boolean);
+      return eligList.includes(target);
+    });
   }
   pool = pool.slice(0, 10);
 
