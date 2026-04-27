@@ -702,7 +702,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <div class="pr-section-header">
         <div class="pr-section-eyebrow">League Breakdown</div>
         <div class="pr-section-title">Position <span style="color:var(--accent);">Strength</span></div>
-        <div class="pr-section-sub">Total Kev Score by primary position &mdash; teams ranked within each spot.</div>
+        <div class="pr-section-sub">Average Kev Score per player by primary position &mdash; teams ranked within each spot, count shown in parentheses.</div>
       </div>
       <div class="pr-pos-grid" id="pr-pos-grid"></div>
     </div>
@@ -772,7 +772,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 </div>
 
 <script>
-const LAST_UPDATED = "Apr 27, 2026 2:12 AM ET";
+const LAST_UPDATED = "Apr 26, 2026 10:30 AM ET";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
 
 // IL status code → human-readable label (used in the badge tooltip)
@@ -2074,9 +2074,11 @@ function renderTeamRankings(teams, totalMatched, totalUnmatched) {
   const tbody = document.getElementById('pr-tbody');
   tbody.innerHTML = teams.map((t, i) => {
     const rankClass = t.rank === 1 ? 'pr-rank-1' : t.rank === 2 ? 'pr-rank-2' : t.rank === 3 ? 'pr-rank-3' : 'pr-rank-other';
-    const chgClass = t.totalChange > 0.05 ? 'pr-change-pos' : t.totalChange < -0.05 ? 'pr-change-neg' : 'pr-change-neutral';
-    const chgSym   = t.totalChange > 0.05 ? '▲' : t.totalChange < -0.05 ? '▼' : '—';
-    const chgVal   = Math.abs(t.totalChange) < 0.05 ? '' : Math.abs(t.totalChange).toFixed(1);
+    // Match the Overall tab's coloring exactly: any positive change is green,
+    // any negative is red, exact zero is neutral.
+    const chgClass = t.totalChange > 0 ? 'val-pos' : t.totalChange < 0 ? 'val-neg' : '';
+    const chgSym   = t.totalChange > 0 ? '▲' : t.totalChange < 0 ? '▼' : '—';
+    const chgVal   = t.totalChange === 0 ? '' : Math.abs(t.totalChange).toFixed(1);
 
     const renderBest = (p) => {
       if (!p) return `<span style="color:var(--text-muted);font-style:italic;font-size:11px;">&mdash;</span>`;
@@ -2133,29 +2135,38 @@ function renderPositionStrength(teams) {
   if (!grid) return;
   document.getElementById('pr-positions-section').style.display = 'block';
 
-  // For each position, compute each team's total Kev Score for matched
-  // players whose primary position matches.
+  // For each position, compute each team's AVERAGE Kev Score for matched
+  // players whose primary position matches. Average (not total) prevents teams
+  // with extra bench bodies at a position from artificially outranking teams
+  // with fewer-but-stronger players. Bar width is scaled relative to the top
+  // team's average within that position.
   grid.innerHTML = PR_POSITIONS.map(pos => {
-    const teamStrengths = teams.map(t => {
-      const sum = t.players.reduce((acc, p) => {
-        if (!p.matched) return acc;
-        return p.primaryPos === pos ? acc + p.kevScore : acc;
-      }, 0);
-      const count = t.players.filter(p => p.matched && p.primaryPos === pos).length;
-      return { teamName: t.teamName, strength: sum, count };
-    }).filter(t => t.strength > 0 || t.count > 0);
+    const teamStats = teams.map(t => {
+      let sum = 0, count = 0;
+      for (const p of t.players) {
+        if (p.matched && p.primaryPos === pos) {
+          sum += p.kevScore;
+          count++;
+        }
+      }
+      return {
+        teamName: t.teamName,
+        avg: count > 0 ? sum / count : 0,
+        count,
+      };
+    }).filter(t => t.count > 0);
 
-    teamStrengths.sort((a, b) => b.strength - a.strength);
-    const max = teamStrengths.length ? teamStrengths[0].strength : 0;
+    teamStats.sort((a, b) => b.avg - a.avg);
+    const max = teamStats.length ? teamStats[0].avg : 0;
 
-    const rows = teamStrengths.length
-      ? teamStrengths.map((t, i) => {
-          const pct = max > 0 ? (t.strength / max) * 100 : 0;
+    const rows = teamStats.length
+      ? teamStats.map((t, i) => {
+          const pct = max > 0 ? (t.avg / max) * 100 : 0;
           const firstClass = i === 0 ? ' first' : '';
           return `<div class="pr-pos-row">
             <div class="pr-pos-row-meta">
               <span class="pr-pos-row-name${firstClass}" title="${escapeHtml(t.teamName)}">${escapeHtml(t.teamName)}</span>
-              <span class="pr-pos-row-score${firstClass}">${t.strength.toFixed(1)}</span>
+              <span class="pr-pos-row-score${firstClass}">${t.avg.toFixed(1)}<span style="color:var(--text-muted);font-weight:500;margin-left:4px;font-size:10px;">(${t.count})</span></span>
             </div>
             <div class="pr-pos-bar-track">
               <div class="pr-pos-bar-fill${firstClass}" style="width:${pct.toFixed(1)}%"></div>
@@ -2164,7 +2175,7 @@ function renderPositionStrength(teams) {
         }).join('')
       : `<div class="pr-pos-empty">No ${pos} players rostered yet</div>`;
 
-    const totalCount = teamStrengths.reduce((s, t) => s + t.count, 0);
+    const totalCount = teamStats.reduce((s, t) => s + t.count, 0);
     return `<div class="pr-pos-card">
       <div class="pr-pos-card-header">
         <div class="pr-pos-card-title">${pos}</div>
