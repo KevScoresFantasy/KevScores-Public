@@ -565,7 +565,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
   <div style="margin-bottom:20px;">
     <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Weekly Report</div>
     <div style="font-family:var(--font-display);font-size:32px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1;">Risers <span style="color:var(--accent)">&amp;</span> Fallers</div>
-    <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">Kev Score change over previous 7 days &nbsp;·&nbsp; <span id="risers-date" style="color:var(--text-dim)"></span></div>
+    <div style="font-size:13px;color:var(--text-muted);margin-top:6px;">Kev Score change over the last 7 days &nbsp;·&nbsp; <span id="risers-date" style="color:var(--text-dim)"></span></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px;">
     <div>
@@ -609,6 +609,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
     <span style="font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);">View:</span>
     <button id="fp-btn-weekly" class="ls-btn active" onclick="setFPMode('weekly',this)" style="font-size:12px;">Weekly FP</button>
+    <button id="fp-btn-prev"   class="ls-btn" onclick="setFPMode('prev',this)"   style="font-size:12px;">Prev Week</button>
     <button id="fp-btn-season" class="ls-btn" onclick="setFPMode('season',this)" style="font-size:12px;">Season Total</button>
     <button id="fp-btn-sorare" class="ls-btn" onclick="setFPMode('sorare',this)" style="font-size:12px;">Sorare</button>
   </div>
@@ -620,7 +621,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
           <th class="num">#</th>
           <th style="text-align:left">Player</th>
           <th class="num" id="fp-col-header-bat">FP This Week</th>
-          <th class="num" style="color:var(--text-dim);font-size:11px;">Prev Week</th>
+          <th class="num" style="color:var(--text-dim);font-size:11px;" id="fp-col-prev-bat">Prev Week</th>
           <th class="num" style="color:var(--text-muted);font-size:11px;">FP/G</th>
           <th class="num">Kev Score</th>
 
@@ -635,7 +636,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
           <th class="num">#</th>
           <th style="text-align:left">Player</th>
           <th class="num" id="fp-col-header-pit">FP This Week</th>
-          <th class="num" style="color:var(--text-dim);font-size:11px;">Prev Week</th>
+          <th class="num" style="color:var(--text-dim);font-size:11px;" id="fp-col-prev-pit">Prev Week</th>
           <th class="num" style="color:var(--text-muted);font-size:11px;">FP/G</th>
           <th class="num">Kev Score</th>
 
@@ -716,7 +717,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       <div class="pr-section-header">
         <div class="pr-section-eyebrow">Waiver Wire</div>
         <div class="pr-section-title">Top <span style="color:var(--accent);">Free Agents</span></div>
-        <div class="pr-section-sub">Highest unrostered players in this league.</div>
+        <div class="pr-section-sub">Highest-Kev unrostered players in this league.</div>
       </div>
       <div class="pr-fa-controls">
         <button class="filter-btn pr-fa-btn active" data-fa-filter="all">All</button>
@@ -776,7 +777,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 </div>
 
 <script>
-const LAST_UPDATED = "Apr 27, 2026 1:11 PM ET";
+const LAST_UPDATED = "Apr 26, 2026 10:30 AM ET";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
 
 // IL status code → human-readable label (used in the badge tooltip)
@@ -937,13 +938,24 @@ function fmt(n) { return n.toFixed(2); }
 let weeklyFPMode = 'weekly';
 function setFPMode(mode, btn) {
   weeklyFPMode = mode;
-  document.querySelectorAll('#fp-btn-weekly, #fp-btn-season, #fp-btn-sorare').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#fp-btn-weekly, #fp-btn-prev, #fp-btn-season, #fp-btn-sorare').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  // Update column header text
-  const label = mode === 'weekly' ? 'FP This Week' : mode === 'season' ? 'Season FP' : 'Sorare Score';
+  // Update main column header text
+  const label = mode === 'weekly' ? 'FP This Week'
+              : mode === 'prev'   ? 'FP Last Week'
+              : mode === 'season' ? 'Season FP'
+              : 'Sorare Score';
   ['fp-col-header-bat','fp-col-header-pit'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = label;
+  });
+
+  // The small secondary column flips when in prev mode: instead of showing
+  // last week's FP (which is now the main column), it shows current week.
+  const prevColLabel = mode === 'prev' ? 'This Week' : 'Prev Week';
+  ['fp-col-prev-bat','fp-col-prev-pit'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = prevColLabel;
   });
 
   const scoringLink = document.getElementById('weekly-scoring-link');
@@ -952,17 +964,31 @@ function setFPMode(mode, btn) {
 
   if (mode === 'season') {
     if (eyebrow) eyebrow.textContent = '2026 Season';
-    if (range)   range.textContent   = 'Full season accumulated fantasy points';
+    if (range)   range.textContent   = 'Fantasy points accumulated this season';
     if (scoringLink) {
       scoringLink.href = 'https://support.espn.com/hc/en-us/articles/360057163871-Standard-Scoring-for-Public-Baseball-leagues';
       scoringLink.textContent = 'ESPN scoring';
     }
   } else if (mode === 'sorare') {
     if (eyebrow) eyebrow.textContent = '2026 Sorare';
-    if (range)   range.textContent   = 'Season total and per-game Sorare scoring';
+    if (range)   range.textContent   = 'Fantasy points accumulated this season';
     if (scoringLink) {
       scoringLink.href = 'https://sorare.com/help/a/13000512179997/How%20are%20Player%20Scores%20Calculated%20in%20Sorare%20MLB';
       scoringLink.textContent = 'Sorare scoring';
+    }
+  } else if (mode === 'prev') {
+    if (eyebrow) eyebrow.textContent = 'Last Week';
+    if (range) {
+      // Compute last week's date range (the Mon-Sun before this week's Monday)
+      const thisMon = getWeekStart();
+      const lastMon = new Date(thisMon); lastMon.setDate(thisMon.getDate() - 7);
+      const lastSun = new Date(lastMon); lastSun.setDate(lastMon.getDate() + 6);
+      const fmt = d => d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+      range.textContent = 'Week of ' + fmt(lastMon) + ' — ' + fmt(lastSun);
+    }
+    if (scoringLink) {
+      scoringLink.href = 'https://support.espn.com/hc/en-us/articles/360057163871-Standard-Scoring-for-Public-Baseball-leagues';
+      scoringLink.textContent = 'ESPN scoring';
     }
   } else {
     if (eyebrow) eyebrow.textContent = 'Monday — Sunday';
@@ -1579,15 +1605,18 @@ function renderWeekly() {
   if (el) el.textContent = `Week of ${fmt(mon)} — ${fmt(sun)}`;
 
   const isWeeklyMode = weeklyFPMode === 'weekly';
+  const isPrevMode   = weeklyFPMode === 'prev';
   const isSorareMode = weeklyFPMode === 'sorare';
   const hasFP = OVERALL.some(p => p.fpWeekly && p.fpWeekly > 0);
   const useWeekly = isWeeklyMode && hasFP;
 
   const sortFn = (a, b) => isWeeklyMode
     ? (b.fpWeekly||0) - (a.fpWeekly||0)
-    : isSorareMode
-      ? (b.sorareScore||0) - (a.sorareScore||0)
-      : (b.fpScore||0)  - (a.fpScore||0);
+    : isPrevMode
+      ? (b.fpPrevWeek||0) - (a.fpPrevWeek||0)
+      : isSorareMode
+        ? (b.sorareScore||0) - (a.sorareScore||0)
+        : (b.fpScore||0)  - (a.fpScore||0);
 
   const batters  = OVERALL.filter(p => p.type === 'Batter'  && p.kevScore > 0).sort(sortFn).slice(0, 50);
   const pitchers = OVERALL.filter(p => p.type === 'Pitcher' && p.kevScore > 0).sort(sortFn).slice(0, 50);
@@ -1607,17 +1636,23 @@ function renderWeekly() {
   function row(p, idx) {
     const fp = isWeeklyMode
       ? Math.round(p.fpWeekly || 0)
-      : isSorareMode
-        ? ((p.sorareScore !== undefined && p.sorareScore !== null) ? Math.round(p.sorareScore) : '—')
-        : Math.round(p.fpScore || 0);
+      : isPrevMode
+        ? ((p.fpPrevWeek !== undefined && p.fpPrevWeek !== null) ? Math.round(p.fpPrevWeek) : '—')
+        : isSorareMode
+          ? ((p.sorareScore !== undefined && p.sorareScore !== null) ? Math.round(p.sorareScore) : '—')
+          : Math.round(p.fpScore || 0);
 
     const fpColor = isWeeklyMode
       ? ((p.fpWeekly||0) > 0 ? '#4ade80' : 'var(--text)')
-      : 'var(--text)';
+      : isPrevMode
+        ? ((p.fpPrevWeek||0) > 0 ? '#4ade80' : 'var(--text)')
+        : 'var(--text)';
 
-    const prevWeekVal = (p.fpPrevWeek !== undefined && p.fpPrevWeek !== null)
-      ? Math.round(p.fpPrevWeek)
-      : '—';
+    // The small secondary column flips in prev mode: shows current week
+    // instead of prev week (which is now in the main column).
+    const secondaryVal = isPrevMode
+      ? ((p.fpWeekly !== undefined && p.fpWeekly !== null) ? Math.round(p.fpWeekly) : '—')
+      : ((p.fpPrevWeek !== undefined && p.fpPrevWeek !== null) ? Math.round(p.fpPrevWeek) : '—');
 
     return `<tr>
       <td class="num" style="font-family:var(--font-display);font-weight:700;color:var(--text-dim);width:36px;">${idx + 1}</td>
@@ -1629,7 +1664,7 @@ function renderWeekly() {
         </div>
       </td>
       <td class="num" style="font-family:var(--font-display);font-weight:700;color:${fpColor}">${fp}</td>
-      <td class="num" style="font-size:11px;color:var(--text-dim)">${prevWeekVal}</td>
+      <td class="num" style="font-size:11px;color:var(--text-dim)">${secondaryVal}</td>
       <td class="num" style="font-size:11px;color:var(--text-muted)">${isSorareMode ? (p.sorarePG !== undefined && p.sorarePG !== null ? p.sorarePG.toFixed(1) : '—') : (p.fpPG !== undefined && p.fpPG !== null ? p.fpPG.toFixed(1) : '—')}</td>
       <td class="num" style="font-family:var(--font-display);font-size:13px;font-weight:700">${p.kevScore.toFixed(1)}</td>
     </tr>`;
