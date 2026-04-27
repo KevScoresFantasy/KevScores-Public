@@ -1,8 +1,8 @@
 {
   "leagueCode": "ank",
   "leagueName": "P00-Fantasy",
-  "lastUpdated": "2026-04-27T06:46:47Z",
-  "totalPlayers": 545,
+  "lastUpdated": "2026-04-27T15:37:53Z",
+  "totalPlayers": 546,
   "teamNames": [
     "James",
     "Joe",
@@ -137,7 +137,7 @@
     "Ramon Laureano": "FA",
     "Colt Keith": "FA",
     "Joe Ryan": "Joe",
-    "JJ Wetherholt": "FA",
+    "JJ Wetherholt": "Rob",
     "Seth Lugo": "FA",
     "Trevor Story": "FA",
     "Colson Montgomery": "FA",
@@ -402,7 +402,7 @@
     "Kyle Freeland": "FA",
     "Ryan Weathers": "FA",
     "Max Meyer": "FA",
-    "Rhett Lowder": "Rob",
+    "Rhett Lowder": "FA",
     "Carmen Mlodzinski": "FA",
     "Cade Cavalli": "FA",
     "Joe Boyle": "FA",
@@ -600,6 +600,7 @@
     "Adrian Morejon": "FA",
     "Cionel Pérez": "FA",
     "Ildemaro Vargas": "Shane",
-    "Andrew Painter": "Luke"
+    "Andrew Painter": "Luke",
+    "Kenley Jansen": "Sam"
   }
 }
