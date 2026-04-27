@@ -262,6 +262,96 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
   .modal-name{font-size:22px;}
 }
 
+/* ══════════════════════ POWER RANKINGS ══════════════════════ */
+.pr-hero{margin-bottom:24px;}
+.pr-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.pr-title{font-family:var(--font-display);font-size:32px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1;}
+.pr-title span{color:var(--accent);}
+.pr-sub{font-size:13px;color:var(--text-muted);margin-top:6px;}
+
+/* Disclaimer banner */
+.pr-disclaimer{background:linear-gradient(180deg,rgba(0,200,232,0.05),rgba(0,200,232,0.02));border:1px solid rgba(0,200,232,0.2);border-left:3px solid var(--accent);border-radius:var(--radius);padding:14px 18px;margin:20px 0 24px;display:flex;align-items:flex-start;gap:12px;}
+.pr-disclaimer-icon{flex-shrink:0;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--accent);line-height:1;margin-top:1px;}
+.pr-disclaimer-body{font-size:13px;color:var(--text-dim);line-height:1.55;}
+.pr-disclaimer-body strong{color:var(--text);font-weight:500;}
+
+/* Input form */
+.pr-form{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:28px;}
+.pr-form-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;display:block;}
+.pr-form-row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap;}
+.pr-input{flex:1;min-width:180px;background:var(--bg);border:1px solid var(--border-accent);border-radius:var(--radius);padding:10px 14px;font-family:var(--font-body);font-size:14px;color:var(--text);transition:border-color .15s;}
+.pr-input::placeholder{color:var(--text-muted);}
+.pr-input:focus{outline:none;border-color:var(--accent);}
+.pr-submit{font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 22px;background:var(--accent);color:#0d1a2e;border:none;border-radius:var(--radius);cursor:pointer;transition:opacity .15s,transform .1s;}
+.pr-submit:hover{opacity:.9;}
+.pr-submit:active{transform:translateY(1px);}
+.pr-submit:disabled{opacity:.5;cursor:not-allowed;}
+.pr-help{font-size:12px;color:var(--text-muted);margin-top:10px;line-height:1.5;}
+.pr-help a{color:var(--accent);text-decoration:none;}
+.pr-help a:hover{text-decoration:underline;}
+
+/* Status / loading / error */
+.pr-status{padding:24px;text-align:center;border:1px dashed var(--border);border-radius:var(--radius);margin:20px 0;}
+.pr-status-loading{font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);}
+.pr-status-loading::after{content:'';display:inline-block;width:8px;animation:dots 1.4s infinite;}
+@keyframes dots{0%,20%{content:'';}40%{content:'.';}60%{content:'..';}80%,100%{content:'...';}}
+.pr-error{background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);color:#fca5a5;border-radius:var(--radius);padding:14px 18px;margin:16px 0;font-size:13px;line-height:1.5;}
+.pr-error strong{color:#f87171;font-weight:600;}
+
+/* Results header */
+.pr-results-meta{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin:8px 0 14px;}
+.pr-league-name{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--text);line-height:1.1;letter-spacing:-.3px;}
+.pr-league-meta{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.pr-reset-btn{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:var(--radius);padding:6px 12px;cursor:pointer;transition:color .15s,border-color .15s;}
+.pr-reset-btn:hover{color:var(--text);border-color:var(--border-accent);}
+
+/* Power rankings table */
+.pr-table-wrap{overflow-x:auto;}
+table.pr-table{width:100%;border-collapse:collapse;font-size:13px;}
+table.pr-table thead tr{border-bottom:1px solid var(--border-accent);}
+table.pr-table th{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:10px 10px;text-align:left;white-space:nowrap;}
+table.pr-table th.num{text-align:right;}
+table.pr-table tbody tr{border-bottom:1px solid var(--border);transition:background .12s;}
+table.pr-table tbody tr:hover{background:rgba(255,255,255,0.025);}
+table.pr-table td{padding:12px 10px;vertical-align:middle;}
+table.pr-table td.num{text-align:right;font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text);}
+
+.pr-rank-cell{font-family:var(--font-display);font-size:22px;font-weight:800;width:50px;text-align:center;}
+.pr-rank-1{color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,0.3);}
+.pr-rank-2{color:#cbd5e1;}
+.pr-rank-3{color:#d97706;}
+.pr-rank-other{color:var(--text-muted);}
+
+.pr-team-cell{min-width:180px;}
+.pr-team-name{font-size:14px;font-weight:500;color:var(--text);line-height:1.2;}
+.pr-team-owner{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+.pr-change-pos{color:var(--green);}
+.pr-change-neg{color:var(--red);}
+.pr-change-neutral{color:var(--text-muted);}
+
+.pr-best-cell{font-size:12px;color:var(--text-dim);min-width:140px;line-height:1.3;}
+.pr-best-cell .player-link{color:var(--text-dim);}
+.pr-best-cell .player-link:hover{color:var(--accent);}
+.pr-best-score{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--accent);margin-left:6px;}
+
+/* Match stat bar */
+.pr-match-stat{font-size:11px;color:var(--text-muted);margin-top:6px;text-align:right;}
+
+/* Roster expand row */
+.pr-team-row{cursor:pointer;}
+.pr-roster-row td{background:rgba(0,0,0,0.18);padding:12px 14px;}
+.pr-roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px;}
+.pr-roster-item{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:var(--surface2);border-radius:4px;font-size:12px;}
+.pr-roster-name{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;}
+.pr-roster-name:hover{color:var(--accent);}
+.pr-roster-name.unmatched{color:var(--text-muted);font-style:italic;cursor:default;}
+.pr-roster-name.unmatched:hover{color:var(--text-muted);}
+.pr-roster-score{font-family:var(--font-display);font-weight:700;color:var(--accent);margin-left:8px;flex-shrink:0;}
+.pr-roster-score.unmatched{color:var(--text-muted);}
+.pr-expand-icon{display:inline-block;color:var(--text-muted);font-size:10px;margin-right:6px;transition:transform .15s;}
+.pr-team-row.expanded .pr-expand-icon{transform:rotate(90deg);color:var(--accent);}
+
 /* Footer */
 footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted);}
 
@@ -294,6 +384,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     <button class="nav-tab" onclick="showPage('overall',this)">Overall Player Rankings</button>
     <button class="nav-tab" onclick="showPage('risers',this)">Risers &amp; Fallers</button>
     <button class="nav-tab" onclick="showPage('weekly',this)">Top Scorers</button>
+    <button class="nav-tab" onclick="showPage('power',this)">Power Rankings</button>
     
   </nav>
 </header>
@@ -507,6 +598,63 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
         <tbody id="weekly-pit-tbody"></tbody>
       </table>
     </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════ POWER RANKINGS ══════════════════════ -->
+<div id="page-power" class="page">
+  <div class="pr-hero">
+    <div class="pr-eyebrow">League View</div>
+    <div class="pr-title">Power <span>Rankings</span></div>
+    <div class="pr-sub">Re-rank your league by true Kev Score value &mdash; not the standings ESPN shows you.</div>
+  </div>
+
+  <div class="pr-disclaimer">
+    <div class="pr-disclaimer-icon">ⓘ</div>
+    <div class="pr-disclaimer-body">
+      <strong>Currently supports ESPN public leagues only.</strong>
+      Private league? You'll need to flip your league to public in your settings, or wait &mdash; private league support is coming soon. Yahoo and Sleeper are on the roadmap. League IDs are not stored or transmitted to KevScores servers; they're sent directly from your browser to ESPN.
+    </div>
+  </div>
+
+  <div class="pr-form" id="pr-form">
+    <label class="pr-form-label" for="pr-league-id">ESPN League ID</label>
+    <div class="pr-form-row">
+      <input id="pr-league-id" class="pr-input" type="text" inputmode="numeric" placeholder="e.g. 1234567890" autocomplete="off">
+      <button id="pr-submit-btn" class="pr-submit" onclick="loadPowerRankings()">Load League</button>
+    </div>
+    <div class="pr-help">
+      Find your league ID in the URL when you visit your ESPN fantasy baseball league &mdash; it's the number after <code style="color:var(--text-dim);background:var(--surface2);padding:1px 5px;border-radius:3px;">leagueId=</code> in the address bar.
+    </div>
+  </div>
+
+  <div id="pr-status-area"></div>
+  <div id="pr-results" style="display:none;">
+    <div class="pr-results-meta">
+      <div>
+        <div class="pr-league-name" id="pr-league-name">&mdash;</div>
+        <div class="pr-league-meta" id="pr-league-info">&mdash;</div>
+      </div>
+      <button class="pr-reset-btn" onclick="resetPowerRankings()">↺ Load a different league</button>
+    </div>
+    <div class="pr-table-wrap">
+      <table class="pr-table">
+        <thead>
+          <tr>
+            <th style="text-align:center;">#</th>
+            <th>Team</th>
+            <th class="num">Total Kev</th>
+            <th class="num" title="Sum of 7-day Kev Score changes across the roster">7&#8209;Day Δ</th>
+            <th class="num">Avg / Player</th>
+            <th>Top Batter</th>
+            <th>Top Pitcher</th>
+          </tr>
+        </thead>
+        <tbody id="pr-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pr-match-stat" id="pr-match-stat"></div>
   </div>
 </div>
 
@@ -1134,19 +1282,10 @@ function renderOverall() {
   let rows = [...OVERALL];
 
   if (overallTypeFilter !== 'all') rows = rows.filter(p => p.type === overallTypeFilter);
-  if (overallPositionFilter) {
-    const target = overallPositionFilter.toUpperCase();
-    // OF filter also matches LF/CF/RF in case eligibility strings split outfielders
-    const ofAliases = new Set(['OF', 'LF', 'CF', 'RF']);
-    rows = rows.filter(p => {
-      const eligibility = (p.pos || p.kevRating || '').toUpperCase();
-      if (!eligibility) return false;
-      // Split on '/' (and a few other reasonable separators) so '1B/3B' becomes ['1B','3B']
-      const tokens = eligibility.split(/[\/,|\s]+/).map(t => t.trim()).filter(Boolean);
-      if (target === 'OF') return tokens.some(t => ofAliases.has(t));
-      return tokens.includes(target);
-    });
-  }
+  if (overallPositionFilter) rows = rows.filter(p => {
+    const posRank = (p.kevRating || '').toUpperCase();
+    return posRank.includes(overallPositionFilter.toUpperCase());
+  });
   if (query) rows = rows.filter(p => p.name.toLowerCase().includes(query) || p.mlbTeam.toLowerCase().includes(query));
 
   const key = overallSort.key;
@@ -1416,6 +1555,344 @@ function renderWeekly() {
     ? pitchers.map((p, i) => row(p, i)).join('')
     : noDataMsg;
 }
+
+
+// ══════════════════════════════════════
+// POWER RANKINGS
+// ══════════════════════════════════════
+// Fetches an ESPN public league's rosters, matches every player against
+// our PLAYERS data by normalized name, then aggregates Kev Scores by team.
+//
+// Architecture notes:
+// - Direct browser fetch to lm-api-reads.fantasy.espn.com (CORS-permissive
+//   in our testing). Falls back to a clear error message if blocked.
+// - League ID is persisted to localStorage so returning users skip the form.
+// - Name matching mirrors the Python normalize() in public_updater.py:
+//   lowercase, strip accents/punctuation, collapse Jr/Sr/II/III suffixes.
+const PR_LS_KEY = 'kevscores_power_rankings_league';
+const PR_SEASON = 2026;
+
+// Build a lookup map (normalized name -> player object) once when data loads.
+// Lazy-initialized on first call.
+let PR_PLAYER_MAP = null;
+function buildPlayerMap() {
+  PR_PLAYER_MAP = new Map();
+  // Use OVERALL since it has fantasy team aggregation fields and matches the
+  // dataset shown elsewhere on the site. Fall back to PLAYERS if needed.
+  const source = (OVERALL && OVERALL.length) ? OVERALL : PLAYERS;
+  for (const p of source) {
+    if (!p || !p.name) continue;
+    const key = prNormalize(p.name);
+    if (key) PR_PLAYER_MAP.set(key, p);
+  }
+}
+
+function prNormalize(name) {
+  if (!name) return '';
+  let s = String(name).toLowerCase().trim();
+  // Strip accents (NFD-style)
+  s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // Strip common punctuation
+  s = s.replace(/[.,'"]/g, '').replace(/-/g, ' ');
+  // Strip Jr/Sr/II/III suffixes at word boundaries
+  s = s.replace(/\b(jr|sr|ii|iii|iv)\b/g, '');
+  // Collapse whitespace
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
+function setPRStatus(html) {
+  document.getElementById('pr-status-area').innerHTML = html;
+}
+
+function clearPRStatus() {
+  document.getElementById('pr-status-area').innerHTML = '';
+}
+
+function resetPowerRankings() {
+  document.getElementById('pr-results').style.display = 'none';
+  document.getElementById('pr-form').style.display = 'block';
+  clearPRStatus();
+  document.getElementById('pr-league-id').value = '';
+  document.getElementById('pr-league-id').focus();
+}
+
+async function loadPowerRankings() {
+  const inputEl = document.getElementById('pr-league-id');
+  const btn     = document.getElementById('pr-submit-btn');
+  const raw     = (inputEl.value || '').trim();
+  // ESPN league IDs are integers — strip anything else just in case the user
+  // pasted the whole URL.
+  const match    = raw.match(/(\d{4,})/);
+  const leagueId = match ? match[1] : '';
+
+  if (!leagueId) {
+    setPRStatus(`<div class="pr-error"><strong>That doesn't look like a league ID.</strong> League IDs are usually 6&ndash;10 digit numbers. You can paste the full ESPN URL and we'll extract it.</div>`);
+    return;
+  }
+
+  // Make sure player data is loaded — the page may have been opened before
+  // the async fetch in the page header completes.
+  if (!OVERALL || !OVERALL.length) {
+    setPRStatus(`<div class="pr-status pr-status-loading">Player data still loading</div>`);
+    for (let i = 0; i < 30; i++) {
+      await new Promise(r => setTimeout(r, 150));
+      if (OVERALL && OVERALL.length) break;
+    }
+    if (!OVERALL || !OVERALL.length) {
+      setPRStatus(`<div class="pr-error"><strong>Player data hasn't loaded yet.</strong> Refresh the page and try again.</div>`);
+      return;
+    }
+  }
+  if (!PR_PLAYER_MAP) buildPlayerMap();
+
+  btn.disabled = true;
+  setPRStatus(`<div class="pr-status pr-status-loading">Fetching league from ESPN</div>`);
+
+  const url = `https://lm-api-reads.fantasy.espn.com/apis/v3/games/flb/seasons/${PR_SEASON}/segments/0/leagues/${encodeURIComponent(leagueId)}?view=mTeam&view=mRoster`;
+
+  let data;
+  try {
+    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (resp.status === 401) throw new Error('PRIVATE');
+    if (resp.status === 404) throw new Error('NOT_FOUND');
+    if (!resp.ok) throw new Error('HTTP_' + resp.status);
+    data = await resp.json();
+  } catch (err) {
+    btn.disabled = false;
+    if (err.message === 'PRIVATE') {
+      setPRStatus(`<div class="pr-error"><strong>This league is private.</strong> ESPN won't share private league rosters with KevScores. To use this feature, an owner can flip the league to public in League Settings &rarr; Visibility, or wait for our private league support (coming soon).</div>`);
+    } else if (err.message === 'NOT_FOUND') {
+      setPRStatus(`<div class="pr-error"><strong>Couldn't find league <code>${escapeHtml(leagueId)}</code>.</strong> Double-check the ID in your league's URL.</div>`);
+    } else if (err.message && err.message.startsWith('HTTP_')) {
+      setPRStatus(`<div class="pr-error"><strong>ESPN returned an error</strong> (${escapeHtml(err.message)}). Try again in a moment.</div>`);
+    } else {
+      // Most likely a CORS / network error
+      setPRStatus(`<div class="pr-error"><strong>Couldn't reach ESPN.</strong> This is usually a network or browser issue. If it keeps happening, your league may be private or ESPN's API may be temporarily unavailable.</div>`);
+    }
+    return;
+  }
+
+  // ESPN payload shape:
+  //   data.teams[]      = teams in the league (id, name, location, nickname, owners[], roster.entries[])
+  //   data.members[]    = league members (id, displayName, firstName, lastName)
+  //   .roster.entries[].playerPoolEntry.player.fullName
+  if (!data || !Array.isArray(data.teams) || !data.teams.length) {
+    btn.disabled = false;
+    setPRStatus(`<div class="pr-error"><strong>League loaded but no teams were found.</strong> The season may not have started yet, or ESPN returned an unexpected shape.</div>`);
+    return;
+  }
+
+  // Build owner-id → owner-name map
+  const ownerMap = {};
+  if (Array.isArray(data.members)) {
+    for (const m of data.members) {
+      const name = m.displayName
+        || [m.firstName, m.lastName].filter(Boolean).join(' ').trim()
+        || 'Owner';
+      ownerMap[m.id] = name;
+    }
+  }
+
+  // Process each team
+  const teams = [];
+  let totalMatched = 0;
+  let totalUnmatched = 0;
+
+  for (const t of data.teams) {
+    const teamName = (t.name && String(t.name).trim())
+      || [t.location, t.nickname].filter(Boolean).join(' ').trim()
+      || ('Team ' + t.id);
+
+    const ownerIds = t.owners || (t.primaryOwner ? [t.primaryOwner] : []);
+    const ownerName = ownerIds.length ? (ownerMap[ownerIds[0]] || '') : '';
+
+    const entries = (t.roster && Array.isArray(t.roster.entries)) ? t.roster.entries : [];
+    const players = [];
+    let totalKev = 0;
+    let totalChange = 0;
+    let bestBatter = null;
+    let bestPitcher = null;
+
+    for (const e of entries) {
+      const pe = e.playerPoolEntry || {};
+      const pl = pe.player || {};
+      const fullName = pl.fullName || '';
+      if (!fullName) continue;
+
+      const norm = prNormalize(fullName);
+      const matched = PR_PLAYER_MAP.get(norm);
+
+      if (matched) {
+        totalMatched++;
+        const kev = Number(matched.kevScore || 0);
+        const chg = Number(matched.kevChange7d || 0);
+        totalKev += kev;
+        if (!Number.isNaN(chg)) totalChange += chg;
+        const isPitcher = matched.type === 'Pitcher';
+        if (isPitcher) {
+          if (!bestPitcher || kev > bestPitcher.kevScore) bestPitcher = matched;
+        } else if (matched.type === 'Batter') {
+          if (!bestBatter || kev > bestBatter.kevScore) bestBatter = matched;
+        }
+        players.push({ name: matched.name, kevScore: kev, type: matched.type, matched: true });
+      } else {
+        totalUnmatched++;
+        players.push({ name: fullName, kevScore: 0, type: '', matched: false });
+      }
+    }
+
+    teams.push({
+      id: t.id,
+      teamName,
+      ownerName,
+      totalKev,
+      totalChange,
+      avgPlayer: players.length ? totalKev / players.length : 0,
+      playerCount: players.length,
+      matchedCount: players.filter(p => p.matched).length,
+      bestBatter,
+      bestPitcher,
+      players,
+    });
+  }
+
+  // Sort by total Kev Score, descending — that's the power ranking
+  teams.sort((a, b) => b.totalKev - a.totalKev);
+  teams.forEach((t, i) => t.rank = i + 1);
+
+  // Persist league ID for next visit
+  try { localStorage.setItem(PR_LS_KEY, leagueId); } catch (_) { /* private mode */ }
+
+  // Render
+  btn.disabled = false;
+  clearPRStatus();
+  renderPowerRankings({
+    leagueId,
+    leagueName: (data.settings && data.settings.name) || ('League ' + leagueId),
+    teams,
+    totalMatched,
+    totalUnmatched,
+    season: data.seasonId || PR_SEASON,
+  });
+}
+
+let PR_RENDERED_TEAMS = []; // kept around so the expand-row toggle can find them
+
+function renderPowerRankings(payload) {
+  PR_RENDERED_TEAMS = payload.teams;
+  document.getElementById('pr-form').style.display = 'none';
+  document.getElementById('pr-results').style.display = 'block';
+
+  document.getElementById('pr-league-name').textContent = payload.leagueName;
+  document.getElementById('pr-league-info').innerHTML =
+    `${payload.season} season &middot; ${payload.teams.length} teams &middot; League ID <code style="color:var(--text-dim);">${escapeHtml(payload.leagueId)}</code>`;
+
+  const tbody = document.getElementById('pr-tbody');
+  tbody.innerHTML = payload.teams.map((t, i) => {
+    const rankClass = t.rank === 1 ? 'pr-rank-1' : t.rank === 2 ? 'pr-rank-2' : t.rank === 3 ? 'pr-rank-3' : 'pr-rank-other';
+    const chgClass = t.totalChange > 0.05 ? 'pr-change-pos' : t.totalChange < -0.05 ? 'pr-change-neg' : 'pr-change-neutral';
+    const chgSym   = t.totalChange > 0.05 ? '▲' : t.totalChange < -0.05 ? '▼' : '—';
+    const chgVal   = Math.abs(t.totalChange) < 0.05 ? '' : Math.abs(t.totalChange).toFixed(1);
+
+    const renderBest = (p) => {
+      if (!p) return `<span style="color:var(--text-muted);font-style:italic;font-size:11px;">&mdash;</span>`;
+      const safeName = p.name.replace(/'/g, "\\'");
+      return `<span class="player-link" onclick="event.stopPropagation();openPlayerModalByName('${safeName}')">${escapeHtml(p.name)}</span><span class="pr-best-score">${Number(p.kevScore).toFixed(1)}</span>`;
+    };
+
+    return `
+      <tr class="pr-team-row" data-team-idx="${i}" onclick="togglePRRoster(${i})">
+        <td><div class="pr-rank-cell ${rankClass}">${t.rank}</div></td>
+        <td class="pr-team-cell">
+          <div class="pr-team-name"><span class="pr-expand-icon">▶</span>${escapeHtml(t.teamName)}</div>
+          <div class="pr-team-owner">${t.ownerName ? escapeHtml(t.ownerName) : '<em>—</em>'}</div>
+        </td>
+        <td class="num">${t.totalKev.toFixed(1)}</td>
+        <td class="num ${chgClass}" style="font-size:13px;">${chgSym}${chgVal ? ' ' + chgVal : ''}</td>
+        <td class="num" style="color:var(--text-dim);">${t.avgPlayer.toFixed(1)}</td>
+        <td class="pr-best-cell">${renderBest(t.bestBatter)}</td>
+        <td class="pr-best-cell">${renderBest(t.bestPitcher)}</td>
+      </tr>`;
+  }).join('');
+
+  // Match-stat footer
+  const matchStat = document.getElementById('pr-match-stat');
+  const total = payload.totalMatched + payload.totalUnmatched;
+  if (total > 0) {
+    const pct = ((payload.totalMatched / total) * 100).toFixed(0);
+    matchStat.innerHTML = `Matched <strong style="color:var(--text-dim);">${payload.totalMatched}</strong> of <strong style="color:var(--text-dim);">${total}</strong> rostered players (${pct}%). Click a team for the full roster.`;
+  } else {
+    matchStat.innerHTML = '';
+  }
+}
+
+function togglePRRoster(idx) {
+  const tbody = document.getElementById('pr-tbody');
+  const teamRow = tbody.querySelector(`tr.pr-team-row[data-team-idx="${idx}"]`);
+  if (!teamRow) return;
+
+  // Toggle: if next sibling is the roster row for this team, remove it
+  const next = teamRow.nextElementSibling;
+  if (next && next.classList.contains('pr-roster-row') && next.dataset.teamIdx === String(idx)) {
+    next.remove();
+    teamRow.classList.remove('expanded');
+    return;
+  }
+
+  // Close any other open roster row (only one expanded at a time)
+  tbody.querySelectorAll('tr.pr-roster-row').forEach(r => r.remove());
+  tbody.querySelectorAll('tr.pr-team-row.expanded').forEach(r => r.classList.remove('expanded'));
+
+  const team = PR_RENDERED_TEAMS[idx];
+  if (!team) return;
+
+  // Sort roster by score desc, with unmatched players at the bottom
+  const sorted = [...team.players].sort((a, b) => {
+    if (a.matched !== b.matched) return a.matched ? -1 : 1;
+    return b.kevScore - a.kevScore;
+  });
+
+  const rosterHtml = sorted.map(p => {
+    if (!p.matched) {
+      return `<div class="pr-roster-item">
+        <span class="pr-roster-name unmatched" title="No match in our database — likely a recent call-up or a player not yet ranked">${escapeHtml(p.name)}</span>
+        <span class="pr-roster-score unmatched">—</span>
+      </div>`;
+    }
+    const safeName = p.name.replace(/'/g, "\\'");
+    return `<div class="pr-roster-item">
+      <span class="pr-roster-name" onclick="openPlayerModalByName('${safeName}')">${escapeHtml(p.name)}</span>
+      <span class="pr-roster-score">${p.kevScore.toFixed(1)}</span>
+    </div>`;
+  }).join('');
+
+  const rosterRow = document.createElement('tr');
+  rosterRow.className = 'pr-roster-row';
+  rosterRow.dataset.teamIdx = String(idx);
+  rosterRow.innerHTML = `<td colspan="7"><div class="pr-roster-grid">${rosterHtml}</div></td>`;
+  teamRow.classList.add('expanded');
+  teamRow.parentNode.insertBefore(rosterRow, teamRow.nextSibling);
+}
+
+// On page load: prefill the input with the user's saved league ID (if any)
+// and bind Enter-to-submit. We don't auto-fetch — let the user click.
+(function initPowerRankings() {
+  try {
+    const saved = localStorage.getItem(PR_LS_KEY);
+    if (saved) {
+      const inp = document.getElementById('pr-league-id');
+      if (inp) inp.value = saved;
+    }
+  } catch (_) { /* ignore */ }
+
+  const input = document.getElementById('pr-league-id');
+  if (input) {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); loadPowerRankings(); }
+    });
+  }
+})();
 
 
 </script>
