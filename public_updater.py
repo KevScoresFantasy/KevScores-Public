@@ -992,7 +992,7 @@ def build_json(rows, weekly_prev, il_statuses=None):
         if isinstance(wp, dict) and "fp" in wp:
             baseline_fp = int(round(wp["fp"]))
             fp_weekly = current_fp - baseline_fp
-            fp_prev_week = int(round(wp["prev_week_fp"])) if "prev_week_fp" in wp else None
+            fp_prev_week = int(round(wp["prev_week_fp"])) if wp.get("prev_week_fp") is not None else None
         else:
             baseline_fp = current_fp
             fp_weekly = None
