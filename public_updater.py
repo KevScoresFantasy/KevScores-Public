@@ -504,6 +504,47 @@ def convert_ip(ip):
         return whole + (2 / 3)
     return ip
 
+# ── Sample-size shrinkage ──
+# Per-game fantasy points get pulled toward the league average for players
+# with small samples. This prevents a 1-game wonder from outranking a proven
+# producer based on a single hot day. Math:
+#
+#   adjusted_fp_pg = (n × actual_fp_pg + k × prior_fp_pg) / (n + k)
+#
+# Where n is the player's accumulated playing time (games for batters, IP
+# for pitchers — IP is the better signal for pitchers because it's role-
+# agnostic; a starter and a reliever are comparable on IP, not on G/GS).
+# k controls "stubbornness" of the prior — how many games of league-average
+# we're effectively adding before trusting the player's own rate.
+#
+# At the eligibility threshold (≈5 G batter / 5 IP pitcher), shrinkage is
+# ~70-80% toward the prior — heavily smoothed. By 30+ G / 30+ IP, the
+# player's own rate dominates (>70%). By full-season volume, shrinkage is
+# essentially invisible. This is intentionally one-sided in feel: small
+# samples get reined in, large samples are left alone.
+SHRINK_K_BATTERS = 12   # games of league-average prior for batters
+SHRINK_K_PITCHERS = 25  # innings of league-average prior for pitchers
+
+
+def _league_avg_fp_pg(per_game_dict):
+    """Mean per-game FP across all eligible players, used as the shrinkage
+    prior. Ineligible players (None) are excluded so they don't drag the
+    mean down. Returns 0.0 if no eligible players (defensive — nothing to
+    shrink toward at that point)."""
+    vals = [v for v in per_game_dict.values() if v is not None]
+    return (sum(vals) / len(vals)) if vals else 0.0
+
+
+def _shrink(actual_fp_pg, n, k, prior_fp_pg):
+    """Empirical-Bayes shrinkage of a per-game rate toward a league prior.
+    Returns None if input is None (i.e. ineligible — preserve that signal)."""
+    if actual_fp_pg is None:
+        return None
+    if n <= 0:
+        return prior_fp_pg
+    return round((n * actual_fp_pg + k * prior_fp_pg) / (n + k), 3)
+
+
 def compute_fp(rows, sheet_type):
     """
     Returns (fp_total, fp_per_game, eligible) dicts.
@@ -587,12 +628,33 @@ def compute_sorare(rows, sheet_type):
     return sorare_total, sorare_pg
 
 
-def rank_scores(fp_per_game_dict):
+def rank_scores(fp_per_game_dict, sample_size_dict=None, k=0):
     """
     Rank scores from per-game FP — only eligible players ranked.
     Ineligible players get rank_score=None.
+
+    When sample_size_dict and k are provided, applies empirical-Bayes
+    shrinkage before ranking: each player's per-game FP is pulled toward
+    the league mean by a factor of k/(n+k). This prevents 1-game wonders
+    from outranking proven producers based on tiny samples. The DISPLAYED
+    fpPG on the site is unaffected — only the ranking input is shrunken.
+
+    sample_size_dict: {norm: n} where n is games (batters) or IP (pitchers).
+    k: shrinkage strength. Higher = more pull toward the prior. k=0 disables.
     """
-    eligible_items = [(n, v) for n, v in fp_per_game_dict.items() if v is not None]
+    # Apply shrinkage if requested
+    ranking_dict = fp_per_game_dict
+    if sample_size_dict and k > 0:
+        prior = _league_avg_fp_pg(fp_per_game_dict)
+        ranking_dict = {}
+        for norm, fpg in fp_per_game_dict.items():
+            if fpg is None:
+                ranking_dict[norm] = None
+                continue
+            n = sample_size_dict.get(norm, 0) or 0
+            ranking_dict[norm] = _shrink(fpg, n, k, prior)
+
+    eligible_items = [(n, v) for n, v in ranking_dict.items() if v is not None]
     eligible_items.sort(key=lambda x: -x[1])
     n = len(eligible_items)
     rs = {}
@@ -1185,8 +1247,16 @@ def main():
     pit_fp_total, pit_fp_pg, pit_elig = compute_fp(pitching, "pitching")
     bat_sr_total, bat_sr_pg = compute_sorare(batting, "batting")
     pit_sr_total, pit_sr_pg = compute_sorare(pitching, "pitching")
-    bat_rs = rank_scores(bat_fp_pg)
-    pit_rs = rank_scores(pit_fp_pg)
+
+    # Sample sizes for shrinkage: games for batters, IP for pitchers.
+    # IP is the right unit for pitchers because it's role-agnostic — a
+    # starter with 5 starts (≈30 IP) is more reliable than a reliever with
+    # 5 appearances (≈5 IP), and IP captures that gap.
+    bat_n = {norm: float(r.get("G", 0) or 0) for norm, r in batting.items()}
+    pit_n = {norm: convert_ip(r.get("IP", 0)) for norm, r in pitching.items()}
+
+    bat_rs = rank_scores(bat_fp_pg, bat_n, SHRINK_K_BATTERS)
+    pit_rs = rank_scores(pit_fp_pg, pit_n, SHRINK_K_PITCHERS)
 
     print(f"  Current week: {get_week_number()} (stat weight: {min(20 + (get_week_number() - 1), 46)}%)")
     print(f"  Eligible batters: {sum(bat_elig.values())} / {len(bat_elig)}")
