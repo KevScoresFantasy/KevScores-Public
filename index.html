@@ -62,6 +62,25 @@ h1 span{color:var(--accent);}
 .header-meta{font-size:13px;color:var(--text-muted);margin-top:6px;}
 .header-badge{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(77,166,255,0.3);border-radius:20px;color:var(--accent);background:var(--accent-dim);text-decoration:none;cursor:pointer;}
 
+/* Referral card — config-driven block in the header.
+   Looks intentional, on-brand, native to the existing header system.
+   Slightly larger than .header-badge because it carries more content
+   (logo + code + support copy). */
+.ref-card{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-width:0;}
+.ref-card:hover{border-color:rgba(0,200,232,0.4);background:rgba(0,200,232,0.04);}
+.ref-card-logo{width:28px;height:28px;flex-shrink:0;border-radius:6px;object-fit:cover;background:var(--surface2);}
+.ref-card-body{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.ref-card-line1{font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);line-height:1;}
+.ref-card-line2{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:.02em;}
+.ref-card-line2 .ref-code{color:var(--accent);}
+.ref-card-line3{font-size:10px;color:var(--text-muted);line-height:1.2;margin-top:2px;}
+@media(max-width:640px){
+  .ref-card{padding:6px 10px;gap:8px;}
+  .ref-card-logo{width:24px;height:24px;}
+  .ref-card-line2{font-size:12px;}
+  .ref-card-line3{display:none;}
+}
+
 /* Nav */
 .nav-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;}
 .nav-tab{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;background:none;border:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
@@ -422,6 +441,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
       <a href="https://www.mlb.com/scores" target="_blank" rel="noopener" class="header-badge">Today's Live Scores ↗</a>
       <a href="https://x.com/KevScores" target="_blank" rel="noopener" class="header-badge">Follow @KevScores ↗</a>
+      <div id="referral-container" style="margin-top:2px;"></div>
     </div>
   </div>
   <nav class="nav-tabs">
@@ -779,6 +799,39 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 <script>
 const LAST_UPDATED = "Apr 26, 2026 10:30 AM ET";
 document.getElementById('last-updated').textContent = LAST_UPDATED;
+
+// ══════════════════════════════════════
+// REFERRALS — header partner block
+// ══════════════════════════════════════
+// Config-driven so swapping codes (or adding more partners later) is one
+// edit. When real affiliate approvals come through, swap `code` and `url`
+// here and the rendered card updates automatically. Adding a 2nd entry
+// stacks it below the first; the styling already supports multiple.
+const REFERRALS = [
+  {
+    name:    'Sleeper',
+    eyebrow: 'Partner',
+    logo:    'sleeper-head.png',     // square logo file in repo root
+    code:    'RF-KEVSCORES',
+    url:     'https://sleeper.onelink.me/s6xz/prgg?promo=RF-KEVSCORES',
+    copy:    'Sign up with my code — help keep KevScores free',
+  },
+];
+
+(function renderReferrals() {
+  const container = document.getElementById('referral-container');
+  if (!container || !REFERRALS.length) return;
+  container.innerHTML = REFERRALS.map(r => `
+    <a href="${r.url}" target="_blank" rel="noopener sponsored" class="ref-card" title="${escapeHtml(r.copy)}">
+      <img src="${r.logo}" alt="${escapeHtml(r.name)} logo" class="ref-card-logo" onerror="this.style.display='none'">
+      <div class="ref-card-body">
+        <div class="ref-card-line1">${escapeHtml(r.eyebrow)}</div>
+        <div class="ref-card-line2">${escapeHtml(r.name)} &middot; <span class="ref-code">${escapeHtml(r.code)}</span></div>
+        <div class="ref-card-line3">${escapeHtml(r.copy)}</div>
+      </div>
+    </a>
+  `).join('');
+})();
 
 // IL status code → human-readable label (used in the badge tooltip)
 const IL_LABEL_BY_CODE = {
