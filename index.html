@@ -216,8 +216,34 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 
 /* Badge tooltips inside the modal — let them wrap so they don't get
    clipped by the modal's overflow:auto. The fixed max-width keeps them
-   readable; line-height stays the same as the original nowrap version. */
-.modal-sub [class$="-tip"]{white-space:normal !important;width:max-content;max-width:240px;text-align:center;}
+   readable. We also let the modal-sub badge row allow tooltip overflow
+   above the row (modal-card still clips, which is intentional). */
+.modal-sub{overflow:visible;}
+.modal-sub [class$="-tip"]{
+  white-space:normal !important;
+  width:max-content;
+  max-width:260px;
+  text-align:center;
+  z-index:100;
+  /* Render BELOW the pill — modal top is too close, but below has room. */
+  top:calc(100% + 8px) !important;
+  bottom:auto !important;
+}
+/* Flip the arrow indicator to point UP (toward the pill above the tooltip)
+   instead of down. The base rules render an upward triangle from the
+   bottom edge of the tooltip — we move it to the top edge and flip color. */
+.modal-sub [class$="-tip"]::after{
+  top:auto !important;
+  bottom:100% !important;
+  border-top-color:transparent !important;
+}
+.modal-sub .pill-boost .boost-tip::after{border-bottom-color:rgba(250,204,21,0.45);}
+.modal-sub .pill-il-mild .il-tip::after{border-bottom-color:rgba(249,115,22,0.45);}
+.modal-sub .pill-il-severe .il-tip::after{border-bottom-color:rgba(239,68,68,0.45);}
+.modal-sub .pill-star .star-tip::after{border-bottom-color:rgba(168,85,247,0.5);}
+.modal-sub .pill-hot .hot-tip::after{border-bottom-color:rgba(255,87,34,0.5);}
+.modal-sub .pill-cold .cold-tip::after{border-bottom-color:rgba(59,130,246,0.5);}
+.modal-sub .pill-fp .fp-tip::after{border-bottom-color:rgba(34,197,94,0.5);}
 .type-bat{color:var(--green);}
 .type-pit{color:var(--accent);}
 .val-pos{color:var(--green);}
@@ -244,7 +270,7 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .modal-name{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:-.4px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .modal-sub{margin-top:4px;color:var(--text-muted);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .pill{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);}
-.pill-boost{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(250,204,21,0.22),rgba(250,204,21,0.12));color:#fbbf24;border:1px solid rgba(250,204,21,0.45);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-boost{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(250,204,21,0.22),rgba(250,204,21,0.12));color:#fbbf24;border:1px solid rgba(250,204,21,0.45);display:inline-flex;align-items:center;gap:4px;cursor:default;}
 .pill-boost::before{content:"★";font-size:10px;line-height:1;}
 .pill-boost .boost-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(250,204,21,0.45);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
 .pill-boost .boost-tip strong{color:#fbbf24;font-weight:700;}
@@ -252,7 +278,7 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-boost:hover .boost-tip{opacity:1;}
 
 /* IL (Injured List) badges — mirror pill-boost structure but severity-colored */
-.pill-il{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-il{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;display:inline-flex;align-items:center;gap:4px;cursor:default;}
 .pill-il::before{content:"+";font-size:12px;line-height:1;font-weight:900;}
 .pill-il .il-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
 .pill-il .il-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;}
@@ -269,7 +295,7 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-il-severe .il-tip::after{border-top-color:rgba(239,68,68,0.45);}
 
 /* Superstar badge — top-10 overall Kev Rank (purple) */
-.pill-star{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(168,85,247,0.28),rgba(168,85,247,0.14));color:#c084fc;border:1px solid rgba(168,85,247,0.5);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-star{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(168,85,247,0.28),rgba(168,85,247,0.14));color:#c084fc;border:1px solid rgba(168,85,247,0.5);display:inline-flex;align-items:center;gap:4px;cursor:default;}
 .pill-star::before{content:"◆";font-size:10px;line-height:1;}
 .pill-star .star-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(168,85,247,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
 .pill-star .star-tip strong{color:#c084fc;font-weight:700;}
@@ -277,7 +303,7 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-star:hover .star-tip{opacity:1;}
 
 /* Hot badge — top-50 of the 7-day Risers list (bright red, distinct from IL red) */
-.pill-hot{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(255,87,34,0.28),rgba(255,87,34,0.14));color:#ff7043;border:1px solid rgba(255,87,34,0.5);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-hot{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(255,87,34,0.28),rgba(255,87,34,0.14));color:#ff7043;border:1px solid rgba(255,87,34,0.5);display:inline-flex;align-items:center;gap:4px;cursor:default;}
 .pill-hot::before{content:"🔥";font-size:11px;line-height:1;}
 .pill-hot .hot-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(255,87,34,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
 .pill-hot .hot-tip strong{color:#ff7043;font-weight:700;}
@@ -285,7 +311,7 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-hot:hover .hot-tip{opacity:1;}
 
 /* Cold badge — top-50 of the 7-day Fallers list (blue) */
-.pill-cold{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(59,130,246,0.28),rgba(59,130,246,0.14));color:#60a5fa;border:1px solid rgba(59,130,246,0.5);display:inline-flex;align-items:center;gap:4px;cursor:help;}
+.pill-cold{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(59,130,246,0.28),rgba(59,130,246,0.14));color:#60a5fa;border:1px solid rgba(59,130,246,0.5);display:inline-flex;align-items:center;gap:4px;cursor:default;}
 .pill-cold::before{content:"❄️";font-size:11px;line-height:1;}
 .pill-cold .cold-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(59,130,246,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
 .pill-cold .cold-tip strong{color:#60a5fa;font-weight:700;}
@@ -298,8 +324,8 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
    Slightly thicker border + cursor:pointer reinforce that it's clickable. */
 .pill-fp{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px 3px 4px;border-radius:999px;background:linear-gradient(180deg,rgba(34,197,94,0.22),rgba(34,197,94,0.12));color:#4ade80;border:1px solid rgba(34,197,94,0.5);display:inline-flex;align-items:center;gap:6px;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s;}
 .pill-fp:hover{background:linear-gradient(180deg,rgba(34,197,94,0.32),rgba(34,197,94,0.18));border-color:rgba(34,197,94,0.7);text-decoration:none;}
-.pill-fp .fp-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:rgba(13,18,24,0.7);border-radius:999px;flex-shrink:0;}
-.pill-fp .fp-icon img{width:14px;height:14px;object-fit:contain;display:block;}
+.pill-fp .fp-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:rgba(13,18,24,0.7);border-radius:999px;flex-shrink:0;overflow:hidden;}
+.pill-fp .fp-icon img{width:22px;height:22px;object-fit:contain;display:block;}
 .pill-fp::after{content:"↗";font-size:10px;font-weight:700;line-height:1;opacity:.7;}
 .pill-fp .fp-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(34,197,94,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
 .pill-fp .fp-tip strong{color:#4ade80;font-weight:700;}
