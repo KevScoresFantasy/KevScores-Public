@@ -74,6 +74,19 @@ h1 span{color:var(--accent);}
 .ref-card-line2{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:.02em;}
 .ref-card-line2 .ref-code{color:var(--accent);}
 .ref-card-line3{font-size:10px;color:var(--text-muted);line-height:1.2;margin-top:2px;}
+
+/* Carousel — wraps multiple .ref-card entries and rotates them.
+   Cards stack absolutely; only the active one is visible.
+   Dots below provide manual nav; auto-advance pauses on hover. */
+.ref-carousel{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:0;}
+.ref-carousel-stage{position:relative;min-width:0;}
+.ref-carousel-stage .ref-card{position:absolute;top:0;right:0;opacity:0;pointer-events:none;transition:opacity .35s ease;white-space:nowrap;}
+.ref-carousel-stage .ref-card.active{position:relative;opacity:1;pointer-events:auto;}
+.ref-carousel-dots{display:flex;gap:6px;}
+.ref-carousel-dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;transition:background .2s,transform .2s;}
+.ref-carousel-dot:hover{background:var(--text-muted);}
+.ref-carousel-dot.active{background:var(--accent);transform:scale(1.2);}
+
 @media(max-width:640px){
   .ref-card{padding:6px 10px;gap:8px;}
   .ref-card-logo{width:24px;height:24px;}
@@ -193,6 +206,13 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .kev-rank-cell{font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--accent);min-width:36px;}
 .kev-score-cell{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--text);}
 .pos-badge{font-size:10px;font-family:var(--font-display);font-weight:700;padding:2px 6px;border-radius:4px;background:var(--surface2);color:var(--text-dim);letter-spacing:.05em;}
+/* 7-day rank movement indicator shown to the left of the Kev Rank number */
+.rank-cell{display:inline-flex;align-items:center;gap:4px;}
+.rank-move{display:inline-flex;align-items:center;gap:1px;font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.02em;min-width:22px;}
+.rank-move.up{color:var(--green);}
+.rank-move.down{color:var(--red);}
+.rank-move .tri{font-size:9px;line-height:1;}
+.rank-move-spacer{display:inline-block;min-width:22px;}
 .type-bat{color:var(--green);}
 .type-pit{color:var(--accent);}
 .val-pos{color:var(--green);}
@@ -572,7 +592,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
         <tr>
           <th onclick="sortOverall('kevRank')" class="sorted" id="th-kevRank">Kev Rank ↑</th>
           <th onclick="sortOverall('kevScore')" id="th-kevScore" class="num">Kev Score</th>
-          <th onclick="sortOverall('kevRating')" id="th-kevRating">Position Rank</th>
+          <th onclick="sortOverall('kevRating')" id="th-kevRating" style="text-align:center;">Position Rank</th>
           <th onclick="sortOverall('name')" id="th-name">Player</th>
           <th onclick="sortOverall('mlbTeam')" id="th-mlbTeam">MLB Team</th>
           <th onclick="sortOverall('pos')" id="th-pos">Eligible</th>
@@ -788,6 +808,8 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     &middot;
     <a href="methodology.html" style="color:var(--accent);text-decoration:none;">Methodology</a>
     &middot;
+    <a href="tools.html" style="color:var(--accent);text-decoration:none;">Tools</a>
+    &middot;
     <a href="privacy.html" style="color:var(--accent);text-decoration:none;">Privacy</a>
   </p>
   <p style="margin-top:4px">
@@ -824,13 +846,43 @@ const REFERRALS = [
     url:     'https://sleeper.onelink.me/s6xz/prgg?promo=RF-KEVSCORES',
     copy:    'Deposit with my code — help keep KevScores free',
   },
+  {
+    name:    'FantasyPros',
+    eyebrow: 'Partner',
+    logo:    'fantasypros-logo.png', // drop logo in repo root
+    code:    'EXPERT RANKINGS',
+    url:     'https://www.fantasypros.com/mlb/rankings/?partner=kev',
+    copy:    'Expert rankings & in-season advice',
+  },
 ];
+
+// Carousel auto-advance interval (ms). 7s — long enough to read,
+// short enough to feel alive. Pauses on hover.
+const REFERRAL_ROTATE_MS = 7000;
 
 (function renderReferrals() {
   const container = document.getElementById('referral-container');
   if (!container || !REFERRALS.length) return;
-  container.innerHTML = REFERRALS.map(r => `
-    <a href="${r.url}" target="_blank" rel="noopener sponsored" class="ref-card" title="${escapeHtml(r.copy)}">
+
+  // Single entry: render as a plain card, no carousel chrome.
+  if (REFERRALS.length === 1) {
+    const r = REFERRALS[0];
+    container.innerHTML = `
+      <a href="${r.url}" target="_blank" rel="noopener sponsored" class="ref-card" title="${escapeHtml(r.copy)}">
+        <img src="${r.logo}" alt="${escapeHtml(r.name)} logo" class="ref-card-logo" onerror="this.style.display='none'">
+        <div class="ref-card-body">
+          <div class="ref-card-line1">${escapeHtml(r.eyebrow)}</div>
+          <div class="ref-card-line2">${escapeHtml(r.name)} &middot; <span class="ref-code">${escapeHtml(r.code)}</span></div>
+          <div class="ref-card-line3">${escapeHtml(r.copy)}</div>
+        </div>
+      </a>
+    `;
+    return;
+  }
+
+  // Multiple entries: render as auto-rotating carousel with dot nav.
+  const cards = REFERRALS.map((r, i) => `
+    <a href="${r.url}" target="_blank" rel="noopener sponsored" class="ref-card${i === 0 ? ' active' : ''}" data-idx="${i}" title="${escapeHtml(r.copy)}">
       <img src="${r.logo}" alt="${escapeHtml(r.name)} logo" class="ref-card-logo" onerror="this.style.display='none'">
       <div class="ref-card-body">
         <div class="ref-card-line1">${escapeHtml(r.eyebrow)}</div>
@@ -839,6 +891,47 @@ const REFERRALS = [
       </div>
     </a>
   `).join('');
+
+  const dots = REFERRALS.map((_, i) => `
+    <button class="ref-carousel-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Show partner ${i + 1}"></button>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="ref-carousel">
+      <div class="ref-carousel-stage">${cards}</div>
+      <div class="ref-carousel-dots">${dots}</div>
+    </div>
+  `;
+
+  const carousel = container.querySelector('.ref-carousel');
+  const stage    = carousel.querySelector('.ref-carousel-stage');
+  const allCards = stage.querySelectorAll('.ref-card');
+  const allDots  = carousel.querySelectorAll('.ref-carousel-dot');
+  let activeIdx  = 0;
+  let timer      = null;
+
+  function show(idx) {
+    activeIdx = idx;
+    allCards.forEach((c, i) => c.classList.toggle('active', i === idx));
+    allDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  function next() { show((activeIdx + 1) % REFERRALS.length); }
+  function start() { stop(); timer = setInterval(next, REFERRAL_ROTATE_MS); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  // Click dots to jump; hover anywhere on the carousel pauses rotation.
+  allDots.forEach(dot => {
+    dot.addEventListener('click', e => {
+      e.preventDefault();
+      const idx = parseInt(dot.dataset.idx, 10);
+      show(idx);
+      start(); // reset timer after manual nav
+    });
+  });
+  carousel.addEventListener('mouseenter', stop);
+  carousel.addEventListener('mouseleave', start);
+
+  start();
 })();
 
 // IL status code → human-readable label (used in the badge tooltip)
@@ -950,10 +1043,21 @@ function setLeagueSize(size, btn) {
 // ══════════════════════════════════════
 const state = { a: [], b: [] };
 
+// Strip diacritics so a search for "acuna" matches "Acuña", "ivan" matches
+// "Iván", "jimenez" matches "Jiménez", etc. Uses Unicode NFD decomposition
+// to split accented characters into base letter + combining mark, then
+// removes the marks. Always lowercased so callers don't have to.
+function normSearch(s) {
+  return String(s || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
 function search(q) {
   if (!q || q.length < 2) return [];
-  const lower = q.toLowerCase();
-  return PLAYERS.filter(p => p.name.toLowerCase().includes(lower)).slice(0, 9);
+  const needle = normSearch(q);
+  return PLAYERS.filter(p => normSearch(p.name).includes(needle)).slice(0, 9);
 }
 
 function renderDropdown(side, results) {
@@ -1462,7 +1566,7 @@ function setPositionFilter(position, btn) {
 function filterOverall() { renderOverall(); }
 
 function renderOverall() {
-  const query = document.getElementById('search-overall').value.toLowerCase();
+  const query = normSearch(document.getElementById('search-overall').value);
   let rows = [...OVERALL];
 
   if (overallTypeFilter !== 'all') rows = rows.filter(p => p.type === overallTypeFilter);
@@ -1470,7 +1574,7 @@ function renderOverall() {
     const posRank = (p.kevRating || '').toUpperCase();
     return posRank.includes(overallPositionFilter.toUpperCase());
   });
-  if (query) rows = rows.filter(p => p.name.toLowerCase().includes(query) || p.mlbTeam.toLowerCase().includes(query));
+  if (query) rows = rows.filter(p => normSearch(p.name).includes(query) || normSearch(p.mlbTeam).includes(query));
 
   const key = overallSort.key;
   rows.sort((a, b) => {
@@ -1521,6 +1625,15 @@ function renderOverall() {
       ? '<span style="color:var(--text-muted);font-size:10px;">—</span>'
       : chg === 0 ? '—'
       : `${chg > 0 ? '+' : ''}${chg.toFixed(1)}`;
+    // 7-day rank movement arrow shown to the left of the Kev Rank number.
+    // Positive = climbed (green ▲), negative = dropped (red ▼), zero/missing
+    // = blank slot (still reserve the space so numbers stay aligned).
+    const rm = p.rankChange7d;
+    const rankMoveHtml = (rm === null || rm === undefined || rm === 0)
+      ? '<span class="rank-move-spacer"></span>'
+      : rm > 0
+        ? `<span class="rank-move up" title="Up ${rm} ${rm === 1 ? 'spot' : 'spots'} in the last 7 days"><span class="tri">▲</span>${rm}</span>`
+        : `<span class="rank-move down" title="Down ${Math.abs(rm)} ${Math.abs(rm) === 1 ? 'spot' : 'spots'} in the last 7 days"><span class="tri">▼</span>${Math.abs(rm)}</span>`;
     const isUnranked  = p.rankDiff === null || p.rankDiff === undefined || p.espnRank >= 999;
     const diffClass   = isUnranked ? '' : p.rankDiff >= 0 ? 'val-pos' : 'val-neg';
     const diffSign    = isUnranked ? '' : p.rankDiff >= 0 ? '+' : '';
@@ -1541,9 +1654,9 @@ function renderOverall() {
          </div>`
       : `<div class="headshot-clickable" onclick="openPlayerModalByName('${oSafeName}')" title="View ${escapeHtml(p.name)} details" style="width:44px;height:32px;border-radius:4px;background:${aColor};display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:10px;font-weight:800;color:#fff;flex-shrink:0;vertical-align:middle;margin-right:6px;">${initials}</div>`;
     return `<tr>
-      <td><span class="kev-rank-cell">${p.kevRank}</span></td>
+      <td>${rankMoveHtml}<span class="kev-rank-cell">${p.kevRank}</span></td>
       <td class="num"><span class="kev-score-cell">${p.kevScore.toFixed(1)}</span></td>
-      <td><span class="pos-badge">${p.kevRating || ''}</span></td>
+      <td style="text-align:center;"><span class="pos-badge">${p.kevRating || ''}</span></td>
       <td style="white-space:nowrap;">${oAvatar}<span class="player-link" onclick="openPlayerModalByName('${p.name.replace(/'/g,"\\'")}')">${p.name}</span></td>
       <td style="color:var(--text-dim);white-space:nowrap;">
         ${p.mlbTeam ? `<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:${['twins','tigers','yankees','royals','rays','padres'].includes(p.mlbTeam.toLowerCase()) ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.5)'};border-radius:50%;vertical-align:middle;margin-right:4px;flex-shrink:0;">
