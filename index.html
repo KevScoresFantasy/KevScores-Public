@@ -287,6 +287,19 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-cold .cold-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(59,130,246,0.5);}
 .pill-cold:hover .cold-tip{opacity:1;}
 
+/* FantasyPros news pill — clickable affiliate link in the badge row.
+   Visually distinct from status badges (this is an action, not a status):
+   green to read as "go", with a small arrow to signal external nav.
+   Slightly thicker border + cursor:pointer reinforce that it's clickable. */
+.pill-fp{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px 3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(34,197,94,0.22),rgba(34,197,94,0.12));color:#4ade80;border:1px solid rgba(34,197,94,0.5);display:inline-flex;align-items:center;gap:5px;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s;}
+.pill-fp:hover{background:linear-gradient(180deg,rgba(34,197,94,0.32),rgba(34,197,94,0.18));border-color:rgba(34,197,94,0.7);text-decoration:none;}
+.pill-fp::before{content:"FP";font-size:9px;font-weight:900;background:rgba(34,197,94,0.3);color:#86efac;padding:1px 4px;border-radius:3px;letter-spacing:0;line-height:1.3;}
+.pill-fp::after{content:"↗";font-size:10px;font-weight:700;line-height:1;opacity:.7;}
+.pill-fp .fp-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(34,197,94,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-fp .fp-tip strong{color:#4ade80;font-weight:700;}
+.pill-fp .fp-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(34,197,94,0.5);}
+.pill-fp:hover .fp-tip{opacity:1;}
+
 .modal-close{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:6px 10px;cursor:pointer;font-family:var(--font-display);font-weight:800;}
 .modal-close:hover{color:var(--text);border-color:var(--border-accent);}
 .modal-body{padding:14px 16px 18px;}
@@ -1271,6 +1284,23 @@ function openPlayerModal(p) {
     ? `<span class="pill-cold">Cold<span class="cold-tip">Top-50 weekly faller<br>Kev Score down ${Number(p.kevChange7d).toFixed(2)} in 7 days</span></span>`
     : '';
 
+  // FantasyPros player news pill — clickable affiliate link.
+  // Slug rule: lowercase, drop accents, replace anything non-alphanumeric with
+  // a hyphen, collapse runs, trim. e.g. "José Ramírez" -> "jose-ramirez".
+  // If FP doesn't have a page at the slugged URL, the user lands on a
+  // 404 — acceptable failure mode; affiliate cookie still drops on the domain.
+  const fpSlug = String(p.name || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  const fpUrl = fpSlug
+    ? `https://www.fantasypros.com/mlb/news/${fpSlug}.php?partner=kev`
+    : '';
+  const fpBadge = fpUrl
+    ? `<a href="${fpUrl}" target="_blank" rel="noopener nofollow sponsored" class="pill-fp" onclick="event.stopPropagation()">News<span class="fp-tip">Latest news &amp; expert analysis on <strong>FantasyPros</strong><br>Opens in a new tab &middot; Partner link</span></a>`
+    : '';
+
   const stats = p.stats || {};
   const isPitcher = (type === 'Pitcher') || (String(pos).toUpperCase().includes('SP') || String(pos).toUpperCase().includes('RP'));
 
@@ -1342,6 +1372,7 @@ function openPlayerModal(p) {
           ${ilBadge}
           ${hotBadge}
           ${coldBadge}
+          ${fpBadge}
         </div>
       </div>
       <button class="modal-close" onclick="closePlayerModal()" aria-label="Close">✕</button>
