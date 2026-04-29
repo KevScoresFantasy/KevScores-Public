@@ -80,8 +80,11 @@ h1 span{color:var(--accent);}
    Dots below provide manual nav; auto-advance pauses on hover. */
 .ref-carousel{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:0;}
 .ref-carousel-stage{position:relative;min-width:0;}
-.ref-carousel-stage .ref-card{position:absolute;top:0;right:0;opacity:0;pointer-events:none;transition:opacity .35s ease;white-space:nowrap;}
+.ref-carousel-stage .ref-card{position:absolute;top:0;left:0;right:0;opacity:0;pointer-events:none;transition:opacity .35s ease;white-space:nowrap;}
 .ref-carousel-stage .ref-card.active{position:relative;opacity:1;pointer-events:auto;}
+/* During width measurement only — temporarily takes cards out of stack
+   so we can measure each one's natural width independently. */
+.ref-carousel-stage.measuring .ref-card{position:static !important;opacity:0;}
 .ref-carousel-dots{display:flex;gap:6px;}
 .ref-carousel-dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;transition:background .2s,transform .2s;}
 .ref-carousel-dot:hover{background:var(--text-muted);}
@@ -955,12 +958,36 @@ const REFERRAL_ROTATE_MS = 7000;
   let activeIdx  = 0;
   let timer      = null;
 
+  // ── Lock stage to widest card so rotating doesn't reflow neighboring
+  // header elements. We briefly toggle .measuring to take each card out
+  // of the absolute stack, read its natural width, then commit the max.
+  // Re-runs on resize so font/viewport changes don't break alignment.
+  function lockStageWidth() {
+    stage.style.width = ''; // reset before measuring
+    stage.classList.add('measuring');
+    let maxW = 0;
+    allCards.forEach(c => {
+      const w = c.getBoundingClientRect().width;
+      if (w > maxW) maxW = w;
+    });
+    stage.classList.remove('measuring');
+    if (maxW > 0) stage.style.width = Math.ceil(maxW) + 'px';
+  }
+  // Defer one frame so fonts/layout are ready.
+  requestAnimationFrame(lockStageWidth);
+  // Also re-measure once webfonts finish loading (Barlow loads async).
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(lockStageWidth);
+  }
+  window.addEventListener('resize', lockStageWidth);
+
   function show(idx) {
     activeIdx = idx;
     allCards.forEach((c, i) => c.classList.toggle('active', i === idx));
     allDots.forEach((d, i) => d.classList.toggle('active', i === idx));
   }
   function next() { show((activeIdx + 1) % REFERRALS.length); }
+  function prev() { show((activeIdx - 1 + REFERRALS.length) % REFERRALS.length); }
   function start() { stop(); timer = setInterval(next, REFERRAL_ROTATE_MS); }
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
 
@@ -975,6 +1002,40 @@ const REFERRAL_ROTATE_MS = 7000;
   });
   carousel.addEventListener('mouseenter', stop);
   carousel.addEventListener('mouseleave', start);
+
+  // ── Swipe support for touch devices (mobile Safari, mobile Chrome, etc).
+  // Threshold of 40px ignores accidental tiny finger drags. We listen on
+  // the stage so the dots don't intercept swipes. preventDefault is NOT
+  // called — we want vertical scrolling to still work.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchActive = false;
+  stage.addEventListener('touchstart', e => {
+    if (!e.touches || e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchActive = true;
+    stop(); // pause auto-rotate while user is interacting
+  }, { passive: true });
+  stage.addEventListener('touchend', e => {
+    if (!touchActive) return;
+    touchActive = false;
+    const t = (e.changedTouches && e.changedTouches[0]);
+    if (!t) { start(); return; }
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    // Only treat as a swipe if horizontal motion clearly dominates vertical.
+    // This prevents a vertical scroll gesture from being misread as a swipe.
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      // Swipe right (positive dx) → previous; swipe left → next.
+      if (dx > 0) prev(); else next();
+    }
+    start();
+  }, { passive: true });
+  stage.addEventListener('touchcancel', () => {
+    touchActive = false;
+    start();
+  }, { passive: true });
 
   start();
 })();
@@ -1330,7 +1391,7 @@ function openPlayerModal(p) {
     ? `https://www.fantasypros.com/mlb/news/${fpSlug}.php?partner=kev`
     : '';
   const fpBadge = fpUrl
-    ? `<a href="${fpUrl}" target="_blank" rel="noopener nofollow sponsored" class="pill-fp" onclick="event.stopPropagation()"><span class="fp-icon"><img src="fantasypros-logo.png" alt="FP" onerror="this.outerHTML='<span style=&quot;font-size:9px;font-weight:900;color:#86efac;letter-spacing:0;&quot;>FP</span>'"></span>News<span class="fp-tip">Latest news &amp; expert analysis on <strong>FantasyPros</strong></span></a>`
+    ? `<a href="${fpUrl}" target="_blank" rel="noopener nofollow sponsored" class="pill-fp" onclick="event.stopPropagation()"><span class="fp-icon"><img src="fantasypros-icon.png" alt="FP" onerror="this.outerHTML='<span style=&quot;font-size:9px;font-weight:900;color:#86efac;letter-spacing:0;&quot;>FP</span>'"></span>News<span class="fp-tip">Latest news &amp; expert analysis on <strong>FantasyPros</strong></span></a>`
     : '';
 
   const stats = p.stats || {};
