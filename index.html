@@ -105,9 +105,12 @@ h1 span{color:var(--accent);}
    --nav-h is consumed by per-tab control rows that stick directly below. */
 :root{--nav-h:47px;}
 .nav-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;position:sticky;top:0;z-index:50;background:rgba(13,15,20,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
-.nav-tab{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;background:none;border:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.nav-tab{position:relative;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;background:none;border:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
 .nav-tab:hover{color:var(--text-dim);}
-.nav-tab.active{color:var(--text);border-bottom-color:var(--accent);box-shadow:0 2px 8px -2px var(--accent);text-shadow:0 0 1px rgba(0,200,232,0.3);}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--accent);}
+/* Glow lives ONLY on the underline — a thin cyan blur strip directly under
+   the bottom border. No box glow around the text itself. */
+.nav-tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent);box-shadow:0 0 8px 1px var(--accent),0 0 4px var(--accent);pointer-events:none;}
 
 /* Pages */
 .page{display:none;}
@@ -542,15 +545,15 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
       </div>
     </div>
   </div>
-  <nav class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('trade',this)">Trade Calculator</button>
-    <button class="nav-tab" onclick="showPage('overall',this)">Overall Player Rankings</button>
-    <button class="nav-tab" onclick="showPage('risers',this)">Risers &amp; Fallers</button>
-    <button class="nav-tab" onclick="showPage('weekly',this)">Top Scorers</button>
-    <button class="nav-tab" onclick="showPage('power',this)">Power Rankings</button>
-    
-  </nav>
 </header>
+
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="showPage('trade',this)">Trade Calculator</button>
+  <button class="nav-tab" onclick="showPage('overall',this)">Overall Player Rankings</button>
+  <button class="nav-tab" onclick="showPage('risers',this)">Risers &amp; Fallers</button>
+  <button class="nav-tab" onclick="showPage('weekly',this)">Top Scorers</button>
+  <button class="nav-tab" onclick="showPage('power',this)">Power Rankings</button>
+</nav>
 
 <!-- ══════════════════════ TRADE CALCULATOR ══════════════════════ -->
 <div id="page-trade" class="page active">
