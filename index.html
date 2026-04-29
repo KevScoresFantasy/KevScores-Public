@@ -97,11 +97,15 @@ h1 span{color:var(--accent);}
   .ref-card-line3{display:none;}
 }
 
-/* Nav */
-.nav-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;}
+/* Nav — sticks to the top of the viewport when scrolling so the user
+   can switch tabs without scrolling back up. Backdrop blur + slightly
+   opaque bg keeps content from showing through cleanly while preserving
+   the dark theme. z-index above tables (which sometimes have their own
+   sticky header rows) but below modals. */
+.nav-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;position:sticky;top:0;z-index:50;background:rgba(13,15,20,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
 .nav-tab{font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;background:none;border:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
 .nav-tab:hover{color:var(--text-dim);}
-.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--accent);box-shadow:0 2px 8px -2px var(--accent);text-shadow:0 0 1px rgba(0,200,232,0.3);}
 
 /* Pages */
 .page{display:none;}
@@ -119,7 +123,7 @@ h1 span{color:var(--accent);}
 .league-size-label{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .league-size-toggle{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:3px;}
 .ls-btn{padding:5px 14px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:none;background:none;color:var(--text-muted);border-radius:6px;cursor:pointer;transition:all .15s;}
-.ls-btn.active{background:var(--accent);color:#0d1a2e;}
+.ls-btn.active{background:var(--accent);color:#0d1a2e;box-shadow:0 0 0 1px var(--accent),0 0 12px rgba(0,200,232,0.45);}
 
 /* Search */
 .search-wrap{position:relative;margin-bottom:10px;}
@@ -192,9 +196,16 @@ h1 span{color:var(--accent);}
 .search-overall::placeholder{color:var(--text-muted);}
 .search-overall:focus{outline:none;border-color:var(--accent);}
 .filter-btn{font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);border-radius:var(--radius);cursor:pointer;transition:all .15s;}
-.filter-btn.active{background:var(--accent);color:#0d1a2e;border-color:var(--accent);}
+.filter-btn.active{background:var(--accent);color:#0d1a2e;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 12px rgba(0,200,232,0.45);}
 .position-btn{font-size:10px;padding:4px 8px;background:var(--surface2);border-color:var(--border-accent);}
-.position-btn.active{background:var(--accent);color:#0d1a2e;border-color:var(--accent);}
+.position-btn.active{background:var(--accent);color:#0d1a2e;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 0 12px rgba(0,200,232,0.45);}
+
+/* Export button — sits at the right end of the controls row.
+   Ghost button styling so it doesn't compete with filter buttons or search.
+   margin-left:auto pushes it to the far right of the flex row. */
+.export-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border-accent);background:transparent;color:var(--text-dim);border-radius:var(--radius);cursor:pointer;transition:all .15s;}
+.export-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.export-btn .arrow{font-size:13px;line-height:1;}
 .overall-table-wrap{overflow-x:auto;}
 table.overall-table{width:100%;border-collapse:collapse;font-size:13px;}
 table.overall-table thead tr{border-bottom:1px solid var(--border-accent);}
@@ -515,8 +526,11 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     <div style="display:flex;flex-direction:row;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
       <div id="referral-container"></div>
       <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <a href="https://www.mlb.com/scores" target="_blank" rel="noopener" class="header-badge">Today's Live Scores ↗</a>
-        <a href="https://x.com/KevScores" target="_blank" rel="noopener" class="header-badge">Follow @KevScores ↗</a>
+        <a href="https://www.mlb.com/scores" target="_blank" rel="noopener" class="header-badge">Today's Live Scores &#8599;</a>
+        <a href="https://x.com/KevScores" target="_blank" rel="noopener" class="header-badge" style="display:inline-flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="fill:currentColor;flex-shrink:0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @KevScores
+        </a>
       </div>
     </div>
   </div>
@@ -633,6 +647,9 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     <button class="filter-btn position-btn" onclick="setPositionFilter('OF',this)">OF</button>
     <button class="filter-btn position-btn" onclick="setPositionFilter('SP',this)">SP</button>
     <button class="filter-btn position-btn" onclick="setPositionFilter('RP',this)">RP</button>
+    <button class="export-btn" onclick="exportOverallCSV()" title="Download the current view as a CSV file">
+      <span class="arrow">&darr;</span> Export CSV
+    </button>
   </div>
   <div class="overall-table-wrap">
     <table class="overall-table">
@@ -1688,6 +1705,109 @@ function setPositionFilter(position, btn) {
 }
 
 function filterOverall() { renderOverall(); }
+
+// Export the currently-filtered Overall view as CSV. Honors the user's
+// active search query, type filter (Batters/Pitchers), position filter,
+// and sort order — so what they see in the table is what they get in
+// the file. Rebuilds the same filter pipeline as renderOverall() to stay
+// in sync; if the filter logic ever changes there, mirror it here.
+function exportOverallCSV() {
+  const query = normSearch(document.getElementById('search-overall').value);
+  let rows = [...OVERALL];
+  if (overallTypeFilter !== 'all') rows = rows.filter(p => p.type === overallTypeFilter);
+  if (overallPositionFilter) rows = rows.filter(p => {
+    const posRank = (p.kevRating || '').toUpperCase();
+    return posRank.includes(overallPositionFilter.toUpperCase());
+  });
+  if (query) rows = rows.filter(p => normSearch(p.name).includes(query) || normSearch(p.mlbTeam).includes(query));
+
+  // Mirror renderOverall's sort. Simpler than refactoring both into a
+  // shared helper; the sort is fast enough that duplicating is fine.
+  const key = overallSort.key;
+  rows.sort((a, b) => {
+    let av = a[key], bv = b[key];
+    if (key === 'kevRating') {
+      const aNum = parseInt(av?.replace(/\D/g, '') || '999');
+      const bNum = parseInt(bv?.replace(/\D/g, '') || '999');
+      if (aNum !== bNum) return aNum < bNum ? -overallSort.dir : overallSort.dir;
+      const aPos = av?.replace(/\d/g, '') || '';
+      const bPos = bv?.replace(/\d/g, '') || '';
+      if (aPos < bPos) return -overallSort.dir;
+      if (aPos > bPos) return overallSort.dir;
+      return 0;
+    }
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    if (av < bv) return -overallSort.dir;
+    if (av > bv) return overallSort.dir;
+    return 0;
+  });
+
+  if (!rows.length) {
+    alert('No players match the current filters. Adjust your search or filters and try again.');
+    return;
+  }
+
+  // CSV escaping per RFC 4180: wrap a value in double quotes if it contains
+  // a comma, double quote, or newline; double up any embedded quotes.
+  const esc = v => {
+    if (v === null || v === undefined) return '';
+    const s = String(v);
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+
+  // Column order chosen to match what's most useful in a spreadsheet:
+  // identifying info first, then scores, then context. ESPN rank and
+  // weekly change are the most-asked-for "extras" beyond what's visible.
+  const headers = [
+    'Kev Rank', 'Kev Score', 'Position Rank', 'Player', 'MLB Team',
+    'Position', 'Type', 'ESPN Preseason Rank', 'Weekly Change',
+    'IL Status', 'Breakout Boost'
+  ];
+  const lines = [headers.map(esc).join(',')];
+
+  for (const p of rows) {
+    const wk = (p.kevChange7d !== undefined && p.kevChange7d !== null) ? p.kevChange7d
+             : (p.kevWeekly !== undefined && p.kevWeekly !== null) ? p.kevWeekly
+             : '';
+    const espnRank = (p.espnRank && p.espnRank < 999) ? p.espnRank : '';
+    lines.push([
+      p.kevRank ?? '',
+      (p.kevScore !== undefined && p.kevScore !== null) ? Number(p.kevScore).toFixed(2) : '',
+      p.kevRating ?? '',
+      p.name ?? '',
+      p.mlbTeam ?? '',
+      p.pos ?? '',
+      p.type ?? '',
+      espnRank,
+      wk !== '' ? Number(wk).toFixed(2) : '',
+      p.ilStatus ?? '',
+      p.breakoutBoost ?? '',
+    ].map(esc).join(','));
+  }
+
+  // BOM prefix tells Excel the file is UTF-8 — without it, Excel mangles
+  // accented player names (José, Yandy, etc.) on Windows.
+  const csv = '\uFEFF' + lines.join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+
+  // Filename includes today's date so users can keep multiple snapshots.
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const filterTag = overallPositionFilter ? `-${overallPositionFilter.toLowerCase()}`
+                  : overallTypeFilter !== 'all' ? `-${overallTypeFilter.toLowerCase()}s`
+                  : '';
+  const filename = `kevscores${filterTag}-${today}.csv`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Defer revocation so the browser has time to start the download.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 function renderOverall() {
   const query = normSearch(document.getElementById('search-overall').value);
