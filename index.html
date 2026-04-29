@@ -525,6 +525,10 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
   .trade-grid{grid-template-columns:1fr;}
   .vs-col{padding:0;}
   .verdict-grid{grid-template-columns:1fr;}
+  /* Hide CSV export on phone — wraps to its own row and looks cramped
+     in the filter bar, and exporting CSVs from a phone is a rare flow.
+     The button is still here for desktop users. */
+  .export-btn{display:none;}
   /* Mobile nav layout. Lives here (not in the 640px block above) so it
      comes after the unscoped .nav-tab rules and wins the source-order
      tiebreak. Key bits:
@@ -693,8 +697,8 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
           <th onclick="sortOverall('mlbTeam')" id="th-mlbTeam">MLB Team</th>
           <th onclick="sortOverall('pos')" id="th-pos">Eligible</th>
           <th onclick="sortOverall('type')" id="th-type">Type</th>
-          <th onclick="sortOverall('espnRank')" id="th-espnRank" class="num">Preseason Rank</th>
           <th onclick="sortOverall('kevChange7d')" id="th-kevChange7d" class="num" title="Score change over the last 7 days">&#916; 7-Day</th>
+          <th onclick="sortOverall('espnRank')" id="th-espnRank" class="num">Preseason Rank</th>
           <th onclick="sortOverall('rankDiff')" id="th-rankDiff" class="num">Rank Diff</th>
           
         </tr>
@@ -1990,8 +1994,8 @@ function renderOverall() {
       </td>
       <td><span class="pos-badge">${p.pos || ''}</span></td>
       <td class="${typeClass}" style="font-size:12px;font-weight:500">${typeLabel}</td>
-      <td class="num">${espnDisplay}</td>
       <td class="num ${changeClass}">${changeDisplay}</td>
+      <td class="num">${espnDisplay}</td>
       <td class="num ${diffClass}">${diffDisplay}</td>
 
     </tr>`;
