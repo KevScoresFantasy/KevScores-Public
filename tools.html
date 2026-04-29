@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools We Like — Recommended Fantasy Baseball Resources | KevScores</title>
+<meta name="description" content="The other fantasy baseball tools we actually use — Baseball Savant, Ballpark Pal, and FantasyPros. Honest recommendations, not a directory.">
+<meta name="keywords" content="fantasy baseball tools, baseball savant, ballpark pal, fantasypros, draft tools, fantasy baseball resources">
+<meta name="author" content="KevScores">
+
+<!-- Open Graph / Social Card -->
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://kevscores.com/tools.html">
+<meta property="og:title" content="Tools We Like — The Fantasy Baseball Sites We Actually Use">
+<meta property="og:description" content="A short list of fantasy baseball tools we genuinely recommend — Baseball Savant, Ballpark Pal, and FantasyPros.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tools We Like — KevScores Recommended Resources">
+<meta name="twitter:description" content="The fantasy baseball tools we actually use, beyond our own.">
+
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f14;--surface:#161920;--border:rgba(255,255,255,0.07);
+  --text:#f0f2f5;--text-muted:#6b7280;--text-dim:#9ca3af;
+  --accent:#00c8e8;--accent-dim:rgba(0,200,232,0.08);
+  --green:#22c55e;--red:#ef4444;
+  --font-display:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.7;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(0,200,232,0.05) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+.page-wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 24px 80px;}
+
+/* Header */
+header{padding:36px 0 32px;border-bottom:1px solid var(--border);margin-bottom:48px;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);text-decoration:none;margin-bottom:20px;opacity:.8;transition:opacity .15s;}
+.back-link:hover{opacity:1;}
+.logo-eyebrow{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+h1{font-family:var(--font-display);font-size:40px;font-weight:800;letter-spacing:-.5px;color:var(--text);line-height:1;}
+h1 span{color:var(--accent);}
+.effective-date{font-size:13px;color:var(--text-muted);margin-top:8px;}
+
+/* Content */
+.policy-body{color:var(--text-dim);}
+.section{margin-bottom:40px;}
+h2{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+h3{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin-top:20px;margin-bottom:8px;}
+p{margin-bottom:14px;color:var(--text-dim);}
+p:last-child{margin-bottom:0;}
+ul,ol{padding-left:22px;margin-bottom:14px;}
+li{margin-bottom:6px;color:var(--text-dim);}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+strong{color:var(--text);font-weight:500;}
+em{color:var(--text-dim);}
+
+/* Tool card */
+.tool{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin:16px 0;}
+.tool h3{margin-top:0;color:var(--accent);font-size:18px;letter-spacing:.04em;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.tool h3 .tag{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(0,200,232,0.3);border-radius:999px;padding:2px 8px;}
+.tool h3 .tag.partner{background:rgba(34,197,94,0.08);color:var(--green);border-color:rgba(34,197,94,0.3);}
+.tool .what-for{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;}
+.tool p{font-size:14px;margin-bottom:10px;}
+.tool p:last-child{margin-bottom:0;}
+.tool .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.tool .links a{font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--bg);border:1px solid var(--border);border-radius:999px;padding:6px 14px;color:var(--text);transition:border-color .15s,color .15s;}
+.tool .links a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none;}
+
+/* Callout */
+.callout{border-left:3px solid var(--accent);padding:4px 0 4px 18px;margin:20px 0;color:var(--text);font-size:15px;}
+
+/* Disclosure box */
+.disclosure{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin:16px 0;font-size:13px;color:var(--text-muted);line-height:1.6;}
+.disclosure strong{color:var(--text-dim);}
+
+/* Footer */
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--border);text-align:center;font-size:12px;color:var(--text-muted);}
+footer a{color:var(--accent);}
+.footer-nav{margin-bottom:10px;}
+.footer-nav a{margin:0 8px;}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <a href="index.html" class="back-link">← Back to KevScores</a>
+    <div class="logo-eyebrow">Tools We Like</div>
+    <h1>The Sites We Actually <span>Use</span></h1>
+    <p class="effective-date">A short list of fantasy baseball resources we recommend &mdash; honest picks, not a directory.</p>
+  </header>
+
+  <div class="policy-body">
+
+    <div class="section">
+      <h2>Why This List Exists</h2>
+      <p>The Kev Score is one number. It&rsquo;s a useful number &mdash; we built our whole site around it &mdash; but no single metric tells you everything you need to know about a player. When we&rsquo;re trying to figure out whether a hot start is real, why a pitcher&rsquo;s ERA looks scary, or where to draft a sleeper next March, we lean on a small group of other tools.</p>
+      <p>This is that list. Three sites we genuinely use. No directory of every fantasy baseball resource on the internet, no affiliate links to tools we&rsquo;ve never opened, no &ldquo;sponsored by&rdquo; partnerships pretending to be recommendations.</p>
+      <div class="callout">
+        <em>If we don&rsquo;t use it ourselves, it&rsquo;s not on this page.</em>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Our Picks</h2>
+
+      <div class="tool">
+        <h3>FantasyPros <span class="tag">Free + Premium</span> <span class="tag partner">Partner</span></h3>
+        <div class="what-for">For: rankings, waiver guidance, and draft prep</div>
+        <p>FantasyPros aggregates rankings from dozens of fantasy analysts into a single expert consensus. We use it as a sanity check against our own Kev Scores &mdash; when our rankings disagree with the consensus, that&rsquo;s a moment worth investigating.</p>
+        <p>Their free MyPlaybook tool gives in-season lineup and waiver advice, and the free expert rankings are useful all year. We pay for the premium tier ourselves &mdash; it&rsquo;s the one fantasy subscription we&rsquo;ve kept renewing.</p>
+        <div class="links">
+          <a href="https://www.fantasypros.com/mlb/rankings/?partner=kev" target="_blank" rel="noopener nofollow sponsored">Expert Rankings →</a>
+          <a href="https://www.fantasypros.com/mlb/myplaybook/?partner=kev" target="_blank" rel="noopener nofollow sponsored">MyPlaybook →</a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>Baseball Savant <span class="tag">Free</span></h3>
+        <div class="what-for">For: figuring out if a hot start is real</div>
+        <p>The official Statcast home. When a player&rsquo;s Kev Score jumps and we want to know whether it&rsquo;s sustainable, this is where we go first. Exit velocity, barrel rate, expected stats &mdash; the underlying data behind every meaningful season.</p>
+        <p>If a player is hitting .350 but his xBA is .240, that&rsquo;s a regression candidate. Baseball Savant tells you that in about 15 seconds.</p>
+        <div class="links">
+          <a href="https://baseballsavant.mlb.com/" target="_blank" rel="noopener">Visit Baseball Savant →</a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>Ballpark Pal <span class="tag">Free</span></h3>
+        <div class="what-for">For: daily lineup and DFS decisions</div>
+        <p>Ballpark Pal models how a given park, weather, and matchup will impact every player&rsquo;s expected production for that day. We use it most for marginal lineup calls &mdash; should I sit my OF3 if he&rsquo;s playing in a rainy 40-degree game in Cleveland? Probably yes.</p>
+        <p>Even if you don&rsquo;t play DFS, the park-and-weather adjustments are useful context the Kev Score doesn&rsquo;t capture on its own.</p>
+        <div class="links">
+          <a href="https://www.ballparkpal.com/" target="_blank" rel="noopener">Visit Ballpark Pal →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Disclosure</h2>
+      <div class="disclosure">
+        <p><strong>Affiliate disclosure:</strong> Some of the links on this page are affiliate links, meaning KevScores may earn a small commission if you sign up for a paid subscription through them &mdash; at no additional cost to you. Affiliate links are clearly labeled with a &ldquo;Partner&rdquo; tag.</p>
+        <p style="margin-top:10px;">Baseball Savant and Ballpark Pal are listed because we use them and recommend them. We have no financial relationship with either site. FantasyPros is an affiliate partner, but we&rsquo;d recommend them either way &mdash; we&rsquo;re paying premium subscribers ourselves.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Have a Recommendation?</h2>
+      <p>If there&rsquo;s a fantasy baseball tool you swear by that isn&rsquo;t on this list, send it our way. We&rsquo;re always looking for new things to try.</p>
+      <p>Email: <a href="mailto:kspinelli24@gmail.com">kspinelli24@gmail.com</a></p>
+      <p>Or head back to the rankings: <a href="index.html">KevScores Trade Calculator &amp; Rankings →</a></p>
+    </div>
+
+  </div><!-- /policy-body -->
+
+  <footer>
+    <div class="footer-nav">
+      <a href="index.html">Home</a> &middot;
+      <a href="about.html">About</a> &middot;
+      <a href="methodology.html">Methodology</a> &middot;
+      <a href="privacy.html">Privacy</a>
+    </div>
+    <p>Updated Daily &nbsp;&middot;&nbsp; Kev Score Methodology&trade; &nbsp;&middot;&nbsp; 2026 Fantasy Baseball</p>
+  </footer>
+
+</div>
+</body>
+</html>
