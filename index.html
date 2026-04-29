@@ -82,7 +82,7 @@ h1 span{color:var(--accent);}
 .ref-carousel-stage{position:relative;min-width:0;}
 .ref-carousel-stage .ref-card{position:absolute;top:0;right:0;opacity:0;pointer-events:none;transition:opacity .35s ease;white-space:nowrap;}
 .ref-carousel-stage .ref-card.active{position:relative;opacity:1;pointer-events:auto;}
-.ref-carousel-dots{display:flex;gap:6px;}
+.ref-carousel-dots{display:flex;gap:6px;justify-content:center;width:100%;}
 .ref-carousel-dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;transition:background .2s,transform .2s;}
 .ref-carousel-dot:hover{background:var(--text-muted);}
 .ref-carousel-dot.active{background:var(--accent);transform:scale(1.2);}
@@ -1298,7 +1298,7 @@ function openPlayerModal(p) {
     ? `https://www.fantasypros.com/mlb/news/${fpSlug}.php?partner=kev`
     : '';
   const fpBadge = fpUrl
-    ? `<a href="${fpUrl}" target="_blank" rel="noopener nofollow sponsored" class="pill-fp" onclick="event.stopPropagation()">News<span class="fp-tip">Latest news &amp; expert analysis on <strong>FantasyPros</strong><br>Opens in a new tab &middot; Partner link</span></a>`
+    ? `<a href="${fpUrl}" target="_blank" rel="noopener nofollow sponsored" class="pill-fp" onclick="event.stopPropagation()">News<span class="fp-tip">Latest news &amp; expert analysis on <strong>FantasyPros</strong></span></a>`
     : '';
 
   const stats = p.stats || {};
