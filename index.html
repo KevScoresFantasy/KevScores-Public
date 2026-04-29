@@ -95,15 +95,11 @@ h1 span{color:var(--accent);}
   .ref-card-logo{width:24px;height:24px;}
   .ref-card-line2{font-size:12px;}
   .ref-card-line3{display:none;}
-  /* Nav tabs distribute evenly across the full screen width on mobile.
-     Each tab grows to fill its share. We shrink padding + font-size so
-     all 5 labels fit; long labels wrap to 2 lines if needed (better than
-     truncation). text-align:center keeps wrapped lines balanced. */
-  .nav-tabs{justify-content:stretch;}
-  .nav-tab{flex:1 1 0;padding:10px 4px;font-size:11px;letter-spacing:.05em;text-align:center;line-height:1.2;}
-  /* Slightly taller nav on mobile if any label wraps to 2 lines —
-     bump the offset so the sticky filter row sits flush below it. */
-  :root{--nav-h:62px;}
+  /* Note: nav-tab mobile rules live in the @media(max-width:600px) block
+     near the bottom of the stylesheet — they need to come AFTER the
+     unscoped .nav-tab rules to win the source-order tiebreak (same
+     specificity). Putting them here would silently lose to the desktop
+     defaults below. */
 }
 
 /* Nav — sticks to the top of the viewport when scrolling so the user
@@ -113,7 +109,7 @@ h1 span{color:var(--accent);}
    sticky header rows) but below modals.
    --nav-h is consumed by per-tab control rows that stick directly below. */
 :root{--nav-h:47px;}
-.nav-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:28px;position:sticky;top:0;z-index:50;background:var(--bg);}
+.nav-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px;position:sticky;top:0;z-index:50;background:var(--bg);}
 .nav-tab{position:relative;font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;background:none;border:none;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
 .nav-tab:hover{color:var(--text-dim);}
 .nav-tab.active{color:var(--text);border-bottom-color:var(--accent);}
@@ -207,7 +203,7 @@ h1 span{color:var(--accent);}
 .verdict-even-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
 
 /* Overall player rankings table */
-.overall-controls{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;position:sticky;top:var(--nav-h);z-index:40;background:var(--bg);padding:14px 0 10px;margin-top:-14px;}
+.overall-controls{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;position:sticky;top:var(--nav-h);z-index:40;background:var(--bg);padding:14px 0 10px;}
 .search-overall{background:var(--surface);border:1px solid var(--border-accent);border-radius:var(--radius);padding:8px 14px;font-family:var(--font-body);font-size:14px;color:var(--text);width:220px;}
 .search-overall::placeholder{color:var(--text-muted);}
 .search-overall:focus{outline:none;border-color:var(--accent);}
@@ -529,7 +525,22 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
   .trade-grid{grid-template-columns:1fr;}
   .vs-col{padding:0;}
   .verdict-grid{grid-template-columns:1fr;}
-  .nav-tab{padding:10px 12px;font-size:12px;}
+  /* Mobile nav layout. Lives here (not in the 640px block above) so it
+     comes after the unscoped .nav-tab rules and wins the source-order
+     tiebreak. Key bits:
+     - flex:1 1 0 distributes the 5 tabs evenly across the row.
+     - min-width:0 overrides the default min-width:auto on flex items
+       (without it, flex refuses to shrink the tab below its longest
+       unbreakable word and the nav overflows the viewport).
+     - word-break:normal + hyphens:none means words wrap at spaces only,
+       never mid-letter. So "Overall Player Rankings" wraps cleanly across
+       2-3 lines but never breaks "RANKINGS" itself.
+     - align-items:stretch on the parent (default for flex) + display:flex
+       on each tab with align-items:center centers the label vertically
+       within whatever height the row settles at, so the underlines stay
+       aligned even when one tab has 1 line and another has 3. */
+  .nav-tabs{align-items:stretch;}
+  .nav-tab{flex:1 1 0;min-width:0;padding:8px 4px;font-size:11px;letter-spacing:.04em;text-align:center;line-height:1.2;word-break:normal;hyphens:none;display:flex;align-items:center;justify-content:center;}
 }
 </style>
 </head>
@@ -546,7 +557,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
     <div style="display:flex;flex-direction:row;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
       <div id="referral-container"></div>
       <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <a href="https://www.mlb.com/scores" target="_blank" rel="noopener" class="header-badge">Today's Scores &#8599;</a>
+        <a href="https://www.mlb.com/scores" target="_blank" rel="noopener" class="header-badge">MLB Scoreboard</a>
         <a href="https://x.com/KevScores" target="_blank" rel="noopener" class="header-badge" style="display:inline-flex;align-items:center;gap:6px;">
           <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="fill:currentColor;flex-shrink:0;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           @KevScores
@@ -558,7 +569,7 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
 
 <nav class="nav-tabs">
   <button class="nav-tab active" onclick="showPage('trade',this)">Trade Calculator</button>
-  <button class="nav-tab" onclick="showPage('overall',this)">Overall Player Rankings</button>
+  <button class="nav-tab" onclick="showPage('overall',this)">Overall Rankings</button>
   <button class="nav-tab" onclick="showPage('risers',this)">Risers &amp; Fallers</button>
   <button class="nav-tab" onclick="showPage('weekly',this)">Top Scorers</button>
   <button class="nav-tab" onclick="showPage('power',this)">Power Rankings</button>
@@ -1098,25 +1109,58 @@ const IL_SEVERITY_BY_CODE = {
 };
 
 // ── Nav ──
+//
+// Sync the --nav-h CSS variable to the nav's actual rendered height. The
+// .overall-controls row (and any other sticky filter row) uses
+// `top: var(--nav-h)` to dock right below the nav, but the nav's height
+// changes by viewport: ~47px on desktop where all 5 labels fit on one
+// line, ~65px on mobile where 2 of them wrap to a second line. Hardcoding
+// 47px caused the filter row to stick *behind* the nav on mobile, with
+// the overlap looking like a translucent gap when scrolling.
+function syncNavHeight() {
+  const nav = document.querySelector('.nav-tabs');
+  if (!nav) return;
+  const h = Math.round(nav.getBoundingClientRect().height);
+  document.documentElement.style.setProperty('--nav-h', h + 'px');
+}
+// Run after first layout, after webfonts (Barlow Condensed shifts metrics
+// when it swaps in), and on resize / orientation change.
+requestAnimationFrame(syncNavHeight);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(syncNavHeight);
+}
+window.addEventListener('resize', syncNavHeight);
+
 function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   btn.classList.add('active');
 
-  // Scroll the new tab's content into view from the top — without this,
-  // switching tabs while scrolled deep into one keeps the same viewport
-  // offset on the next tab, which is disorienting. We scroll to the nav
-  // itself (rather than 0,0) so the user doesn't have to re-scroll past
-  // the marketing header on every tab switch.
+  // Scroll the new tab's content into view — without this, switching tabs
+  // while scrolled deep into one keeps the same viewport offset on the
+  // next tab, which is disorienting. We want the nav at viewport top after
+  // the switch.
+  //
+  // Tricky bit: .nav-tabs is `position:sticky;top:0`, which makes both
+  // `getBoundingClientRect().top` and `offsetTop` unreliable while the
+  // nav is stuck — they report the current scrolled position, not the
+  // nav's natural position. Approach: scroll first using the header as
+  // an approximate anchor, then re-measure and correct any remaining
+  // offset (margins/padding between header.bottom and the nav can leave
+  // a few px of error after the first scroll).
   const nav = document.querySelector('.nav-tabs');
-  if (nav) {
-    // If user is above the nav (top of page), do nothing — they're already
-    // looking at the right starting position. Only adjust if scrolled past.
-    const navTop = nav.getBoundingClientRect().top;
-    if (navTop < 0) {
-      // Use instant scroll, not smooth — smooth feels laggy on tab switches.
-      window.scrollTo({ top: window.scrollY + navTop, behavior: 'instant' });
+  const header = document.querySelector('header');
+  if (nav && header) {
+    const approxAnchor = header.getBoundingClientRect().bottom + window.scrollY;
+    if (window.scrollY > approxAnchor) {
+      window.scrollTo({ top: approxAnchor, behavior: 'instant' });
+      // Now the nav is unstuck (or close to it) — re-read its rect and
+      // nudge by whatever residual offset is left so it lands at top:0.
+      const navTop = nav.getBoundingClientRect().top;
+      if (navTop !== 0) {
+        window.scrollTo({ top: window.scrollY + navTop, behavior: 'instant' });
+      }
     }
   }
 }
