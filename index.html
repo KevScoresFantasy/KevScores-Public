@@ -753,10 +753,10 @@ footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);text-
   </div>
 
   <div class="pr-disclaimer">
-    <div class="pr-disclaimer-icon">ⓘ</div>
+    <div class="pr-disclaimer-icon">&#9432;</div>
     <div class="pr-disclaimer-body">
       <strong>Public ESPN leagues + invited private leagues only.</strong>
-      Enter a numeric ESPN league ID, or a private-league access code if your commissioner gave you one. Yahoo and Sleeper are on the roadmap. League IDs are not stored or transmitted to KevScores servers; they're sent directly from your browser to ESPN.
+      Enter a numeric ESPN league ID, or a private-league access code if your commissioner gave you one. Yahoo and Sleeper support is on the roadmap &mdash; in the meantime, <a href="https://www.fantasypros.com/mlb/myplaybook/?partner=kev" target="_blank" rel="noopener nofollow sponsored">FantasyPros&rsquo; MyPlaybook</a> covers all three platforms today and pairs nicely with KevScores rankings. League IDs are not stored or transmitted to KevScores servers; they&rsquo;re sent directly from your browser to ESPN.
     </div>
   </div>
 
@@ -2140,7 +2140,7 @@ async function loadESPNLeague(leagueId) {
     data = await resp.json();
   } catch (err) {
     if (err.message === 'PRIVATE') {
-      setPRStatus(`<div class="pr-error"><strong>This league is private.</strong> ESPN won't share private league rosters with KevScores. To use this feature, an owner can flip the league to public in League Settings &rarr; Visibility, or use a private access code if your commissioner provided one.</div>`);
+      setPRStatus(`<div class="pr-error"><strong>This league is private.</strong> ESPN won&rsquo;t share private league rosters with KevScores. To use this feature, an owner can flip the league to public in League Settings &rarr; Visibility, or use a private access code if your commissioner provided one.<br><br><span style="color:var(--text-dim);">In the meantime, <a href="https://www.fantasypros.com/mlb/myplaybook/?partner=kev" target="_blank" rel="noopener nofollow sponsored" style="color:var(--accent);">FantasyPros&rsquo; MyPlaybook</a> supports private leagues out of the box and works alongside KevScores rankings.</span></div>`);
     } else if (err.message === 'NOT_FOUND') {
       setPRStatus(`<div class="pr-error"><strong>Couldn't find league <code>${escapeHtml(leagueId)}</code>.</strong> Double-check the ID in your league's URL.</div>`);
     } else if (err.message && err.message.startsWith('HTTP_')) {
