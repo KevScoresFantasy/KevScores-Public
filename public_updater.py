@@ -284,6 +284,22 @@ def fetch_all(group, label):
         for k, v in col_map.items():
             row[v] = stat.get(k, 0)
 
+        # MLB Stats API does not expose a `singles` field on the season
+        # hitting splits endpoint — only `hits`, `doubles`, `triples`,
+        # `homeRuns`. The BATTING_MAP entry "singles":"1B" therefore
+        # silently fills row["1B"] with 0 for every batter, which makes
+        # the ESPN FP calc (line ~604) under-count by exactly the
+        # player's single count. Derive 1B post-hoc from the hits split.
+        # Pitchers fall through harmlessly — they have no "1B" in their map.
+        if group == "hitting":
+            try:
+                row["1B"] = max(0, int(row.get("H", 0))
+                                  - int(row.get("2B", 0))
+                                  - int(row.get("3B", 0))
+                                  - int(row.get("HR", 0)))
+            except (TypeError, ValueError):
+                row["1B"] = 0
+
         rows[norm] = row
 
     print(f"{len(rows)} players")
@@ -1128,6 +1144,7 @@ def build_json(rows, weekly_prev, il_statuses=None):
             "fantasyTeam": "",
             "mlbId": r["mlb_id"],
             "kevChange": None,
+            "rankChange7d": None,
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
             "fpPrevWeek": fp_prev_week,
@@ -1152,7 +1169,9 @@ def apply_daily_changes(players, overall, daily_history, today_str):
     Compare today's scores against:
       - the most recent prior saved day (kevChange, ~1 day back)
       - the oldest saved day, which is ~7 days back (kevChange7d, rolling week)
-    Keeps both values stable across same-day reruns.
+    Also derive rankChange7d = (rank 7 days ago) - (rank today). A positive
+    value means the player has climbed the leaderboard since last week.
+    Keeps all values stable across same-day reruns.
     """
     prior_dates = sorted(d for d in daily_history.keys() if d < today_str)
     if not prior_dates:
@@ -1169,6 +1188,13 @@ def apply_daily_changes(players, overall, daily_history, today_str):
     week_scores = daily_history.get(week_date, {})
     print(f"  7-day change baseline:  {week_date}")
 
+    # Derive each player's rank as of the 7-day-ago snapshot. We sort that day's
+    # full score dict descending so the resulting rank reflects the leaderboard
+    # state on that date, not just within today's player population. Players
+    # who weren't in the history get None (no movement to display).
+    week_ranked = sorted(week_scores.items(), key=lambda kv: -float(kv[1]))
+    week_rank_by_name = {name: i + 1 for i, (name, _) in enumerate(week_ranked)}
+
     for p in players:
         prev = baseline_scores.get(p["name"])
         p["kevChange"] = clean_zero(round(p["kevScore"] - prev, 2)) if prev is not None else None
@@ -1180,11 +1206,20 @@ def apply_daily_changes(players, overall, daily_history, today_str):
         o["kevChange"] = clean_zero(round(o["kevScore"] - prev, 2)) if prev is not None else None
         prev7 = week_scores.get(o["name"])
         o["kevChange7d"] = clean_zero(round(o["kevScore"] - prev7, 2)) if prev7 is not None else None
+        # Rank movement vs. 7 days ago. Positive = climbed up the board.
+        old_rank = week_rank_by_name.get(o["name"])
+        cur_rank = o.get("kevRank")
+        if old_rank is not None and cur_rank is not None:
+            o["rankChange7d"] = old_rank - cur_rank
+        else:
+            o["rankChange7d"] = None
 
     changers = sum(1 for o in overall if o.get("kevChange") not in (None, 0, 0.0))
     changers7 = sum(1 for o in overall if o.get("kevChange7d") not in (None, 0, 0.0))
+    rank_movers = sum(1 for o in overall if o.get("rankChange7d") not in (None, 0))
     print(f"  Daily changes: {changers} players moved (1-day)")
     print(f"  Weekly changes: {changers7} players moved (7-day)")
+    print(f"  Rank changes:  {rank_movers} players moved up/down vs. 7 days ago")
     return players, overall
 
 def update_daily_history(daily_history, players, today_str):
