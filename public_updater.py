@@ -979,6 +979,9 @@ def build_json(rows, weekly_prev, il_statuses=None):
                 "SB": int(_num(s.get("SB", 0))),
                 "TB": int(_num(s.get("TB", 0))) if "TB" in s else int(_num(s.get("1B", 0)) + 2*_num(s.get("2B", 0)) + 3*_num(s.get("3B", 0)) + 4*_num(s.get("HR", 0))),
                 "AVG": round(_num(s.get("AVG", 0.0), 0.0), 3) if s.get("AVG", "") not in ("", None) else "—",
+                # Expected stats from Baseball Savant — None if unmatched
+                "xBA": round(_num(s.get("xBA"), 0.0), 3) if s.get("xBA") is not None else None,
+                "xwOBA": round(_num(s.get("xwOBA"), 0.0), 3) if s.get("xwOBA") is not None else None,
             }
         else:
             stats = {
@@ -994,6 +997,9 @@ def build_json(rows, weekly_prev, il_statuses=None):
                 "H": int(_num(s.get("H", 0))),
                 "BB": int(_num(s.get("BB", 0))),
                 "ERA": round(_num(s.get("ERA", 0.0), 0.0), 2) if s.get("ERA", "") not in ("", None) else "—",
+                # Expected stats from Baseball Savant — None if unmatched
+                "xERA": round(_num(s.get("xERA"), 0.0), 2) if s.get("xERA") is not None else None,
+                "xwOBA": round(_num(s.get("xwOBA"), 0.0), 3) if s.get("xwOBA") is not None else None,
             }
 
         # IL status display fields. Only set when there's an actual penalty
