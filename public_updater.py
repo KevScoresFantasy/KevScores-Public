@@ -284,28 +284,93 @@ def fetch_all(group, label):
         for k, v in col_map.items():
             row[v] = stat.get(k, 0)
 
-        # MLB Stats API does not expose a `singles` field on the season
-        # hitting splits endpoint — only `hits`, `doubles`, `triples`,
-        # `homeRuns`. The BATTING_MAP entry "singles":"1B" therefore
-        # silently fills row["1B"] with 0 for every batter, which makes
-        # the ESPN FP calc (line ~604) under-count by exactly the
-        # player's single count. Derive 1B post-hoc from the hits split.
-        # Pitchers fall through harmlessly — they have no "1B" in their map.
-        if group == "hitting":
-            try:
-                row["1B"] = max(0, int(row.get("H", 0))
-                                  - int(row.get("2B", 0))
-                                  - int(row.get("3B", 0))
-                                  - int(row.get("HR", 0)))
-            except (TypeError, ValueError):
-                row["1B"] = 0
-
         rows[norm] = row
 
     print(f"{len(rows)} players")
     print(f"    Missing teams from stats response: {missing_team_count}")
     return rows
-    
+
+# ── FETCH EXPECTED STATS (Baseball Savant) ──
+# Pulls xBA, xwOBA, xERA from Savant's public expected-stats leaderboards.
+# Joins to our existing rows by mlbId. Failure-tolerant: if Savant is down,
+# logs a warning and continues with empty xstats rather than crashing.
+def fetch_expected_stats(batting_rows, pitching_rows):
+    print("\nFetching expected stats from Baseball Savant...")
+
+    # Savant CSV endpoints. min_pa=q means "qualified" — for our purposes we want
+    # everyone with any tracked PA/BF, so we set a low minimum to cast a wide net.
+    bat_url = (
+        f"https://baseballsavant.mlb.com/leaderboard/expected_statistics"
+        f"?type=batter&year={SEASON}&position=&team=&min=10&csv=true"
+    )
+    pit_url = (
+        f"https://baseballsavant.mlb.com/leaderboard/expected_statistics"
+        f"?type=pitcher&year={SEASON}&position=&team=&min=10&csv=true"
+    )
+
+    def _fetch_csv(url, label):
+        try:
+            req = urllib.request.Request(url, headers=HEADERS_JSON)
+            with urllib.request.urlopen(req, timeout=30) as r:
+                raw = r.read().decode("utf-8", errors="replace")
+            lines = [ln for ln in raw.splitlines() if ln.strip()]
+            if len(lines) < 2:
+                print(f"  {label}: empty response — skipping")
+                return []
+            # Simple CSV parse — Savant's expected stats CSV is well-formed and
+            # doesn't contain quoted commas in the fields we care about.
+            header = [h.strip().strip('"').lower() for h in lines[0].split(",")]
+            out = []
+            for ln in lines[1:]:
+                cells = [c.strip().strip('"') for c in ln.split(",")]
+                if len(cells) != len(header):
+                    continue
+                out.append(dict(zip(header, cells)))
+            print(f"  {label}: {len(out)} players fetched")
+            return out
+        except Exception as e:
+            print(f"  {label}: FAILED — {e}")
+            return []
+
+    def _to_float(v):
+        try:
+            return float(v) if v not in ("", None) else None
+        except (ValueError, TypeError):
+            return None
+
+    # Batters: merge xBA and xwOBA onto batting_rows by mlbId
+    bat_data = _fetch_csv(bat_url, "Batters (xBA/xwOBA)")
+    bat_matched = 0
+    if bat_data:
+        # Build mlbId -> row pointer for fast lookup
+        bat_by_id = {r["mlbId"]: r for r in batting_rows.values() if r.get("mlbId")}
+        for entry in bat_data:
+            mlb_id = entry.get("player_id") or entry.get("mlbamid") or ""
+            mlb_id = str(mlb_id).strip()
+            if mlb_id in bat_by_id:
+                row = bat_by_id[mlb_id]
+                row["xBA"] = _to_float(entry.get("est_ba") or entry.get("xba"))
+                row["xwOBA"] = _to_float(entry.get("est_woba") or entry.get("xwoba"))
+                bat_matched += 1
+    print(f"    Matched xstats to {bat_matched} batters")
+
+    # Pitchers: merge xERA and xwOBA-against onto pitching_rows by mlbId
+    pit_data = _fetch_csv(pit_url, "Pitchers (xERA/xwOBA)")
+    pit_matched = 0
+    if pit_data:
+        pit_by_id = {r["mlbId"]: r for r in pitching_rows.values() if r.get("mlbId")}
+        for entry in pit_data:
+            mlb_id = entry.get("player_id") or entry.get("mlbamid") or ""
+            mlb_id = str(mlb_id).strip()
+            if mlb_id in pit_by_id:
+                row = pit_by_id[mlb_id]
+                row["xERA"] = _to_float(entry.get("xera"))
+                row["xwOBA"] = _to_float(entry.get("est_woba") or entry.get("xwoba"))
+                pit_matched += 1
+    print(f"    Matched xstats to {pit_matched} pitchers")
+
+    return batting_rows, pitching_rows
+
 # ── COMPUTE FANTASY POINTS ──
 MIN_PA = 25
 MIN_IP = 5.0
@@ -366,19 +431,14 @@ BOOST_RANK_STEP      = 1.0    # each rank below #1 loses this much
 #   DEC  = Declared for (e.g. WBC, military)
 
 # Multiplier applied to the final Kev Score (after boost). 1.0 = no change.
-# Penalty is matched to days off: the longer the absence, the bigger the hit.
-#   D10 → -10% (mild, players typically return on schedule)
-#   D15 → -15% (mild, slightly longer absence)
-#   D60 → -60% (severe, long-term injury)
-#   RES/SU → -60% (equivalent to 60-day absence in fantasy terms)
 IL_PENALTY_BY_CODE = {
     "A":    1.0,     # active — no change
     "D7":   1.0,     # concussion IL — short, no penalty
-    "D10":  0.90,    # 10-day IL — -10%
+    "D10":  0.85,    # 10-day IL — -15%
     "D15":  0.85,    # 15-day IL — -15%
-    "D60":  0.40,    # 60-day IL — -60%
-    "RES":  0.40,    # restricted list — -60%
-    "SU":   0.40,    # suspended — -60%
+    "D60":  0.50,    # 60-day IL — -50%
+    "RES":  0.50,    # restricted list — -50%
+    "SU":   0.50,    # suspended — -50%
     "PL":   1.0,     # paternity — no penalty
     "BRV":  1.0,     # bereavement — no penalty
     "DEC":  1.0,     # declared (WBC, etc.) — no penalty
@@ -413,55 +473,21 @@ MLB_TEAM_IDS = [
     139, 140, 141, 142, 143, 144, 145, 146, 147, 158,
 ]
 
-def _normalize_mlb_position(abbr):
-    """Map MLB depthChart position abbreviations to our conventions.
-
-    MLB returns specific outfield positions (CF/LF/RF) and a generic pitcher
-    abbreviation (P). We collapse outfield to 'OF' since the downstream rating
-    code (assign_ratings) just substring-matches 'OF'. Pitcher 'P' becomes 'SP'
-    as a placeholder — the role-inference block in build_players() will refine
-    it to RP if the player has saves and no starts.
-    """
-    if not abbr:
-        return ""
-    a = str(abbr).upper().strip()
-    if a in ("CF", "LF", "RF"):
-        return "OF"
-    if a == "P":
-        return "SP"
-    return a  # C, 1B, 2B, 3B, SS, OF, DH, SP, RP all pass through
-
-
 def fetch_il_statuses():
     """
-    Fetch current MLB IL / roster status for every player on every team, plus
-    each player's primary position (catcher, first base, outfield, etc.).
+    Fetch current MLB IL / roster status for every player on every team.
+    Returns {mlbId(str): status_code(str)}. Missing players are assumed active.
 
-    Returns:
-      (statuses, positions)
-        statuses  : {mlbId(str): status_code(str)}     e.g. "A", "D10", "D60"
-        positions : {mlbId(str): position_abbr(str)}   e.g. "C", "1B", "OF"
-
-    The position map is used as a fallback in build_players() when ESPN's
-    preseason baseline file doesn't include a position for a player —
-    historically that caused every unknown batter to default to "OF", which
-    then propagated to wrong kevRatings ("OF38" for catchers, etc.). Pulling
-    position from MLB's depthChart fixes that without extra API calls
-    (we're already hitting this endpoint for IL statuses).
-
-    rosterType=depthChart is used (not fullRoster) because 60-day IL players
-    are removed from the 40-man roster by MLB rules — that's literally the
-    point of the 60-day IL, to free up a 40-man spot. fullRoster misses them.
-    depthChart includes everyone currently assigned to the team's depth,
-    including long-term injured players.
+    The endpoint returns a roster per team with a `status` block for each
+    player; we extract status.code (e.g. "A", "D10", "D60") and key it off
+    the player's mlbId (person.id) for downstream lookup.
     """
     statuses = {}
-    positions = {}
     ok_count = 0
     err_count = 0
     for team_id in MLB_TEAM_IDS:
         url = (f"https://statsapi.mlb.com/api/v1/teams/{team_id}"
-               f"/roster?rosterType=depthChart")
+               f"/roster?rosterType=fullRoster")
         try:
             req = urllib.request.Request(url, headers=HEADERS_JSON)
             with urllib.request.urlopen(req, timeout=10) as r:
@@ -473,10 +499,6 @@ def fetch_il_statuses():
                 code = str(st.get("code", "A")).strip().upper()
                 if pid:
                     statuses[pid] = code
-                    pos_obj = p.get("position", {}) or {}
-                    pos_norm = _normalize_mlb_position(pos_obj.get("abbreviation", ""))
-                    if pos_norm:
-                        positions[pid] = pos_norm
             ok_count += 1
             time.sleep(0.05)  # be nice to the API
         except Exception as e:
@@ -495,8 +517,7 @@ def fetch_il_statuses():
             code_counts[v] = code_counts.get(v, 0) + 1
         summary = ", ".join(f"{c}={n}" for c, n in sorted(code_counts.items()))
         print(f"  Non-active: {len(non_active)} players ({summary})")
-    print(f"  MLB positions captured for {len(positions)} players")
-    return statuses, positions
+    return statuses
 
 def convert_ip(ip):
     """
@@ -519,86 +540,6 @@ def convert_ip(ip):
     if frac == 0.2:
         return whole + (2 / 3)
     return ip
-
-# ── Sample-size shrinkage ──
-# Per-game fantasy points get pulled toward the league average for players
-# with small samples. This prevents a 1-game wonder from outranking a proven
-# producer based on a single hot day. Math:
-#
-#   adjusted_fp_pg = (n × actual_fp_pg + k × prior_fp_pg) / (n + k)
-#
-# Where n is the player's accumulated playing time and k controls the
-# "stubbornness" of the prior — how many units of league-average we're
-# effectively adding before trusting the player's own rate. The shrinkage
-# is symmetric: hot starts get pulled down toward average and cold starts
-# get pulled up. By full-season volume, the effect is essentially invisible.
-#
-# Shrinkage strength varies by role because each unit of playing time
-# carries different signal:
-#   - Batter games: 20 games ≈ 3 weeks of regular play. Hot starts mostly
-#     normalize by then.
-#   - Starter IP: 30 IP ≈ 6 starts ≈ 1 month. Per-start variance is high
-#     so we want more innings before fully trusting the rate.
-#   - Reliever IP: 10 IP ≈ 10-12 outings ≈ 1 month. Shorter outings make
-#     individual results noisier but small-IP rates are still informative.
-# All three roles converge at "trust at 1 month of play" — when expressed
-# in calendar time, players normalize on roughly the same schedule.
-SHRINK_K_BATTERS = 20   # games of league-average prior for batters
-SHRINK_K_SP      = 30   # innings of league-average prior for starters
-SHRINK_K_RP      = 10   # innings of league-average prior for relievers
-
-
-def _league_avg_fp_pg(per_game_dict):
-    """Mean per-game FP across all eligible players, used as the shrinkage
-    prior. Ineligible players (None) are excluded so they don't drag the
-    mean down. Returns 0.0 if no eligible players (defensive — nothing to
-    shrink toward at that point)."""
-    vals = [v for v in per_game_dict.values() if v is not None]
-    return (sum(vals) / len(vals)) if vals else 0.0
-
-
-def _shrink(actual_fp_pg, n, k, prior_fp_pg):
-    """Empirical-Bayes shrinkage of a per-game rate toward a league prior.
-    Returns None if input is None (i.e. ineligible — preserve that signal)."""
-    if actual_fp_pg is None:
-        return None
-    if n <= 0:
-        return prior_fp_pg
-    return round((n * actual_fp_pg + k * prior_fp_pg) / (n + k), 3)
-
-
-def infer_pitcher_role(pitching_row, espn_pos=""):
-    """Determine whether a pitcher is SP or RP, used both for shrinkage k
-    selection (before ranking) and for downstream `pos` assignment (in
-    build_players). Keeping this in one helper ensures the role used for
-    shrinkage matches the role displayed on the site.
-
-    Decision tree (matches the existing logic in build_players):
-      1. ESPN baseline says "SP" or "RP" → trust it as the default role,
-         BUT override if MLB stats clearly contradict (saves with no starts).
-      2. No ESPN role → use season stats: starts → SP, saves → RP, fallback RP.
-    """
-    gs_season = int((pitching_row or {}).get("GS", 0) or 0)
-    sv_season = int((pitching_row or {}).get("SV", 0) or 0)
-    espn_pos_upper = str(espn_pos or "").upper()
-
-    # Override 1: clear in-season reliever (saves, no starts) — wins over baseline
-    if sv_season >= 2 and gs_season == 0:
-        return "RP"
-
-    # Use ESPN baseline if available
-    if "SP" in espn_pos_upper:
-        return "SP"
-    if "RP" in espn_pos_upper:
-        return "RP"
-
-    # Fall back to in-season stats
-    if gs_season > 0:
-        return "SP"
-    if sv_season > 0:
-        return "RP"
-    return "RP"  # final fallback (matches existing default)
-
 
 def compute_fp(rows, sheet_type):
     """
@@ -683,41 +624,12 @@ def compute_sorare(rows, sheet_type):
     return sorare_total, sorare_pg
 
 
-def rank_scores(fp_per_game_dict, sample_size_dict=None, k=0):
+def rank_scores(fp_per_game_dict):
     """
     Rank scores from per-game FP — only eligible players ranked.
     Ineligible players get rank_score=None.
-
-    When sample_size_dict and k are provided, applies empirical-Bayes
-    shrinkage before ranking: each player's per-game FP is pulled toward
-    the league mean by a factor of k/(n+k). This prevents 1-game wonders
-    from outranking proven producers based on tiny samples. The DISPLAYED
-    fpPG on the site is unaffected — only the ranking input is shrunken.
-
-    sample_size_dict: {norm: n} where n is games (batters) or IP (pitchers).
-    k: shrinkage strength. Can be either:
-       - a scalar (applied uniformly to every player), or
-       - a dict {norm: k} for per-player k values (e.g. SP and RP using
-         different shrinkage strengths within the pitcher pool).
-       k=0 (or empty dict) disables shrinkage entirely.
     """
-    # Apply shrinkage if requested
-    ranking_dict = fp_per_game_dict
-    use_shrinkage = bool(sample_size_dict) and (
-        (isinstance(k, dict) and k) or (not isinstance(k, dict) and k > 0)
-    )
-    if use_shrinkage:
-        prior = _league_avg_fp_pg(fp_per_game_dict)
-        ranking_dict = {}
-        for norm, fpg in fp_per_game_dict.items():
-            if fpg is None:
-                ranking_dict[norm] = None
-                continue
-            n = sample_size_dict.get(norm, 0) or 0
-            k_player = k.get(norm, 0) if isinstance(k, dict) else k
-            ranking_dict[norm] = _shrink(fpg, n, k_player, prior)
-
-    eligible_items = [(n, v) for n, v in ranking_dict.items() if v is not None]
+    eligible_items = [(n, v) for n, v in fp_per_game_dict.items() if v is not None]
     eligible_items.sort(key=lambda x: -x[1])
     n = len(eligible_items)
     rs = {}
@@ -814,11 +726,9 @@ def build_players(batting_rows, pitching_rows,
                   pit_fp_total, pit_fp_pg, pit_rs,
                   bat_sr_total, bat_sr_pg,
                   pit_sr_total, pit_sr_pg,
-                  espn_baseline, il_statuses=None, mlb_positions=None):
+                  espn_baseline, il_statuses=None):
     if il_statuses is None:
         il_statuses = {}
-    if mlb_positions is None:
-        mlb_positions = {}
     rows = []
     all_norms = set(batting_rows.keys()) | set(pitching_rows.keys())
 
@@ -875,35 +785,27 @@ def build_players(batting_rows, pitching_rows,
         espn_value = espn_data.get("value", 0)
         pos_raw = espn_data.get("pos")
         pos_explicit = pos_raw is not None and str(pos_raw).strip() != ""
-
-        # When ESPN baseline is missing a position, fall back to MLB's
-        # depth-chart primary position (captured during fetch_il_statuses).
-        # This catches catchers, corner infielders, and other non-OF batters
-        # that ESPN's preseason file doesn't classify — historically they
-        # all defaulted to "OF" which polluted position rankings and free
-        # agent filters.
-        if pos_explicit:
-            pos = pos_raw
-        else:
-            mlb_pos = mlb_positions.get(str(mlb_id), "") if mlb_id else ""
-            if mlb_pos and (mlb_pos != "SP" or is_pitcher) and (mlb_pos != "DH" or not is_pitcher):
-                # MLB's position is trustworthy for batters and most pitchers.
-                # Guard against MLB labeling a known-batter as "P" (rare/stale)
-                # or a known-pitcher as "DH" (also rare).
-                pos = mlb_pos
-                pos_explicit = True
-            else:
-                # Final fallback: same default as before.
-                pos = "SP" if is_pitcher else "OF"
+        pos = pos_raw if pos_explicit else ("SP" if is_pitcher else "OF")
 
         # Role inference for pitchers: when ESPN baseline is missing OR clearly
         # stale (e.g. listed as SP but actually closing games), use in-season
-        # stats to override. We delegate to infer_pitcher_role() so the role
-        # used here matches the role used for shrinkage in rank_scores().
+        # stats to override. A pitcher with saves and no starts is an RP
+        # regardless of what the baseline file says.
         if is_pitcher:
-            inferred_role = infer_pitcher_role(stats_src, str(pos_raw or ""))
-            pos = inferred_role
-            pos_explicit = True
+            gs_season = int(stats_src.get("GS", 0) or 0)
+            sv_season = int(stats_src.get("SV", 0) or 0)
+            if sv_season >= 2 and gs_season == 0:
+                # Clearly a reliever this season — override baseline role
+                pos = "RP"
+                pos_explicit = True
+            elif not pos_explicit and gs_season > 0:
+                # No baseline, but he's been starting — mark as SP
+                pos = "SP"
+                pos_explicit = True
+            elif not pos_explicit and sv_season > 0:
+                # No baseline, no starts, some saves → RP
+                pos = "RP"
+                pos_explicit = True
 
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
@@ -1044,7 +946,7 @@ def build_json(rows, weekly_prev, il_statuses=None):
         if isinstance(wp, dict) and "fp" in wp:
             baseline_fp = int(round(wp["fp"]))
             fp_weekly = current_fp - baseline_fp
-            fp_prev_week = int(round(wp["prev_week_fp"])) if wp.get("prev_week_fp") is not None else None
+            fp_prev_week = int(round(wp["prev_week_fp"])) if "prev_week_fp" in wp else None
         else:
             baseline_fp = current_fp
             fp_weekly = None
@@ -1144,7 +1046,6 @@ def build_json(rows, weekly_prev, il_statuses=None):
             "fantasyTeam": "",
             "mlbId": r["mlb_id"],
             "kevChange": None,
-            "rankChange7d": None,
             "fpScore": current_fp,
             "fpWeekly": fp_weekly,
             "fpPrevWeek": fp_prev_week,
@@ -1169,9 +1070,7 @@ def apply_daily_changes(players, overall, daily_history, today_str):
     Compare today's scores against:
       - the most recent prior saved day (kevChange, ~1 day back)
       - the oldest saved day, which is ~7 days back (kevChange7d, rolling week)
-    Also derive rankChange7d = (rank 7 days ago) - (rank today). A positive
-    value means the player has climbed the leaderboard since last week.
-    Keeps all values stable across same-day reruns.
+    Keeps both values stable across same-day reruns.
     """
     prior_dates = sorted(d for d in daily_history.keys() if d < today_str)
     if not prior_dates:
@@ -1188,13 +1087,6 @@ def apply_daily_changes(players, overall, daily_history, today_str):
     week_scores = daily_history.get(week_date, {})
     print(f"  7-day change baseline:  {week_date}")
 
-    # Derive each player's rank as of the 7-day-ago snapshot. We sort that day's
-    # full score dict descending so the resulting rank reflects the leaderboard
-    # state on that date, not just within today's player population. Players
-    # who weren't in the history get None (no movement to display).
-    week_ranked = sorted(week_scores.items(), key=lambda kv: -float(kv[1]))
-    week_rank_by_name = {name: i + 1 for i, (name, _) in enumerate(week_ranked)}
-
     for p in players:
         prev = baseline_scores.get(p["name"])
         p["kevChange"] = clean_zero(round(p["kevScore"] - prev, 2)) if prev is not None else None
@@ -1206,20 +1098,11 @@ def apply_daily_changes(players, overall, daily_history, today_str):
         o["kevChange"] = clean_zero(round(o["kevScore"] - prev, 2)) if prev is not None else None
         prev7 = week_scores.get(o["name"])
         o["kevChange7d"] = clean_zero(round(o["kevScore"] - prev7, 2)) if prev7 is not None else None
-        # Rank movement vs. 7 days ago. Positive = climbed up the board.
-        old_rank = week_rank_by_name.get(o["name"])
-        cur_rank = o.get("kevRank")
-        if old_rank is not None and cur_rank is not None:
-            o["rankChange7d"] = old_rank - cur_rank
-        else:
-            o["rankChange7d"] = None
 
     changers = sum(1 for o in overall if o.get("kevChange") not in (None, 0, 0.0))
     changers7 = sum(1 for o in overall if o.get("kevChange7d") not in (None, 0, 0.0))
-    rank_movers = sum(1 for o in overall if o.get("rankChange7d") not in (None, 0))
     print(f"  Daily changes: {changers} players moved (1-day)")
     print(f"  Weekly changes: {changers7} players moved (7-day)")
-    print(f"  Rank changes:  {rank_movers} players moved up/down vs. 7 days ago")
     return players, overall
 
 def update_daily_history(daily_history, players, today_str):
@@ -1314,14 +1197,22 @@ def main():
     batting = fetch_all("hitting", "Batting")
     pitching = fetch_all("pitching", "Pitching")
 
+    # Enrich with Baseball Savant expected stats (xBA, xwOBA, xERA).
+    # Adds keys to existing row dicts in-place; non-matched players just won't
+    # have those keys, which the frontend handles as "—".
+    batting, pitching = fetch_expected_stats(batting, pitching)
+
     bat_fp_total, bat_fp_pg, bat_elig = compute_fp(batting, "batting")
     pit_fp_total, pit_fp_pg, pit_elig = compute_fp(pitching, "pitching")
     bat_sr_total, bat_sr_pg = compute_sorare(batting, "batting")
     pit_sr_total, pit_sr_pg = compute_sorare(pitching, "pitching")
+    bat_rs = rank_scores(bat_fp_pg)
+    pit_rs = rank_scores(pit_fp_pg)
 
-    # ESPN baseline is loaded BEFORE rank_scores because we need it to
-    # determine each pitcher's role (SP vs RP) for shrinkage. Without the
-    # baseline, a starter with 0 IP this season would default to RP.
+    print(f"  Current week: {get_week_number()} (stat weight: {min(20 + (get_week_number() - 1), 46)}%)")
+    print(f"  Eligible batters: {sum(bat_elig.values())} / {len(bat_elig)}")
+    print(f"  Eligible pitchers: {sum(pit_elig.values())} / {len(pit_elig)}")
+
     print("\nLoading ESPN baseline...")
     espn_raw, _ = github_get_file(ESPN_BASELINE_FILE)
     if espn_raw:
@@ -1330,44 +1221,6 @@ def main():
     else:
         print("  WARNING: espn_baseline.json not found in repo — ESPN values will be 0")
         espn_baseline = {}
-
-    # Sample sizes for shrinkage: games for batters, IP for pitchers.
-    # IP is the right unit for pitchers because it's role-agnostic — a
-    # starter with 5 starts (≈30 IP) is more reliable than a reliever with
-    # 5 appearances (≈5 IP), and IP captures that gap.
-    bat_n = {norm: float(r.get("G", 0) or 0) for norm, r in batting.items()}
-    pit_n = {norm: convert_ip(r.get("IP", 0)) for norm, r in pitching.items()}
-
-    # Per-pitcher k: SP gets 30 IP of prior, RP gets 10. Role is inferred
-    # from ESPN baseline + season stats — same logic build_players uses
-    # downstream so the role used for shrinkage matches the role displayed
-    # on the site.
-    pit_k = {}
-    sp_count = 0
-    rp_count = 0
-    for norm, row in pitching.items():
-        # Pull ESPN pos for this pitcher
-        espn_pos = ""
-        baseline_data = espn_baseline.get(row.get("Name", "")) or espn_baseline.get(
-            next((k for k in espn_baseline if normalize(k) == norm), None) or ""
-        ) or {}
-        espn_pos = baseline_data.get("pos", "") or ""
-        role = infer_pitcher_role(row, espn_pos)
-        if role == "SP":
-            pit_k[norm] = SHRINK_K_SP
-            sp_count += 1
-        else:
-            pit_k[norm] = SHRINK_K_RP
-            rp_count += 1
-
-    bat_rs = rank_scores(bat_fp_pg, bat_n, SHRINK_K_BATTERS)
-    pit_rs = rank_scores(pit_fp_pg, pit_n, pit_k)
-
-    print(f"  Pitcher role split: {sp_count} SP (k={SHRINK_K_SP}), {rp_count} RP (k={SHRINK_K_RP})")
-
-    print(f"  Current week: {get_week_number()} (stat weight: {min(20 + (get_week_number() - 1), 46)}%)")
-    print(f"  Eligible batters: {sum(bat_elig.values())} / {len(bat_elig)}")
-    print(f"  Eligible pitchers: {sum(pit_elig.values())} / {len(pit_elig)}")
 
     print("\nLoading history/baselines...")
     history_raw, history_sha = github_get_file(DAILY_HISTORY_FILE)
@@ -1379,7 +1232,7 @@ def main():
     print(f"  Daily history dates loaded: {len(daily_history)}")
 
     print("\nFetching IL statuses from MLB Stats API...")
-    il_statuses, mlb_positions = fetch_il_statuses()
+    il_statuses = fetch_il_statuses()
 
     print("\nComputing Kev Scores...")
     rows = build_players(
@@ -1390,7 +1243,6 @@ def main():
         pit_sr_total, pit_sr_pg,
         espn_baseline,
         il_statuses=il_statuses,
-        mlb_positions=mlb_positions,
     )
     rows = assign_ratings(rows)
     players, overall = build_json(rows, weekly_prev, il_statuses)
@@ -1455,7 +1307,7 @@ def main():
             by_sev.setdefault(sev, []).append(p)
 
         # severe first (bigger penalty), then mild
-        for sev_label, sev_key in (("SEVERE (-60%)", "severe"), ("MILD (-10% to -15%)", "mild")):
+        for sev_label, sev_key in (("SEVERE (-50%)", "severe"), ("MILD (-15%)", "mild")):
             lst = by_sev.get(sev_key, [])
             if not lst:
                 continue

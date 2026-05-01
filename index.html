@@ -44,7 +44,7 @@
   --text:#f0f2f5;--text-muted:#6b7280;--text-dim:#9ca3af;
   --green:#22c55e;--green-dim:rgba(34,197,94,0.12);
   --orange:#f97316;--orange-dim:rgba(249,115,22,0.12);
-  --blue:#3b82f6;--red:#ef4444;
+  --blue:#3b82f6;--red:#ef4444;--yellow:#facc15;
   --accent:#00c8e8;--accent-dim:rgba(77,166,255,0.08);
   --font-display:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;
   --radius:8px;--radius-lg:12px;
@@ -275,6 +275,8 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .modal-sub .pill-hot .hot-tip::after{border-bottom-color:rgba(255,87,34,0.5);}
 .modal-sub .pill-cold .cold-tip::after{border-bottom-color:rgba(59,130,246,0.5);}
 .modal-sub .pill-fp .fp-tip::after{border-bottom-color:rgba(34,197,94,0.5);}
+.modal-sub .pill-buylow .buylow-tip::after{border-bottom-color:rgba(16,185,129,0.5);}
+.modal-sub .pill-sellhigh .sellhigh-tip::after{border-bottom-color:rgba(239,68,68,0.5);}
 .type-bat{color:var(--orange);}
 .type-pit{color:var(--accent);}
 .val-pos{color:var(--green);}
@@ -362,6 +364,22 @@ table.overall-table td.num{text-align:right;font-family:var(--font-display);font
 .pill-fp .fp-tip strong{color:#4ade80;font-weight:700;}
 .pill-fp .fp-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(34,197,94,0.5);}
 .pill-fp:hover .fp-tip{opacity:1;}
+
+/* Buy Low pill — emerald, signals undervalued (actual stats lag expected) */
+.pill-buylow{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(16,185,129,0.28),rgba(16,185,129,0.14));color:#34d399;border:1px solid rgba(16,185,129,0.5);display:inline-flex;align-items:center;gap:4px;cursor:default;}
+.pill-buylow::before{content:"↑";font-size:11px;line-height:1;font-weight:900;}
+.pill-buylow .buylow-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(16,185,129,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-buylow .buylow-tip strong{color:#34d399;font-weight:700;}
+.pill-buylow .buylow-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(16,185,129,0.5);}
+.pill-buylow:hover .buylow-tip{opacity:1;}
+
+/* Sell High pill — amber/red, signals overperforming vs expected */
+.pill-sellhigh{position:relative;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:linear-gradient(180deg,rgba(239,68,68,0.28),rgba(239,68,68,0.14));color:#f87171;border:1px solid rgba(239,68,68,0.5);display:inline-flex;align-items:center;gap:4px;cursor:default;}
+.pill-sellhigh::before{content:"↓";font-size:11px;line-height:1;font-weight:900;}
+.pill-sellhigh .sellhigh-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#0d1218;color:#f0f2f5;border:1px solid rgba(239,68,68,0.5);border-radius:8px;padding:10px 12px;font-family:var(--font-body);font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;white-space:nowrap;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,0.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;}
+.pill-sellhigh .sellhigh-tip strong{color:#f87171;font-weight:700;}
+.pill-sellhigh .sellhigh-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:rgba(239,68,68,0.5);}
+.pill-sellhigh:hover .sellhigh-tip{opacity:1;}
 
 .modal-close{background:none;border:1px solid var(--border);color:var(--text-muted);border-radius:10px;padding:6px 10px;cursor:pointer;font-family:var(--font-display);font-weight:800;}
 .modal-close:hover{color:var(--text);border-color:var(--border-accent);}
@@ -1484,6 +1502,43 @@ function openPlayerModal(p) {
     ? `<span class="pill-cold">Cold<span class="cold-tip">Top-50 weekly faller<br>Kev Score down ${Number(p.kevChange7d).toFixed(2)} in 7 days</span></span>`
     : '';
 
+  // Buy Low / Sell High badges — based on actual vs expected stats (xBA for
+  // hitters, xERA for pitchers). 20% gap threshold. Only fire when both the
+  // actual and expected values are present; eligibility (MIN_PA / MIN_IP) is
+  // already enforced upstream by the data pipeline.
+  // Hitter logic: AVG > xBA by 20% → Sell High (lucky); AVG < xBA by 20% → Buy Low (unlucky)
+  // Pitcher logic: ERA < xERA by 20% → Sell High (lucky); ERA > xERA by 20% → Buy Low (unlucky)
+  let buyLowBadge = '';
+  let sellHighBadge = '';
+  {
+    const _isPitcher = (type === 'Pitcher') || (String(pos).toUpperCase().includes('SP') || String(pos).toUpperCase().includes('RP'));
+    const _stats = p.stats || {};
+    const THRESH = 0.20;
+    if (_isPitcher) {
+      const era = Number(_stats.ERA);
+      const xera = Number(_stats.xERA);
+      if (!isNaN(era) && !isNaN(xera) && xera > 0 && era > 0) {
+        const gap = (era - xera) / xera; // positive → ERA above xERA → unlucky
+        if (gap >= THRESH) {
+          buyLowBadge = `<span class="pill-buylow">Buy Low<span class="buylow-tip">ERA <strong>${era.toFixed(2)}</strong> vs xERA <strong>${xera.toFixed(2)}</strong><br>Pitching unlucky &mdash; expect regression toward xERA</span></span>`;
+        } else if (gap <= -THRESH) {
+          sellHighBadge = `<span class="pill-sellhigh">Sell High<span class="sellhigh-tip">ERA <strong>${era.toFixed(2)}</strong> vs xERA <strong>${xera.toFixed(2)}</strong><br>Pitching lucky &mdash; expect regression toward xERA</span></span>`;
+        }
+      }
+    } else {
+      const avg = Number(_stats.AVG);
+      const xba = Number(_stats.xBA);
+      if (!isNaN(avg) && !isNaN(xba) && xba > 0 && avg > 0) {
+        const gap = (avg - xba) / xba; // positive → AVG above xBA → lucky
+        if (gap >= THRESH) {
+          sellHighBadge = `<span class="pill-sellhigh">Sell High<span class="sellhigh-tip">AVG <strong>${avg.toFixed(3).replace(/^0+/, '')}</strong> vs xBA <strong>${xba.toFixed(3).replace(/^0+/, '')}</strong><br>Hitting lucky &mdash; expect regression toward xBA</span></span>`;
+        } else if (gap <= -THRESH) {
+          buyLowBadge = `<span class="pill-buylow">Buy Low<span class="buylow-tip">AVG <strong>${avg.toFixed(3).replace(/^0+/, '')}</strong> vs xBA <strong>${xba.toFixed(3).replace(/^0+/, '')}</strong><br>Hitting unlucky &mdash; expect regression toward xBA</span></span>`;
+        }
+      }
+    }
+  }
+
   // FantasyPros player news pill — clickable affiliate link.
   // Slug rule: lowercase, drop accents, replace anything non-alphanumeric with
   // a hyphen, collapse runs, trim. e.g. "José Ramírez" -> "jose-ramirez".
@@ -1506,14 +1561,15 @@ function openPlayerModal(p) {
 
   const statRows = isPitcher
     ? [
+        ['ERA', stats.ERA], ['xERA', stats.xERA],
         ['Starts', stats.GS], ['Innings', stats.IP], ['W/L', `${stats.W ?? 0}-${stats.L ?? 0}`],
         ['Saves', stats.SV], ['Holds', stats.HLD], ['Strikeouts', stats.SO], ['Hits', stats.H],
-        ['Walks', stats.BB], ['ERA', stats.ERA],
+        ['Walks', stats.BB],
       ]
     : [
+        ['Average', stats.AVG], ['xBA', stats.xBA],
         ['Games', stats.G], ['Hits', stats.H], ['Home Runs', stats.HR],
         ['Runs Batted In', stats.RBI], ['Runs', stats.R], ['Walks', stats.BB], ['Strikeouts', stats.SO], ['Stolen Bases', stats.SB],
-        ['Average', stats.AVG],
       ];
 
   const statsHtml = statRows
@@ -1525,10 +1581,34 @@ function openPlayerModal(p) {
         const numVal = Number(v);
         displayValue = numVal.toFixed(2);
         valueColor = numVal < 4.00 ? 'var(--green)' : 'var(--red)';
+      } else if (k === 'xERA' && v !== null && v !== undefined && !isNaN(v)) {
+        // For xERA: compare against the player's actual ERA. Lower xERA than ERA
+        // means pitching better than results show (favorable). Yellow within 0.25.
+        const numVal = Number(v);
+        displayValue = numVal.toFixed(2);
+        const eraVal = Number(stats.ERA);
+        if (!isNaN(eraVal) && eraVal > 0) {
+          const diff = numVal - eraVal;
+          if (Math.abs(diff) <= 0.25) valueColor = 'var(--yellow,#facc15)';
+          else if (diff < 0) valueColor = 'var(--green)'; // xERA below ERA = pitching better than results
+          else valueColor = 'var(--red)';
+        }
       } else if (k === 'Average' && v !== null && v !== undefined && !isNaN(v)) {
         const numVal = Number(v);
         displayValue = numVal.toFixed(3).replace(/^0+/, '');
         valueColor = numVal >= 0.250 ? 'var(--green)' : 'var(--red)';
+      } else if (k === 'xBA' && v !== null && v !== undefined && !isNaN(v)) {
+        // For xBA: compare against the player's actual AVG. Higher xBA than AVG
+        // means hitting the ball better than results show (favorable). Yellow within .020.
+        const numVal = Number(v);
+        displayValue = numVal.toFixed(3).replace(/^0+/, '');
+        const avgVal = Number(stats.AVG);
+        if (!isNaN(avgVal) && avgVal > 0) {
+          const diff = numVal - avgVal;
+          if (Math.abs(diff) <= 0.020) valueColor = 'var(--yellow,#facc15)';
+          else if (diff > 0) valueColor = 'var(--green)'; // xBA above AVG = hitting better than results
+          else valueColor = 'var(--red)';
+        }
       }
       const vStyle = valueColor ? ` style="color:${valueColor}"` : '';
       return `<div class="stat"><div class="k">${escapeHtml(k)}</div><div class="v"${vStyle}>${escapeHtml(displayValue)}</div></div>`;
@@ -1572,6 +1652,8 @@ function openPlayerModal(p) {
           ${ilBadge}
           ${hotBadge}
           ${coldBadge}
+          ${buyLowBadge}
+          ${sellHighBadge}
           ${fpBadge}
         </div>
       </div>
