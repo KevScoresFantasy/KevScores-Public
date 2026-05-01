@@ -284,6 +284,19 @@ def fetch_all(group, label):
         for k, v in col_map.items():
             row[v] = stat.get(k, 0)
 
+        # MLB Stats API doesn't return a "singles" field — derive it from
+        # hits minus extra-base hits. Without this, 1B is always 0 and all
+        # singles silently contribute 0 fantasy points.
+        if group == "hitting":
+            try:
+                h   = int(float(row.get("H",  0) or 0))
+                d   = int(float(row.get("2B", 0) or 0))
+                t   = int(float(row.get("3B", 0) or 0))
+                hr  = int(float(row.get("HR", 0) or 0))
+                row["1B"] = max(0, h - d - t - hr)
+            except (TypeError, ValueError):
+                row["1B"] = 0
+
         rows[norm] = row
 
     print(f"{len(rows)} players")
