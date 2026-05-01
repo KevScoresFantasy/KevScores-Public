@@ -425,30 +425,60 @@ def _shrink(actual_fp_pg, n, k, prior_fp_pg):
 
 
 def infer_pitcher_role(pitching_row, espn_pos=""):
-    """Determine SP vs RP, used both for shrinkage k selection and for
-    downstream `pos` assignment in build_players. Keeping this in one helper
-    ensures the role used for shrinkage matches the role displayed.
+    """Determine the PRIMARY pitcher role ("SP" or "RP"), used for shrinkage
+    k selection. Returns whichever role the pitcher's playing time leans
+    toward — starters get k=30, relievers get k=10. For the display label
+    (which can be "SP/RP" or "RP/SP" for swingmen), use pitcher_pos_label.
 
     Decision tree:
-      1. ESPN baseline gives explicit "SP" or "RP" → use it as default,
-         BUT override to RP if MLB stats clearly contradict (saves, no starts).
-      2. No ESPN role → use season stats: starts → SP, saves → RP, fallback RP.
+      1. Use season stats first if there's any signal — starts vs (saves+holds).
+         Most starts → SP, more relief work → RP, ties → SP.
+      2. No season signal → fall back to ESPN baseline.
+      3. Nothing at all → RP (rare, mostly fresh callups).
     """
-    pos_str = str(espn_pos or "").upper()
-    pos_explicit = bool(pos_str.strip())
     gs = int(float(pitching_row.get("GS", 0) or 0))
     sv = int(float(pitching_row.get("SV", 0) or 0))
+    hld = int(float(pitching_row.get("HLD", 0) or 0))
+    relief = sv + hld
 
-    if pos_explicit:
-        if sv >= 2 and gs == 0:
-            return "RP"  # closing games — override stale baseline
-        if "SP" in pos_str:
-            return "SP"
-        if "RP" in pos_str:
-            return "RP"
+    if gs > 0 or relief > 0:
+        return "SP" if gs >= relief else "RP"
+
+    # No in-season signal — fall back to baseline
+    pos_str = str(espn_pos or "").upper()
+    if "SP" in pos_str:
+        return "SP"
+    if "RP" in pos_str:
+        return "RP"
+    return "RP"
+
+
+def pitcher_pos_label(pitching_row, espn_pos=""):
+    """Display label for the pitcher's pos field. Can be "SP", "RP", "SP/RP",
+    or "RP/SP" for true swingmen. Primary role is listed first.
+
+    Logic:
+      - GS > 0 AND (SV+HLD) > 0 → multi-role; primary = whichever is bigger
+      - GS > 0 only             → SP
+      - (SV+HLD) > 0 only       → RP
+      - Neither (no in-season usage) → fall back to ESPN baseline; else RP
+    """
+    gs = int(float(pitching_row.get("GS", 0) or 0))
+    sv = int(float(pitching_row.get("SV", 0) or 0))
+    hld = int(float(pitching_row.get("HLD", 0) or 0))
+    relief = sv + hld
+
+    if gs > 0 and relief > 0:
+        return "SP/RP" if gs >= relief else "RP/SP"
     if gs > 0:
         return "SP"
-    if sv > 0:
+    if relief > 0:
+        return "RP"
+
+    pos_str = str(espn_pos or "").upper().strip()
+    if "SP" in pos_str:
+        return "SP"
+    if "RP" in pos_str:
         return "RP"
     return "RP"
 
@@ -894,21 +924,14 @@ def build_players(batting_rows, pitching_rows,
         pos_explicit = pos_raw is not None and str(pos_raw).strip() != ""
         pos = pos_raw if pos_explicit else ("SP" if is_pitcher else "DH")
 
-        # Role inference for pitchers: when ESPN baseline is missing OR clearly
-        # stale (e.g. listed as SP but actually closing games), use in-season
-        # stats to override. Uses the shared infer_pitcher_role helper so the
-        # role used here matches the role used during shrinkage in rank_scores.
+        # Role inference for pitchers: derive the displayed pos from this
+        # season's actual usage so swingmen are labeled "SP/RP" (most starts)
+        # or "RP/SP" (more relief work). Falls back to ESPN baseline only
+        # when there's no in-season usage. Same helper used by the shrinkage
+        # k selection so the label matches the role assumed by the math.
         if is_pitcher:
-            role = infer_pitcher_role(stats_src, pos_raw or "")
-            # Only override the displayed pos if either (a) baseline was empty,
-            # or (b) baseline says SP but pitcher is clearly an RP this season.
-            if not pos_explicit:
-                pos = role
-                pos_explicit = True
-            elif role == "RP" and "RP" not in str(pos).upper():
-                # Baseline-listed SP who's now closing — flip to RP
-                pos = "RP"
-                pos_explicit = True
+            pos = pitcher_pos_label(stats_src, pos_raw or "")
+            pos_explicit = True
 
         rs_for_calc = rs if not not_eligible else 0
         adj_value = adjusted_espn_value(espn_value, rs_for_calc)
@@ -1001,12 +1024,14 @@ def assign_ratings(rows):
         pos_raw = str(r.get("pos", "")).upper()
         pb = r.get("pb", "")
 
-        if "SP" in pos_raw and pb == "Pitcher":
-            prefix = "SP"
-        elif "RP" in pos_raw and pb == "Pitcher":
-            prefix = "RP"
-        elif pb == "Pitcher":
-            prefix = "RP"
+        # For pitchers, the rating prefix should match the PRIMARY role (the
+        # one listed first in pos). "SP/RP" → SP1, "RP/SP" → RP1. Splitting
+        # on "/" and taking the first segment is robust to both single-role
+        # ("SP", "RP") and multi-role ("SP/RP", "RP/SP") values.
+        primary = pos_raw.split("/")[0].strip() if pos_raw else ""
+
+        if pb == "Pitcher":
+            prefix = "SP" if primary == "SP" else "RP"
         elif "SS" in pos_raw:
             prefix = "SS"
         elif "3B" in pos_raw:
