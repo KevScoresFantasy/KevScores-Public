@@ -946,7 +946,7 @@ def build_json(rows, weekly_prev, il_statuses=None):
         if isinstance(wp, dict) and "fp" in wp:
             baseline_fp = int(round(wp["fp"]))
             fp_weekly = current_fp - baseline_fp
-            fp_prev_week = int(round(wp["prev_week_fp"])) if "prev_week_fp" in wp else None
+            fp_prev_week = int(round(wp["prev_week_fp"])) if wp.get("prev_week_fp") is not None else None
         else:
             baseline_fp = current_fp
             fp_weekly = None
@@ -1252,7 +1252,6 @@ def main():
     # can be inspected independently.
     boosted = [p for p in players if p.get("breakoutBoost", 0) > 0]
     boosted.sort(key=lambda p: -p.get("breakoutBoost", 0))
-    print(f"\nBreakout Boost applied to {len(boosted)} players:")
 
     def _bucket_of(p):
         return "BAT" if p.get("type") != "Pitcher" else "PIT"
@@ -1261,74 +1260,26 @@ def main():
     for p in boosted:
         by_bucket[_bucket_of(p)].append(p)
 
-    for bucket in ("BAT", "PIT"):
-        lst = by_bucket[bucket]
-        lst.sort(key=lambda p: (-p.get("breakoutBoost", 0), -p.get("kevScore", 0)))
-        print(f"\n  {bucket} ({len(lst)} players):")
-        for p in lst:
-            boost = p.get("breakoutBoost", 0)
-            score = p.get("kevScore")
-            rating = p.get("rating", "")
-            print(f"    +{boost:5.2f}  {p['name']:30s}  [{rating:>4}]  (final Kev: {score})")
+    bat_n = len(by_bucket["BAT"])
+    pit_n = len(by_bucket["PIT"])
+    print(f"  Breakout Boost applied to {len(boosted)} players ({bat_n} BAT, {pit_n} PIT)")
 
-    # Near-miss diagnostic — top 10 by total FP per bucket.
-    # Helps debug why a player who seems like they should qualify doesn't.
-    print("\n[boost diagnostic] Top-10 by total FP per bucket:")
-    by_bucket_all = {"BAT": [], "PIT": []}
-    for p in players:
-        b = _bucket_of(p)
-        fpg = None
-        games = (p.get("stats", {}) or {}).get("G", 0) or (p.get("stats", {}) or {}).get("GS", 0)
-        if games and games > 0:
-            fpg = round((p.get("fpScore", 0) or 0) / games, 2)
-        by_bucket_all[b].append({
-            "name": p["name"],
-            "fp_total": p.get("fpScore", 0) or 0,
-            "fp_pg": fpg or 0,
-            "boost": p.get("breakoutBoost", 0),
-            "rating": p.get("rating", ""),
-        })
-    for bucket in ("BAT", "PIT"):
-        lst = sorted(by_bucket_all[bucket], key=lambda x: -x["fp_total"])[:10]
-        print(f"\n  [{bucket}] Top 10 by total FP:")
-        for i, c in enumerate(lst, 1):
-            marker = "  BOOSTED" if c["boost"] > 0 else ""
-            print(f"    {i:>2}. {c['name']:28s}  total={c['fp_total']:>4}  fp/g={c['fp_pg']:>5.2f}  rating={c['rating']:>6}{marker}")
-
-    # IL Status diagnostic — grouped by severity so we can eyeball which
-    # players dropped the most in today's run. Mirrors the boost diagnostic
-    # above.
+    # IL Status — concise summary of how many players got each penalty tier.
     on_il = [p for p in players if p.get("ilStatus")]
-    print(f"\nIL penalty applied to {len(on_il)} players:")
     if on_il:
         by_sev = {"severe": [], "mild": []}
         for p in on_il:
             sev = IL_SEVERITY_BY_CODE.get(p["ilStatus"], "mild")
             by_sev.setdefault(sev, []).append(p)
-
-        # severe first (bigger penalty), then mild
-        for sev_label, sev_key in (("SEVERE (-50%)", "severe"), ("MILD (-15%)", "mild")):
-            lst = by_sev.get(sev_key, [])
-            if not lst:
-                continue
-            # sort by Kev Score desc so the biggest-name names on each tier surface first
-            lst.sort(key=lambda p: -p.get("kevScore", 0))
-            print(f"\n  {sev_label} ({len(lst)} players):")
-            for p in lst:
-                code = p.get("ilStatus", "")
-                score = p.get("kevScore")
-                rating = p.get("rating", "")
-                label = IL_LABEL_BY_CODE.get(code, code)
-                print(f"    [{code:>3}] -{p.get('ilPenalty', 0):>2}%  "
-                      f"{p['name']:30s}  [{rating:>4}]  "
-                      f"(post-penalty Kev: {score})  ({label})")
+        sev_n = len(by_sev.get("severe", []))
+        mild_n = len(by_sev.get("mild", []))
+        print(f"  IL penalty applied to {len(on_il)} players ({sev_n} severe -50%, {mild_n} mild -15%)")
+    else:
+        print(f"  IL penalty applied to 0 players")
 
     teams_filled = sum(1 for p in players if p.get("team"))
     teams_empty = sum(1 for p in players if not p.get("team"))
     print(f"  Teams populated: {teams_filled} / {len(players)} (empty: {teams_empty})")
-    if players:
-        p0 = players[0]
-        print(f"  Sample: {p0['name']} → team='{p0.get('team', '')}', mlbId={p0.get('mlbId', '')}")
 
     today_str = datetime.now().strftime("%Y-%m-%d")
 
