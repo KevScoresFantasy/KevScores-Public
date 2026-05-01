@@ -375,6 +375,83 @@ def fetch_expected_stats(batting_rows, pitching_rows):
 MIN_PA = 25
 MIN_IP = 5.0
 
+# ── Sample-size shrinkage ──
+# Per-game fantasy points get pulled toward the league average for players
+# with small samples. This prevents a 1-game wonder from outranking a proven
+# producer based on a single hot day. Math:
+#
+#   adjusted_fp_pg = (n × actual_fp_pg + k × prior_fp_pg) / (n + k)
+#
+# Where n is the player's accumulated playing time (games for batters, IP
+# for pitchers — IP is role-agnostic; SP and RP are comparable on IP).
+# k controls "stubbornness" of the prior — how many units of league-average
+# we're effectively adding before trusting the player's own rate. Shrinkage
+# is symmetric: hot starts get pulled down, cold starts get pulled up. By
+# full-season volume, the effect is essentially invisible.
+#
+# Shrinkage strength varies by role because each unit of playing time
+# carries different signal:
+#   - Batter PAs: 100 PA ≈ 25 games ≈ 1 month of regular play. Hot starts
+#     mostly normalize by then. PA is preferred over games because it
+#     captures quality of playing time (a pinch-hit appearance is 1 game
+#     but only 1 PA, vs a starter's 4 PA per game).
+#   - Starter IP: 30 IP ≈ 6 starts ≈ 1 month. Per-start variance is high
+#     so we want more innings before fully trusting the rate.
+#   - Reliever IP: 10 IP ≈ 10-12 outings ≈ 1 month. Shorter outings make
+#     individual results noisier but small-IP rates are still informative.
+# All three roles converge at "trust at 1 month of play" — when expressed
+# in calendar time, players normalize on roughly the same schedule.
+SHRINK_K_BATTERS = 100  # plate appearances of league-average prior for batters
+SHRINK_K_SP      = 30   # innings of league-average prior for starters
+SHRINK_K_RP      = 10   # innings of league-average prior for relievers
+
+
+def _league_avg_fp_pg(per_game_dict):
+    """Mean per-game FP across all eligible players, used as the shrinkage
+    prior. Ineligible players (None) are excluded so they don't drag the
+    mean down. Returns 0.0 if no eligible players."""
+    vals = [v for v in per_game_dict.values() if v is not None]
+    return (sum(vals) / len(vals)) if vals else 0.0
+
+
+def _shrink(actual_fp_pg, n, k, prior_fp_pg):
+    """Empirical-Bayes shrinkage of a per-game rate toward a league prior.
+    Returns None if input is None (preserve ineligibility signal)."""
+    if actual_fp_pg is None:
+        return None
+    if n <= 0:
+        return prior_fp_pg
+    return round((n * actual_fp_pg + k * prior_fp_pg) / (n + k), 3)
+
+
+def infer_pitcher_role(pitching_row, espn_pos=""):
+    """Determine SP vs RP, used both for shrinkage k selection and for
+    downstream `pos` assignment in build_players. Keeping this in one helper
+    ensures the role used for shrinkage matches the role displayed.
+
+    Decision tree:
+      1. ESPN baseline gives explicit "SP" or "RP" → use it as default,
+         BUT override to RP if MLB stats clearly contradict (saves, no starts).
+      2. No ESPN role → use season stats: starts → SP, saves → RP, fallback RP.
+    """
+    pos_str = str(espn_pos or "").upper()
+    pos_explicit = bool(pos_str.strip())
+    gs = int(float(pitching_row.get("GS", 0) or 0))
+    sv = int(float(pitching_row.get("SV", 0) or 0))
+
+    if pos_explicit:
+        if sv >= 2 and gs == 0:
+            return "RP"  # closing games — override stale baseline
+        if "SP" in pos_str:
+            return "SP"
+        if "RP" in pos_str:
+            return "RP"
+    if gs > 0:
+        return "SP"
+    if sv > 0:
+        return "RP"
+    return "RP"
+
 # ── Breakout Boost parameters ──
 # Targeted bonus for low-baseline players who rank among the top total-points
 # scorers at their position (batters or pitchers). Recalculated daily — no
@@ -549,6 +626,7 @@ def compute_fp(rows, sheet_type):
     """
     fp_total = {}
     fp_per_game = {}
+    sample_sizes = {}     # n used for shrinkage: PA for batters, IP for pitchers
     eligible = {}
 
     for norm, r in rows.items():
@@ -568,6 +646,7 @@ def compute_fp(rows, sheet_type):
             games = g("G") if g("G") > 0 else 1
             elig = pa >= MIN_PA
             fpg = round(fp / games, 3) if elig else None
+            n_for_shrinkage = pa  # plate appearances — better than G (a guy who pinch-hits 1 PA shows 1 G but is barely a sample)
         else:
             ip = convert_ip(r.get("IP", 0))
             # ESPN Standard H2H Points:
@@ -579,12 +658,14 @@ def compute_fp(rows, sheet_type):
             games = g("G") if g("G") > 0 else 1
             elig = ip >= MIN_IP
             fpg  = round(fp / games, 3) if elig else None
+            n_for_shrinkage = ip  # innings pitched is role-agnostic
 
         fp_total[norm] = int(round(fp))
         fp_per_game[norm] = fpg
+        sample_sizes[norm] = n_for_shrinkage
         eligible[norm] = elig
 
-    return fp_total, fp_per_game, eligible
+    return fp_total, fp_per_game, sample_sizes, eligible
 
 def compute_sorare(rows, sheet_type):
     """
@@ -624,12 +705,38 @@ def compute_sorare(rows, sheet_type):
     return sorare_total, sorare_pg
 
 
-def rank_scores(fp_per_game_dict):
+def rank_scores(fp_per_game_dict, sample_size_dict=None, k=0):
     """
     Rank scores from per-game FP — only eligible players ranked.
     Ineligible players get rank_score=None.
+
+    When sample_size_dict and k are provided, applies empirical-Bayes
+    shrinkage before ranking: each player's per-game FP is pulled toward
+    the league mean by k/(n+k). The DISPLAYED fpPG on the site is
+    unaffected — only the ranking input is shrunken.
+
+    sample_size_dict: {norm: n} where n is games (batters) or IP (pitchers).
+    k: shrinkage strength. Can be either:
+       - a scalar (applied uniformly to every player), or
+       - a dict {norm: k} for per-player k (e.g. SP=30 vs RP=10).
+       k=0 (or empty dict) disables shrinkage entirely.
     """
-    eligible_items = [(n, v) for n, v in fp_per_game_dict.items() if v is not None]
+    ranking_dict = fp_per_game_dict
+    use_shrinkage = bool(sample_size_dict) and (
+        (isinstance(k, dict) and k) or (not isinstance(k, dict) and k > 0)
+    )
+    if use_shrinkage:
+        prior = _league_avg_fp_pg(fp_per_game_dict)
+        ranking_dict = {}
+        for norm, fpg in fp_per_game_dict.items():
+            if fpg is None:
+                ranking_dict[norm] = None
+                continue
+            n = sample_size_dict.get(norm, 0) or 0
+            k_player = k.get(norm, 0) if isinstance(k, dict) else k
+            ranking_dict[norm] = _shrink(fpg, n, k_player, prior)
+
+    eligible_items = [(n, v) for n, v in ranking_dict.items() if v is not None]
     eligible_items.sort(key=lambda x: -x[1])
     n = len(eligible_items)
     rs = {}
@@ -789,21 +896,17 @@ def build_players(batting_rows, pitching_rows,
 
         # Role inference for pitchers: when ESPN baseline is missing OR clearly
         # stale (e.g. listed as SP but actually closing games), use in-season
-        # stats to override. A pitcher with saves and no starts is an RP
-        # regardless of what the baseline file says.
+        # stats to override. Uses the shared infer_pitcher_role helper so the
+        # role used here matches the role used during shrinkage in rank_scores.
         if is_pitcher:
-            gs_season = int(stats_src.get("GS", 0) or 0)
-            sv_season = int(stats_src.get("SV", 0) or 0)
-            if sv_season >= 2 and gs_season == 0:
-                # Clearly a reliever this season — override baseline role
-                pos = "RP"
+            role = infer_pitcher_role(stats_src, pos_raw or "")
+            # Only override the displayed pos if either (a) baseline was empty,
+            # or (b) baseline says SP but pitcher is clearly an RP this season.
+            if not pos_explicit:
+                pos = role
                 pos_explicit = True
-            elif not pos_explicit and gs_season > 0:
-                # No baseline, but he's been starting — mark as SP
-                pos = "SP"
-                pos_explicit = True
-            elif not pos_explicit and sv_season > 0:
-                # No baseline, no starts, some saves → RP
+            elif role == "RP" and "RP" not in str(pos).upper():
+                # Baseline-listed SP who's now closing — flip to RP
                 pos = "RP"
                 pos_explicit = True
 
@@ -1238,17 +1341,13 @@ def main():
     # have those keys, which the frontend handles as "—".
     batting, pitching = fetch_expected_stats(batting, pitching)
 
-    bat_fp_total, bat_fp_pg, bat_elig = compute_fp(batting, "batting")
-    pit_fp_total, pit_fp_pg, pit_elig = compute_fp(pitching, "pitching")
+    bat_fp_total, bat_fp_pg, bat_n, bat_elig = compute_fp(batting, "batting")
+    pit_fp_total, pit_fp_pg, pit_n, pit_elig = compute_fp(pitching, "pitching")
     bat_sr_total, bat_sr_pg = compute_sorare(batting, "batting")
     pit_sr_total, pit_sr_pg = compute_sorare(pitching, "pitching")
-    bat_rs = rank_scores(bat_fp_pg)
-    pit_rs = rank_scores(pit_fp_pg)
 
-    print(f"  Current week: {get_week_number()} (stat weight: {min(20 + (get_week_number() - 1), 46)}%)")
-    print(f"  Eligible batters: {sum(bat_elig.values())} / {len(bat_elig)}")
-    print(f"  Eligible pitchers: {sum(pit_elig.values())} / {len(pit_elig)}")
-
+    # Load ESPN baseline early so we can use it for SP/RP role inference,
+    # which determines each pitcher's shrinkage k value.
     print("\nLoading ESPN baseline...")
     espn_raw, _ = github_get_file(ESPN_BASELINE_FILE)
     if espn_raw:
@@ -1257,6 +1356,37 @@ def main():
     else:
         print("  WARNING: espn_baseline.json not found in repo — ESPN values will be 0")
         espn_baseline = {}
+
+    # Build per-pitcher k map: SP gets k=30, RP gets k=10. Role inference
+    # uses ESPN baseline pos when available, otherwise infers from MLB stats
+    # (saves vs starts). The exact same logic runs in build_players for the
+    # `pos` field, so the role used here will match what's displayed.
+    espn_pos_by_norm = {}
+    for name, data in espn_baseline.items():
+        espn_pos_by_norm[normalize(name)] = (data or {}).get("pos", "")
+    pit_k_map = {}
+    sp_count = rp_count = 0
+    for norm, row in pitching.items():
+        role = infer_pitcher_role(row, espn_pos_by_norm.get(norm, ""))
+        pit_k_map[norm] = SHRINK_K_SP if role == "SP" else SHRINK_K_RP
+        if role == "SP":
+            sp_count += 1
+        else:
+            rp_count += 1
+
+    # Rank with shrinkage. Batters get a single k; pitchers get a per-player
+    # k dict so SP and RP shrink differently.
+    bat_rs = rank_scores(bat_fp_pg, bat_n, k=SHRINK_K_BATTERS)
+    pit_rs = rank_scores(pit_fp_pg, pit_n, k=pit_k_map)
+
+    bat_prior = _league_avg_fp_pg(bat_fp_pg)
+    pit_prior = _league_avg_fp_pg(pit_fp_pg)
+    print(f"  Shrinkage priors: batters={bat_prior:.2f} fp/g, pitchers={pit_prior:.2f} fp/g")
+    print(f"  Pitcher k map: {sp_count} SP (k={SHRINK_K_SP}), {rp_count} RP (k={SHRINK_K_RP}), batters k={SHRINK_K_BATTERS}")
+
+    print(f"  Current week: {get_week_number()} (stat weight: {min(20 + (get_week_number() - 1), 46)}%)")
+    print(f"  Eligible batters: {sum(bat_elig.values())} / {len(bat_elig)}")
+    print(f"  Eligible pitchers: {sum(pit_elig.values())} / {len(pit_elig)}")
 
     print("\nLoading history/baselines...")
     history_raw, history_sha = github_get_file(DAILY_HISTORY_FILE)
