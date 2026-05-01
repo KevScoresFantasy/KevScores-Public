@@ -1076,6 +1076,9 @@ def apply_daily_changes(players, overall, daily_history, today_str):
     Compare today's scores against:
       - the most recent prior saved day (kevChange, ~1 day back)
       - the oldest saved day, which is ~7 days back (kevChange7d, rolling week)
+    Also computes rankChange7d by ranking the full 7-day-ago snapshot (so a
+    player who went from #3 to #1 always shows +2, even if a player above
+    them was called up/down in the meantime).
     Keeps both values stable across same-day reruns.
     """
     prior_dates = sorted(d for d in daily_history.keys() if d < today_str)
@@ -1093,22 +1096,49 @@ def apply_daily_changes(players, overall, daily_history, today_str):
     week_scores = daily_history.get(week_date, {})
     print(f"  7-day change baseline:  {week_date}")
 
+    # Build name -> rank-7-days-ago map by sorting the full 7-day snapshot.
+    # Ranking the entire snapshot (not just current overall) keeps the math
+    # honest if call-ups/sendowns shifted the player population.
+    week_rank_by_name = {}
+    if week_scores:
+        sorted_week = sorted(
+            week_scores.items(),
+            key=lambda kv: (kv[1] if kv[1] is not None else float("-inf")),
+            reverse=True,
+        )
+        for idx, (nm, _score) in enumerate(sorted_week):
+            week_rank_by_name[nm] = idx + 1
+
     for p in players:
         prev = baseline_scores.get(p["name"])
         p["kevChange"] = clean_zero(round(p["kevScore"] - prev, 2)) if prev is not None else None
         prev7 = week_scores.get(p["name"])
         p["kevChange7d"] = clean_zero(round(p["kevScore"] - prev7, 2)) if prev7 is not None else None
 
-    for o in overall:
+    rank_movers = 0
+    for current_idx, o in enumerate(overall):
         prev = baseline_scores.get(o["name"])
         o["kevChange"] = clean_zero(round(o["kevScore"] - prev, 2)) if prev is not None else None
         prev7 = week_scores.get(o["name"])
         o["kevChange7d"] = clean_zero(round(o["kevScore"] - prev7, 2)) if prev7 is not None else None
 
+        # rankChange7d: positive = climbed, negative = dropped, None = no 7-day baseline.
+        # `overall` is already sorted by today's kevScore descending, so
+        # current rank is simply current_idx + 1.
+        old_rank = week_rank_by_name.get(o["name"])
+        if old_rank is not None:
+            current_rank = current_idx + 1
+            o["rankChange7d"] = old_rank - current_rank
+            if o["rankChange7d"] != 0:
+                rank_movers += 1
+        else:
+            o["rankChange7d"] = None
+
     changers = sum(1 for o in overall if o.get("kevChange") not in (None, 0, 0.0))
     changers7 = sum(1 for o in overall if o.get("kevChange7d") not in (None, 0, 0.0))
     print(f"  Daily changes: {changers} players moved (1-day)")
-    print(f"  Weekly changes: {changers7} players moved (7-day)")
+    print(f"  Weekly changes: {changers7} players moved score (7-day)")
+    print(f"  Rank changes:   {rank_movers} players moved rank (7-day)")
     return players, overall
 
 def update_daily_history(daily_history, players, today_str):
