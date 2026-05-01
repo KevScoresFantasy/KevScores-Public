@@ -785,7 +785,7 @@ def build_players(batting_rows, pitching_rows,
         espn_value = espn_data.get("value", 0)
         pos_raw = espn_data.get("pos")
         pos_explicit = pos_raw is not None and str(pos_raw).strip() != ""
-        pos = pos_raw if pos_explicit else ("SP" if is_pitcher else "OF")
+        pos = pos_raw if pos_explicit else ("SP" if is_pitcher else "DH")
 
         # Role inference for pitchers: when ESPN baseline is missing OR clearly
         # stale (e.g. listed as SP but actually closing games), use in-season
@@ -919,7 +919,7 @@ def assign_ratings(rows):
         elif "DH" in pos_raw:
             prefix = "DH"
         else:
-            prefix = "OF"
+            prefix = "DH"
 
         pos_counters[prefix] = pos_counters.get(prefix, 0) + 1
         r["rating"] = f"{prefix}{pos_counters[prefix]}"

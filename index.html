@@ -1888,8 +1888,13 @@ function exportOverallCSV() {
   let rows = [...OVERALL];
   if (overallTypeFilter !== 'all') rows = rows.filter(p => p.type === overallTypeFilter);
   if (overallPositionFilter) rows = rows.filter(p => {
+    // Match against any eligible position (p.pos can be "OF/1B") plus primary
+    // position rating (p.kevRating). Same logic as renderOverall — keep in sync.
+    const filt = overallPositionFilter.toUpperCase();
     const posRank = (p.kevRating || '').toUpperCase();
-    return posRank.includes(overallPositionFilter.toUpperCase());
+    const allPos = (p.pos || '').toUpperCase();
+    const eligList = allPos.split(/[^A-Z0-9]+/).filter(Boolean);
+    return posRank.includes(filt) || eligList.includes(filt);
   });
   if (query) rows = rows.filter(p => normSearch(p.name).includes(query) || normSearch(p.mlbTeam).includes(query));
 
@@ -1987,8 +1992,14 @@ function renderOverall() {
 
   if (overallTypeFilter !== 'all') rows = rows.filter(p => p.type === overallTypeFilter);
   if (overallPositionFilter) rows = rows.filter(p => {
+    // Match against any eligible position (p.pos can be "OF/1B" for multi-eligible
+    // players) as well as the primary position rating (p.kevRating like "1B5").
+    const filt = overallPositionFilter.toUpperCase();
     const posRank = (p.kevRating || '').toUpperCase();
-    return posRank.includes(overallPositionFilter.toUpperCase());
+    const allPos = (p.pos || '').toUpperCase();
+    // Split on any non-letter so "OF/1B" or "OF, 1B" both work
+    const eligList = allPos.split(/[^A-Z0-9]+/).filter(Boolean);
+    return posRank.includes(filt) || eligList.includes(filt);
   });
   if (query) rows = rows.filter(p => normSearch(p.name).includes(query) || normSearch(p.mlbTeam).includes(query));
 
